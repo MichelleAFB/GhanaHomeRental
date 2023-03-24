@@ -23,8 +23,8 @@ function App() {
         <Routes>
           <Route path='/search' element={<SearchPage />}/>
           <Route path='/' element={<Home />}/>
-          <Route path='/application/:email/:firstname/:lastname/:phone' element={<Application/>}/>
-          <Route path='/pre-application' element={<PreApplication/>}/>
+          <Route path='/application/:email/:firstname/:lastname/:phone/:startDate/:endDate/:noAdults/:noChildren' element={<Application/>}/>
+          <Route path='/pre-application/:startDate/:endDate/:noAdults/:noChildren' element={<PreApplication/>}/>
         </Routes>
 
         <Footer />
@@ -32,5 +32,5 @@ function App() {
     </div>
   );
 }
-
+//http://localhost:3001/pre-application/Sun%20Mar%2026%202023%2000:00:00%20GMT-0500%20(Central%20Daylight%20Time)/Fri%20Mar%2031%202023%2000:00:00%20GMT-0500%20(Central%20Daylight%20Time)/2/2
 export default App;

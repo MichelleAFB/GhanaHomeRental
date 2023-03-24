@@ -12,8 +12,8 @@ function Search() {
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [noChildren,setNoChildren]=useState()
-    const [noAdults,setNoAdults]=useState()
+    const [noChildren,setNoChildren]=useState(2)
+    const [noAdults,setNoAdults]=useState(0)
     const selectionRange = {
         startDate: startDate,
         endDate: endDate,
@@ -25,7 +25,7 @@ function Search() {
         setEndDate(ranges.selection.endDate);
     }
 
-
+    console.log(startDate)
     return (
         <div className='search'>
             <DateRangePicker ranges={[selectionRange]} onChange={handleSelect} />
@@ -38,7 +38,7 @@ function Search() {
                         </h2>
                         <div class="flex justify-end ml-3">
                         <PeopleIcon />
-                        <input min={0} placeholder="2" type="number"  class="justify-end rounded-md w-[25vw] p-2" onChange={(e)=>{
+                        <input min={1} max={6} default={2} placeholder="2" type="number"  class="justify-end rounded-md w-[25vw] p-2" onChange={(e)=>{
                         setNoAdults(e.target.value)
                         console.log("noAdults:"+ e.target.value)
                         }} />
@@ -51,7 +51,7 @@ function Search() {
                         </h2>
                         <div class="flex justify-end ml-3">
                         <PeopleIcon />
-                        <input min={0} placeholder="2" type="number"  class="justify-end rounded-md w-[25vw] p-2" onChange={(e)=>{
+                        <input min={0} max={5} default={0} placeholder="2" type="number"  class="justify-end rounded-md w-[25vw] p-2" onChange={(e)=>{
                         setNoChildren(e.target.value)
                         console.log("noChildren:"+ e.target.value)
                         }} />
@@ -67,13 +67,29 @@ function Search() {
 
                             const client=JSON.parse(sessionStorage.getItem("client"))
                             if(client==null){
-                                navigate("/pre-application")
+
+                                if(startDate==null){
+                                    alert("ERROR: Please select a start date for your stay")
+                                }
+                                if(endDate==null){
+                                    alert("ERROR: Please select and end date for your stay")
+                                }else{
+                                    navigate("/pre-application/"+startDate+"/"+endDate+"/"+noAdults+"/"+noChildren)
+                                }
+                             
 
                             }else{
-                                navigate("/application/"+client.email+"/"+client.firstname+"/"+client.lastname+"/"+client.phone)
 
+                                if(startDate==null){
+                                    alert("ERROR: Please select a start date for your stay")
+                                }
+                                if(endDate==null){
+                                    alert("ERROR: Please select and end date for your stay")
+                                }else{
+                                navigate("/application/"+client.email+"/"+client.firstname+"/"+client.lastname+"/"+client.phone+"/"+startDate+"/"+endDate+"/"+noAdults+"/"+noChildren)
+                                }
                             }
-                        })
+                        }) 
                         
                         
                         }}><p class="text-md font-bold text-white">Continue</p></Button>
