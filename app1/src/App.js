@@ -5,6 +5,7 @@ import "./App.css";
 //pages
 import Home from "./pages/Home";
 import SearchPage from "./pages/SearchPage";
+import SignIn from "./pages/SignIn";
 
 //layout
 import Footer from "./layout/Footer";
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path='/search' element={<SearchPage />}/>
           <Route path='/' element={<Home />}/>
+          <Route path='/sign-in' element={<SignIn />}/>
           <Route path='/application/:email/:firstname/:lastname/:phone/:startDate/:endDate/:noAdults/:noChildren' element={<Application/>}/>
           <Route path='/pre-application/:startDate/:endDate/:noAdults/:noChildren' element={<PreApplication/>}/>
         </Routes>

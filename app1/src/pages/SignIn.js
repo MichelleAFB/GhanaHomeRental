@@ -18,14 +18,20 @@ import "../css/PreApplication.css"
 //check if person is logged in
 
 //TODO:fixing emailJS
-function PreApplication() {
+function SignIn() {
 
   const navigate=useNavigate()
   
-  const {noChildren}=useParams()
-  const {noAdults}=useParams()
-  const{startDate}=useParams()
-  const {endDate}=useParams()
+  
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    phone:"",
+    password: "",
+    passwordConfirm: "",
+    message:"Thank you for setting up your account for AAC dallas private flagship suite! We look forward to hosting you next experience at the American Airlines Center at Dallas."
+  });
 
   const[signIn,setSignIn]=useState(true)
 
@@ -36,26 +42,16 @@ function PreApplication() {
   const[password,setPassword]=useState()
   const[passwordConfirm,setPasswordConfirm]=useState()
   const[admin,setAdmin]=useState(false)
+  const[adminId,setAdminId]=useState()
+ 
 
-  const {...props}=useParams()
-  console.log(props)
-
-console.log("no adults:"+noAdults)
 
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
   const form = useRef();
 
-  const [formData, setFormData] = useState({
-    firstname: firstname,
-    lastname: lastname,
-    email: email,
-    phone:phone,
-    password: password,
-    passwordConfirm: passwordConfirm,
-    message:"Thank you for setting up your account for AAC dallas private flagship suite! We look forward to hosting you next experience at the American Airlines Center at Dallas."
-  });
+
 
   const onChange = (e) => {
     e.preventDefault();
@@ -106,7 +102,7 @@ console.log("no adults:"+noAdults)
         .then((response) => {
           if(response.data.success){
             const emailResponse=sendEmail(e);
-            emailResponse.then((data)=>{
+            emailResponse.then((data)=>{ 
               if(data==true){
                 alert("SUCCESS: account set up. confirmation email sent to "+ email)
                 
@@ -117,7 +113,7 @@ console.log("no adults:"+noAdults)
                 })
 
                 prom.then(()=>{
-                  navigate("/application/"+email+"/"+firstname+"/"+lastname+"/"+phone+"/"+startDate+"/"+endDate+"/"+noAdults+"/"+noChildren)
+                  navigate("/")
                 })
                   
              
@@ -204,28 +200,50 @@ console.log("no adults:"+noAdults)
                               setPassword(e.target.value)
                             }}/>
                          </div>
+                        {admin? <div class="flex justify-around mt-2 ">
+                         <label class="text-white font-bold mr-2">Id:</label>
+                            <input type="text" class="bg-white p-2 rounded-sm" onChange={(e)=>{
+                              setAdmin(e.target.value)
+                            }}/>
+                            </div>:<div></div>}
                          <div class="flex justify-around mt-2 ">
                            
-                            <button class={admin?"bg-green-300 p-2 rounded-sm":"bg-white rounded-small p-3"} onClick={(e)=>{
+                            <button class={admin?"bg-green-500 p-3 rounded-sm":"bg-gray-500 rounded-small p-3"} onClick={(e)=>{
                               setAdmin(!admin)
-                            }}><p>Adming</p></button>
+                            }}><p class="text-white">Admin</p>
+                            </button>
+                           
                          </div>
                          <button class="mt-2 bg-green-500 hover:bg-green-400 rounded-md p-3"
                           onClick={()=>{
                             const prom=new Promise((resolve,reject)=>{
+
+                              if(!admin){
                               axios.post("http://localhost:3012/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
                                 console.log(response)
                                 if(response.data.success){
+                                  sessionStorage.removeItem("admin")
                                   sessionStorage.setItem("client",JSON.stringify({firstname:response.data.client.firstname,lastname:response.data.client.lastname,email:email,phone:response.data.client.phone}))
                                   resolve()
                                 }
                               })
-                            })
+                            }else{
+                              axios.post("http://localhost:3012/sign-in/sign-in-admin",{email:email,password:password,adminId:adminId}).then((response)=>{
+                                console.log(response)
+
+                                if(response.data.success){
+                                  sessionStorage.removeItem("client")
+                                  sessionStorage.setItem("admin",JSON.stringify({firstname:response.data.admin.firstname,lastname:response.data.admin.lastname,email:email,phone:response.data.admin.phone}))
+                                  resolve()
+                                }
+
+                              })
+                            }
+                           })
 
                             prom.then(()=>{
-                              const client=JSON.parse(sessionStorage.getItem("client"))
-                              console.log(client)
-                              navigate("/application/"+client.email+"/"+client.firstname+"/"+client.lastname+"/"+ client.phone+"/"+startDate+"/"+endDate+"/"+noAdults+"/"+noChildren)
+                             
+                              navigate("/")
                             })
                           }}>
                          <p class="text-white  text-center">Submit</p>
@@ -363,4 +381,4 @@ console.log("no adults:"+noAdults)
   )
 }
 
-export default PreApplication
+export default SignIn
