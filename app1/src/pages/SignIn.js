@@ -229,6 +229,7 @@ function SignIn() {
                             const prom=new Promise((resolve,reject)=>{
 
                               if(!admin){
+                                console.log("HELLLO")
                                 var message
                                 if(email==null){
                                     message=message+"ERROR: please enter email"
@@ -246,7 +247,9 @@ function SignIn() {
                                   dispatch(setUser(response.data.client))
                                  
                                   sessionStorage.setItem("client",JSON.stringify({firstname:response.data.client.firstname,lastname:response.data.client.lastname,email:email,phone:response.data.client.phone}))
-                                  resolve()
+                                  setTimeout(()=>{
+                                    resolve()
+                                  },300)
                                 }
                               })
                             }else{
@@ -257,7 +260,11 @@ function SignIn() {
                                   sessionStorage.removeItem("client")
                                   dispatch(setUser(response.data.admin))
                                   sessionStorage.setItem("admin",JSON.stringify({firstname:response.data.admin.firstname,lastname:response.data.admin.lastname,email:email,phone:response.data.admin.phone}))
-                                  resolve()
+
+                                  
+                                  setTimeout(()=>{
+                                    resolve()
+                                  },300)
                                 }else{
                                   alert("ERROR: wrong credentials")
                                 }
@@ -277,11 +284,11 @@ function SignIn() {
                               })
 
                               prom2.then(()=>{
-                                navigate("/")
+                               console.log()
                               })
                               
                              
-                              navigate("/")
+                              
                             })
                           }}>
                          <p class="text-white  text-center">Submit</p>

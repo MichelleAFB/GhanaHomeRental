@@ -22,6 +22,8 @@ function App() {
         <Header />
 
         <Routes>
+        
+
           <Route path='/search' element={<SearchPage />}/>
           <Route path='/' element={<Home />}/>
           <Route path='/sign-in' element={<SignIn />}/>
@@ -34,5 +36,6 @@ function App() {
     </div>
   );
 }
-//http://localhost:3001/pre-application/Sun%20Mar%2026%202023%2000:00:00%20GMT-0500%20(Central%20Daylight%20Time)/Fri%20Mar%2031%202023%2000:00:00%20GMT-0500%20(Central%20Daylight%20Time)/2/2
+
 export default App;
+ 

@@ -28,8 +28,9 @@ function Home({userType,user}) {
     prom.then(()=>{
 
     })
-  },[userType])
+  },[userType,user])
 
+  console.log(user)
   return (
     <div className='home'>
       <Banner />
@@ -42,7 +43,15 @@ function Home({userType,user}) {
           </div>
           :
           <div>
+          </div>
+        }
+        {
+          userType=="client" && user!=null ?
+          <div class="flex">
             <ApplicationsList/>
+            
+          </div>:
+          <div>
           </div>
         }
 
