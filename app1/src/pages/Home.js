@@ -1,11 +1,18 @@
 import React from "react";
 import "../css/Home.css";
+
+//components
 import Banner from "../layout/Banner";
 import Card from "../layout/Card";
+import NewApplicationsList from "../admin-components/NewApplicationsList";
+
+
+//redux
+import { connect } from "react-redux";  
 
 // ES7 snippets to do 'rfce'
 import {useState,useEffect} from 'react'
-function Home() {
+function Home({userType,user}) {
 
   const[isLoading,setIsLoading]=useState(true)
 
@@ -16,19 +23,36 @@ function Home() {
     })
 
     prom.then(()=>{
-      
-    })
 
-  },[])
+    })
+  },[userType])
+
   return (
     <div className='home'>
       <Banner />
 
       <div className='home__section'>
+        {
+          userType=="admin"? 
+          <div class="flex">
+            <NewApplicationsList/>
+          </div>
+          :
+          <div></div>
+        }
 
       </div>
     </div>
   );
 }
+const mapStateToProps = (state, props) => {
+  const user= state.user.user;
+  const userType=state.user.userType
 
-export default Home;
+  return {
+    user: user,
+    userType: userType,
+  };
+};
+
+export default connect(mapStateToProps)(Home);

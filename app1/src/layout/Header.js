@@ -6,9 +6,11 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Avatar } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import {useEffect,useState} from 'react'
+import { connect } from 'react-redux';
 
-function Header() {
-
+function Header({user,userType}) {
+    console.log(user)
+    console.log(userType)
     const[admin,setAdmin]=useState()
     const[client,setClient]=useState()
     const[isAdmin,setIsAdmin]=useState(false)
@@ -18,21 +20,12 @@ function Header() {
     useEffect(()=>{
         const prom=new Promise((resolve,reject)=>{
             
-
-            const ad=JSON.parse(sessionStorage.getItem("admin"))
-            console.log(ad)
-            const cl=JSON.parse(sessionStorage.getItem("client"))
-            if(ad!=null){
-                setAdmin(ad)
-                setIsAdmin(true) 
-            }
-            if(cl!=null){
-                setClient(cl)
-                setIsClient(true)
+            if(userType!=null){
+                resolve()
             }
       
-            console.log(admin)
-            resolve()
+          
+           
         })
 
         prom.then(()=>{
@@ -40,12 +33,12 @@ function Header() {
             setIsLoading(false) 
 
         })
-    },[])
+    },[userType])
     const ad=JSON.parse(sessionStorage.getItem("admin"))
     console.log(ad)
     
 
-    console.log(admin)
+    
     /**
      * <Link to='/'>
                 <img
@@ -57,6 +50,7 @@ function Header() {
      */
     console.log(isLoading)
     if(!isLoading){
+       console.log(userType)
     return (
             <div className='mt-0 mr-0 ml-0 flex p-4 justify-between align-center'>
             
@@ -74,21 +68,35 @@ function Header() {
                 
                 <Avatar />
                 {
-                    isAdmin? 
-                    <div class="flex m-2"><p>{admin.firstname} {admin.lastname}</p></div>
+                    userType=="admin"? 
+                    <div class="flex m-2"><p>{user.firstname} {user.lastname} (Admin)</p></div>
                     :<div></div>
                 }
                   {
-                    isClient? 
-                    <div class="flex m-2"><p>{client.firstname} {client.lastname}</p></div>
+                    userType=="client"? 
+                    <div class="flex m-2"><p>{user.firstname} {user.lastname}</p></div>
                     :<div></div>
+                }
+                {
+                    user==null  ?
+                    <Link to="/sign-in" class="text-gray-400 m-2">Sign In</Link>:<p></p>
                 }
 
             </div>
         </div>
-    )}
+    )}else{
+        return(<div></div>)
+    }
 }
    
+const mapStateToProps = (state, props) => {
+    const user= state.user.user;
+    const userType=state.user.userType
  
+    return {
+      user: user,
+      userType: userType,
+    };
+  };
 
-export default Header
+export default connect(mapStateToProps)(Header)

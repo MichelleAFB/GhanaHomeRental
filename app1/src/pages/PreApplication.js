@@ -9,6 +9,9 @@ import { useRef } from "react";
 import axios from "axios";
 import emailjs from "@emailjs/browser";
 
+//redux
+import { useDispatch } from 'react-redux';
+import {setUser,setUserType} from '../redux/user/user-actions'
 
 //icons
 import { ReactComponent as ArrowRightIcon } from "../assets/svg/keyboardArrowRightIcon.svg";
@@ -36,6 +39,7 @@ function PreApplication() {
   const[password,setPassword]=useState()
   const[passwordConfirm,setPasswordConfirm]=useState()
   const[admin,setAdmin]=useState(false)
+  const[adminId,setAdminId]=useState()
 
   const {...props}=useParams()
   console.log(props)
@@ -47,6 +51,7 @@ console.log("no adults:"+noAdults)
 
   const form = useRef();
 
+  const dispatch=useDispatch()
   const [formData, setFormData] = useState({
     firstname: firstname,
     lastname: lastname,
@@ -204,18 +209,28 @@ console.log("no adults:"+noAdults)
                               setPassword(e.target.value)
                             }}/>
                          </div>
+                        { admin?<div class="flex justify-around mt-2 ">
+                            <label class="text-white font-bold">Admin Id:</label>
+                            <input type="text" class="bg-white p-2 rounded-sm" onChange={(e)=>{
+                              setAdminId(e.target.value)
+                            }}/>
+                         </div>:<div></div> 
+                        }
                          <div class="flex justify-around mt-2 ">
                            
                             <button class={admin?"bg-green-300 p-2 rounded-sm":"bg-white rounded-small p-3"} onClick={(e)=>{
                               setAdmin(!admin)
-                            }}><p>Adming</p></button>
+                            }}><p>Admin</p></button>
                          </div>
                          <button class="mt-2 bg-green-500 hover:bg-green-400 rounded-md p-3"
                           onClick={()=>{
+                            if(!admin){
                             const prom=new Promise((resolve,reject)=>{
                               axios.post("http://localhost:3012/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
                                 console.log(response)
                                 if(response.data.success){
+                                  dispatch(setUser(response.data.client))
+                                  
                                   sessionStorage.setItem("client",JSON.stringify({firstname:response.data.client.firstname,lastname:response.data.client.lastname,email:email,phone:response.data.client.phone}))
                                   resolve()
                                 }
@@ -223,10 +238,65 @@ console.log("no adults:"+noAdults)
                             })
 
                             prom.then(()=>{
-                              const client=JSON.parse(sessionStorage.getItem("client"))
-                              console.log(client)
-                              navigate("/application/"+client.email+"/"+client.firstname+"/"+client.lastname+"/"+ client.phone+"/"+startDate+"/"+endDate+"/"+noAdults+"/"+noChildren)
+
+                              const prom1=new Promise((resolve1,reject1)=>{
+                                dispatch(setUserType("client"))
+                                resolve1() 
+                              })
+
+                              prom1.then(()=>{
+                                const client=JSON.parse(sessionStorage.getItem("client"))
+                                navigate("/application/"+client.email+"/"+client.firstname+"/"+client.lastname+"/"+ client.phone+"/"+startDate+"/"+endDate+"/"+noAdults+"/"+noChildren)
+                              })
+                             
                             })
+                          }else{
+                            var message
+                            const prom=new Promise((resolve,reject)=>{
+
+                              if(email==null){
+                                message= message+"ERROR: email needed"
+                              }
+                              if(password==null){
+                                message=message+"ERROR: password needed"
+                              }
+                              resolve()
+                            })
+
+                            prom.then(()=>{
+                              if(message.length>0){
+                                alert(message)
+                              }else{
+
+                                var ad
+                                const prom1=new Promise((resolve1,reject1)=>{
+                                  axios.post("http://localhost:3012/sign-in/sign-in-admin").then((response)=>{
+                                    console.log(response)
+                                    if(response.data.success){
+                                      ad=response.data.admin
+                                      dispatch(setUser(response.data.admin))
+                                      resolve1()
+                                    }
+                                  })
+                                })
+
+                                prom1.then(()=>{
+
+                                  const prom2=new Promise((resolve2,reject2)=>{
+                                    dispatch(setUserType("admin"))
+                                    resolve2()
+                                  })
+                                  prom2.then(()=>{
+                                    navigate("/application/"+ad.email+"/"+ad.firstname+"/"+ad.lastname+"/"+ ad.phone+"/"+startDate+"/"+endDate+"/"+noAdults+"/"+noChildren)
+                                  })
+                                    
+                                })
+
+
+                              }
+                            })
+                           
+                          }
                           }}>
                          <p class="text-white  text-center">Submit</p>
                        </button>

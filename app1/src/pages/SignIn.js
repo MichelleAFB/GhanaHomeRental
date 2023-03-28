@@ -10,6 +10,10 @@ import axios from "axios";
 import emailjs from "@emailjs/browser";
 
 
+//redux
+import { useDispatch } from 'react-redux';
+import { setUser,setUserType } from '../redux/user/user-actions';
+
 //icons
 import { ReactComponent as ArrowRightIcon } from "../assets/svg/keyboardArrowRightIcon.svg";
 import visibilityIcon from "../assets/svg/visibilityIcon.svg";
@@ -73,6 +77,7 @@ function SignIn() {
   };
 
  console.log(formData)
+ const dispatch=useDispatch()
 
   const signUp = (e) => {
     e.preventDefault()
@@ -109,6 +114,7 @@ function SignIn() {
 
                 const prom=new Promise((resolve,reject)=>{
                     alert("SUCCESS: You are now logged in. ")
+
                     resolve()
                 })
 
@@ -219,10 +225,22 @@ function SignIn() {
                             const prom=new Promise((resolve,reject)=>{
 
                               if(!admin){
+                                var message
+                                if(email==null){
+                                    message=message+"ERROR: please enter email"
+                                }
+                                if(password==null){
+                                  message=message+"ERROR: please enter password"
+                                }
+                                if(message.length>0){
+                                  alert(message)
+                                }
                               axios.post("http://localhost:3012/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
                                 console.log(response)
                                 if(response.data.success){
                                   sessionStorage.removeItem("admin")
+                                  dispatch(setUser(response.data.client))
+                                 
                                   sessionStorage.setItem("client",JSON.stringify({firstname:response.data.client.firstname,lastname:response.data.client.lastname,email:email,phone:response.data.client.phone}))
                                   resolve()
                                 }
@@ -233,8 +251,11 @@ function SignIn() {
 
                                 if(response.data.success){
                                   sessionStorage.removeItem("client")
+                                  dispatch(setUser(response.data.admin))
                                   sessionStorage.setItem("admin",JSON.stringify({firstname:response.data.admin.firstname,lastname:response.data.admin.lastname,email:email,phone:response.data.admin.phone}))
                                   resolve()
+                                }else{
+                                  alert("ERROR: wrong credentials")
                                 }
 
                               })
@@ -242,6 +263,19 @@ function SignIn() {
                            })
 
                             prom.then(()=>{
+                              const prom2=new Promise((resolve2,reject2)=>{
+                                if(!admin){
+                                 dispatch( setUserType("client"))
+                                }else{
+                                  dispatch(setUserType("admin"))
+                                }
+                                resolve2()
+                              })
+
+                              prom2.then(()=>{
+                                navigate("/")
+                              })
+                              
                              
                               navigate("/")
                             })
