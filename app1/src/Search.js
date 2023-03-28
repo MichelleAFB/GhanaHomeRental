@@ -1,4 +1,7 @@
 import React, {useState} from 'react';
+
+//redux
+import {connect} from 'react-redux'
 import './css/Search.css';
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
@@ -8,7 +11,7 @@ import PeopleIcon from "@material-ui/icons/People";
 import { useNavigate} from "react-router-dom";
 
 // DATE PICKER COMPONENT
-function Search() {
+function Search({userType,user}) {
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
@@ -64,9 +67,10 @@ function Search() {
                     <Button class="w-[560px] p-3 bg-pink-400 rounded-b-sm hover:bg-pink-200" onClick={() => {
                         
                         const prom=new Promise((resolve,reject)=>{
-
+                            
+                            console.log(user)
                             const client=JSON.parse(sessionStorage.getItem("client"))
-                            if(client==null){
+                            if(user==null || userType==""){
 
                                 if(startDate==null){
                                     alert("ERROR: Please select a start date for your stay")
@@ -86,7 +90,7 @@ function Search() {
                                 if(endDate==null){
                                     alert("ERROR: Please select and end date for your stay")
                                 }else{
-                                navigate("/application/"+client.email+"/"+client.firstname+"/"+client.lastname+"/"+client.phone+"/"+startDate+"/"+endDate+"/"+noAdults+"/"+noChildren)
+                                navigate("/application/"+user.email+"/"+user.firstname+"/"+user.lastname+"/"+user.phone+"/"+startDate+"/"+endDate+"/"+noAdults+"/"+noChildren)
                                 }
                             }
                         }) 
@@ -101,4 +105,15 @@ function Search() {
     )
 }
 
-export default Search
+const mapStateToProps = (state, props) => {
+    const user= state.user.user;
+    const userType=state.user.userType
+ 
+    return {
+      user: user,
+      userType: userType,
+    };
+  };
+
+
+export default connect(mapStateToProps)(Search)

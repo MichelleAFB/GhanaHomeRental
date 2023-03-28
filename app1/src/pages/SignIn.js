@@ -105,6 +105,7 @@ function SignIn() {
           phone:phone
         })
         .then((response) => {
+          console.log(response)
           if(response.data.success){
             const emailResponse=sendEmail(e);
             emailResponse.then((data)=>{ 
@@ -116,6 +117,9 @@ function SignIn() {
                     alert("SUCCESS: You are now logged in. ")
 
                     resolve()
+                }).catch(()=>{
+                  alert("SUCCESS: confirmation email resent")
+                  
                 })
 
                 prom.then(()=>{
@@ -232,7 +236,7 @@ function SignIn() {
                                 if(password==null){
                                   message=message+"ERROR: please enter password"
                                 }
-                                if(message.length>0){
+                                if( message!=null){
                                   alert(message)
                                 }
                               axios.post("http://localhost:3012/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{

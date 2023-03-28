@@ -17,6 +17,7 @@ function Banner() {
                     {showSearch ? "Hide" : "Search Dates"}
                 </Button>
             </div>
+          
             
         </div>
     )

@@ -5,8 +5,12 @@ import LanguageIcon from "@material-ui/icons/Language";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Avatar } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import {useNavigate} from 'react-router-dom'
 import {useEffect,useState} from 'react'
-import { connect } from 'react-redux';
+
+//redux
+import { connect,useDispatch } from 'react-redux';
+import {setUser,setUserType} from '../redux/user/user-actions'
 
 function Header({user,userType}) {
     console.log(user)
@@ -16,6 +20,9 @@ function Header({user,userType}) {
     const[isAdmin,setIsAdmin]=useState(false)
     const[isClient,setIsClient]=useState(false)
     const[isLoading,setIsLoading]=useState(true)
+
+    const dispatch=useDispatch()
+    const navigate=useNavigate()
 
     useEffect(()=>{
         const prom=new Promise((resolve,reject)=>{
@@ -69,17 +76,43 @@ function Header({user,userType}) {
                 <Avatar />
                 {
                     userType=="admin"? 
-                    <div class="flex m-2"><p>{user.firstname} {user.lastname} (Admin)</p></div>
+                    <div class="flex m-2">
+                        <p>{user.firstname} {user.lastname} (Admin)</p>
+                         <button class="ml-2" onClick={()=>{
+                            const prom=new Promise((resolve,reject)=>{
+                                dispatch(setUserType(null))
+                                dispatch(setUser(null));
+                                resolve()
+                            })
+
+                            prom.then(()=>{
+                                    navigate("/")
+                            })
+                         }}>Sign Out</button>
+                    </div>
                     :<div></div>
                 }
                   {
                     userType=="client"? 
-                    <div class="flex m-2"><p>{user.firstname} {user.lastname}</p></div>
-                    :<div></div>
+                    <div class="flex m-2">
+                    <p>{user.firstname} {user.lastname} </p>
+                     <button class="ml-2" onClick={()=>{
+                        const prom=new Promise((resolve,reject)=>{
+                            dispatch(setUserType(null))
+                            dispatch(setUser(null));
+                            resolve()
+                        })
+
+                        prom.then(()=>{
+                                navigate("/")
+                        })
+                     }}>Sign Out</button>
+                </div>
+                :<div></div>
                 }
                 {
                     user==null  ?
-                    <Link to="/sign-in" class="text-gray-400 m-2">Sign In</Link>:<p></p>
+                    <Link to="/sign-in" class="text-gray-400 m-2">Sign In</Link>:<div></div>
                 }
 
             </div>

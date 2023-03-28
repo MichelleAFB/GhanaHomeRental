@@ -4,14 +4,17 @@ import "../css/Home.css";
 //components
 import Banner from "../layout/Banner";
 import Card from "../layout/Card";
+//admin
 import NewApplicationsList from "../admin-components/NewApplicationsList";
-
+//client
+import ApplicationsList from "../client-components/ApplicationsList";
 
 //redux
 import { connect } from "react-redux";  
 
 // ES7 snippets to do 'rfce'
 import {useState,useEffect} from 'react'
+
 function Home({userType,user}) {
 
   const[isLoading,setIsLoading]=useState(true)
@@ -31,14 +34,16 @@ function Home({userType,user}) {
     <div className='home'>
       <Banner />
 
-      <div className='home__section'>
+      <div>
         {
           userType=="admin"? 
           <div class="flex">
             <NewApplicationsList/>
           </div>
           :
-          <div></div>
+          <div>
+            <ApplicationsList/>
+          </div>
         }
 
       </div>
