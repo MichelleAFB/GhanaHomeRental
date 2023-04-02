@@ -12,6 +12,8 @@ import Footer from "./layout/Footer";
 import Header from "./layout/Header";
 import PreApplication from "./pages/PreApplication";
 import Application from "./pages/Application";
+import PaymentPage from "./pages/PaymentPage";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 
  
 function App() {
@@ -29,6 +31,8 @@ function App() {
           <Route path='/sign-in' element={<SignIn />}/>
           <Route path='/application/:email/:firstname/:lastname/:phone/:startDate/:endDate/:noAdults/:noChildren' element={<Application/>}/>
           <Route path='/pre-application/:startDate/:endDate/:noAdults/:noChildren' element={<PreApplication/>}/>
+          <Route path="/payment/:id" element={<PaymentPage/>}/>
+          <Route path="/payment/success/:id" element={<PaymentSuccessPage/>}/>
         </Routes>
 
         <Footer />
@@ -38,4 +42,4 @@ function App() {
 }
 
 export default App;
- 
+  

@@ -5,13 +5,13 @@ import IonIcon from '@reacticons/ionicons';
 import { useNavigate } from 'react-router-dom';
 //assets
 import { Avatar } from "@material-ui/core";
-import NewApplicantOccupant from './NewApplicantOccupant';
+import AdminApplicantOccupant from './AdminApplicantOccupant';
 import axios from 'axios';
-import { decrementTotalNewApplications } from '../redux/admin-applications/admin-applications-actions';
+import { decrementTotalNewApplications } from '../../redux/admin-applications/admin-applications-actions';
 
 //redux
 import {useDispatch} from 'react-redux'
-function NewApplicationListItem({application}) {
+function AdminApplicationListItem({application}) {
 
   const [isLoading,setIsLoading]=useState(true)
   const[noChildren,setNoChildren]=useState()
@@ -39,23 +39,7 @@ function NewApplicationListItem({application}) {
   return (
     <div class="max-h-sm rounded-md ">
     <div class="py-5 m-4  bg-gray-300 border-purple-100 px-3 transition hover:bg-indigo-100 rounded-lg shadow-lg flex flex-col">
-    <div class="w-full justify-end flex">
-            <button onClick={()=>{
-              const prom=new Promise((resolve,reject)=>{
-                axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.id).then((response)=>{
-                  console.log(response)
-                  if(response.data.success){
-                    dispatch(decrementTotalNewApplications())
-                    resolve()
-                  }
-                })
-              })
-
-              prom.then(()=>{
-                setShow(!setShow)
-              })
-            }}><IonIcon name="close-outline"color="primary" size="medium"/></button>
-        </div>
+   
       <div  class="flex flex-col items-center">
           
       <div class="flex  rounded-md p-3 mb-2">
@@ -113,7 +97,7 @@ function NewApplicationListItem({application}) {
                 if(o.child==0){
                   return(
                    
-                        <NewApplicantOccupant occupant={o}/>
+                        <AdminApplicantOccupant occupant={o}/>
                   
                   )
                 }
@@ -126,7 +110,7 @@ function NewApplicationListItem({application}) {
                 if(o.child==1){
                   return(
                    
-                        <NewApplicantOccupant occupant={o}/>
+                        <AdminApplicantOccupant occupant={o}/>
                   
                   )
                 }
@@ -149,4 +133,4 @@ function NewApplicationListItem({application}) {
   }
 
   
-export default NewApplicationListItem
+export default AdminApplicationListItem

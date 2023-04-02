@@ -23,7 +23,7 @@ function Header({user,userType}) {
 
     const dispatch=useDispatch()
     const navigate=useNavigate()
-
+    
     useEffect(()=>{
         const prom=new Promise((resolve,reject)=>{
             
@@ -56,9 +56,72 @@ function Header({user,userType}) {
             </Link>
      */
     console.log(isLoading)
-    if(!isLoading){
+    if(!isLoading && user!=null){
        console.log(userType)
     return (
+            <div className='mt-0 mr-0 ml-0 flex p-4 justify-between align-center'>
+            
+            
+           
+            <div className='flex align-middle'>
+                <div><input type="text" class="rounded-lg border-gray-300 border-2 m-2" /></div>
+                  <div class="mt-2"><SearchIcon/> </div>  
+                
+            </div>
+
+            <div className='flex align-center'>
+              
+                
+                
+                <Avatar />
+                {
+                    userType=="admin"? 
+                    <div class="flex m-2">
+                        <p>{user.firstname} {user.lastname} (Admin)</p>
+                         <button class="ml-2" onClick={()=>{
+                            const prom=new Promise((resolve,reject)=>{
+                                dispatch(setUserType(null))
+                                dispatch(setUser(null));
+                                resolve()
+                            })
+
+                            prom.then(()=>{
+                                    navigate("/")
+                            })
+                         }}>Sign Out</button>
+                    </div>
+                    :<div></div>
+                }
+                  {
+                    userType=="client"? 
+                    <div class="flex m-2">
+                    <p>{user.firstname} {user.lastname} </p>
+                     <button class="ml-2" onClick={()=>{
+                        const prom=new Promise((resolve,reject)=>{
+                            dispatch(setUserType(null))
+                            dispatch(setUser(null));
+                            sessionStorage.removeItem("user")
+                            sessionStorage.removeItem("userType")
+                            sessionStorage.removeItem("signInType")
+                            resolve()
+                        })
+
+                        prom.then(()=>{
+                                //navigate("/")
+                        })
+                     }}>Sign Out</button>
+                </div>
+                :<div></div>
+                }
+                {
+                    user==null  ?
+                    <Link to="/sign-in" class="text-gray-400 m-2">Sign In</Link>:<div></div>
+                }
+
+            </div>
+        </div>
+    )}else{
+        return(
             <div className='mt-0 mr-0 ml-0 flex p-4 justify-between align-center'>
             
             
@@ -117,14 +180,21 @@ function Header({user,userType}) {
 
             </div>
         </div>
-    )}else{
-        return(<div></div>)
+        )
     }
 }
    
 const mapStateToProps = (state, props) => {
-    const user= state.user.user;
-    const userType=state.user.userType
+    var user= state.user.user;
+    var userType=state.user.userType
+    if(userType==null || user==null){
+        user=JSON.parse(sessionStorage.getItem("user"))
+        console.log(sessionStorage.getItem("client"))
+        userType=JSON.parse(sessionStorage.getItem("userType"))
+
+    }if(JSON.parse(sessionStorage.getItem("user"))==null){
+        user=null
+    }
  
     return {
       user: user,

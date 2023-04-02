@@ -106,9 +106,13 @@ function Search({userType,user}) {
 }
 
 const mapStateToProps = (state, props) => {
-    const user= state.user.user;
-    const userType=state.user.userType
- 
+    var user= state.user.user; 
+    var userType=state.user.userType
+    if(userType==null || user==null){
+        user=JSON.parse(sessionStorage.getItem("user"))
+        userType=JSON.parse(sessionStorage.getItem("userType"))
+
+    }
     return {
       user: user,
       userType: userType,

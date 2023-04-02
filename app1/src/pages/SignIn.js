@@ -1,5 +1,5 @@
 import { Button } from '@material-ui/core'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Link,useParams } from "react-router-dom";
@@ -48,14 +48,24 @@ function SignIn() {
   const[admin,setAdmin]=useState(false)
   const[adminId,setAdminId]=useState()
  
-
+  const[isLoading,setIsLoading]=useState(true)
 
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
   const form = useRef();
 
+  useEffect(()=>{
+    const prom=new Promise((resolve,reject)=>{
+      sessionStorage.removeItem("user")
+      sessionStorage.removeItem("userType")
+      resolve()
+    })
 
+    prom.then(()=>{
+      setIsLoading(false)
+    })
+  })
 
   const onChange = (e) => {
     e.preventDefault();
@@ -67,12 +77,7 @@ function SignIn() {
       })
       );
     }
-   /* setFormData((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    })
-    );
-    */
+  
     
   };
 
@@ -166,7 +171,7 @@ function SignIn() {
 
   
 
-
+  if(!isLoading){
   return (
     <div class='h-screen w-full fixed ml-0 mr-0 mt-0 mb-0 flex justify-center items-center bg-black bg-opacity-50'>
         <main id='content' role='main' class='w-full max-w-md mx-auto '>
@@ -200,7 +205,7 @@ function SignIn() {
                       <div class="flex flex-col">
                          <div class="flex justify-around">
                             <label class="text-white font-bold">Email:</label>
-                            <input type="text" class="bg-white p-2 rounded-sm" onChange={(e)=>{
+                            <input type="email" class="bg-white p-2 rounded-sm" onChange={(e)=>{
                               setEmail(e.target.value)
                             }}/>
                          </div>
@@ -247,6 +252,8 @@ function SignIn() {
                                   dispatch(setUser(response.data.client))
                                  
                                   sessionStorage.setItem("client",JSON.stringify({firstname:response.data.client.firstname,lastname:response.data.client.lastname,email:email,phone:response.data.client.phone}))
+                                  sessionStorage.setItem('user',JSON.stringify(response.data.client))
+                                  sessionStorage.setItem("signInType","signIn")
                                   setTimeout(()=>{
                                     resolve()
                                   },300)
@@ -260,8 +267,9 @@ function SignIn() {
                                   sessionStorage.removeItem("client")
                                   dispatch(setUser(response.data.admin))
                                   sessionStorage.setItem("admin",JSON.stringify({firstname:response.data.admin.firstname,lastname:response.data.admin.lastname,email:email,phone:response.data.admin.phone}))
+                                  sessionStorage.setItem("user",JSON.stringify({firstname:response.data.admin.firstname,lastname:response.data.admin.lastname,email:email,phone:response.data.admin.phone}))
 
-                                  
+                                   
                                   setTimeout(()=>{
                                     resolve()
                                   },300)
@@ -277,14 +285,16 @@ function SignIn() {
                               const prom2=new Promise((resolve2,reject2)=>{
                                 if(!admin){
                                  dispatch( setUserType("client"))
+                                 sessionStorage.setItem("userType",JSON.stringify("client"))
                                 }else{
                                   dispatch(setUserType("admin"))
+                                  sessionStorage.setItem("userType",JSON.stringify("admin"))
                                 }
                                 resolve2()
                               })
 
                               prom2.then(()=>{
-                               console.log()
+                               navigate("/")
                               })
                               
                              
@@ -424,6 +434,9 @@ function SignIn() {
         </main>
     </div>
   )
+      }else{
+                  return(<div></div>)
+                }
 }
 
 export default SignIn

@@ -1709,7 +1709,7 @@ function Application() {
                         id='states'
                         class=' border  text-gray-900 text-sm rounded-md border-l border-gray-100 p-1'
                          >
-                         .
+                         
                         <option value='child' selected>child</option>
                         <option value='sibling'>sibling</option>
                         <option value ="extended family">ext family</option>
@@ -1727,7 +1727,7 @@ function Application() {
                         id='states'
                         class=' border  text-gray-900 text-sm rounded-md border-l border-gray-100 p-1'
                          >
-                         .
+                         
                         <option value='child' selected>child</option>
                         <option value='sibling'>sibling</option>
                         <option value ="extended family">ext family</option>
