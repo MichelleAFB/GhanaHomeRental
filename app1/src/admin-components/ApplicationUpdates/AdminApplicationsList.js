@@ -15,6 +15,8 @@ function AdminApplicationsList({totalNewApplications}) {
 
   const[isLoading,setIsLoading]=useState(true)
   const[applications,setApplications]=useState()
+  const[searchPaid,setSearchPaid]=useState(false) 
+  const[searchApplied,setSearchApplied]=useState(false)
 
   const dispatch=useDispatch()
   useEffect(()=>{
@@ -38,13 +40,24 @@ function AdminApplicationsList({totalNewApplications}) {
     })
   },[]) 
 
-  if(!isLoading && applications!=null && totalNewApplications!=0){ 
+  if(!isLoading && applications!=null && totalNewApplications!=0 && !searchPaid && !searchApplied){ 
      return(
 <div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md">
-  <div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl"> New Applications</p>
+  <div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl">  Applications</p>
   </div>
    <input class="rounded-lg p-4 bg-gray-100 transition duration-200 focus:outline-none focus:ring-2 w-full"
       placeholder="Search..."/>
+      <div class="flex justify-around p-2">
+      <button class={searchPaid ? "bg-green-400 p-2 rounded-md":"bg-white border-gray-300 border-2 p-2 rounded-md"} onClick={()=>{
+      setSearchPaid(!searchPaid)
+      setSearchApplied(false)
+    }} >Paid</button>
+    <button class={searchPaid ? "bg-green-400 p-2 rounded-md":"bg-white border-gray-300 border-2 p-2 rounded-md"} onClick={()=>{
+      setSearchApplied(!searchApplied)
+      setSearchPaid(false)
+    }} >Applied</button>
+      </div>
+       
   
     <div class=" overflow-y-scroll overflow-hidden w-full flex-col content-center h-[60vh] p-3 justify-around">
    {
@@ -56,7 +69,73 @@ function AdminApplicationsList({totalNewApplications}) {
     </div>
 </div>      
 )
-}if(!isLoading && (applications==null || totalNewApplications==0)){
+}  if(!isLoading && applications!=null && totalNewApplications!=0 && searchPaid && !searchApplied){ 
+  return(
+<div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md">
+<div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl">  Applications</p>
+</div>
+<input class="rounded-lg p-4 bg-gray-100 transition duration-200 focus:outline-none focus:ring-2 w-full"
+   placeholder="Search..."/>
+   <div class="flex justify-around p-2">
+   <button class={searchPaid ? "bg-green-400 p-2 rounded-md":"bg-white border-gray-300 border-2 p-2 rounded-md"} onClick={()=>{
+   setSearchPaid(!searchPaid)
+   setSearchApplied(false)
+ }} >Paid</button>
+ <button class={searchApplied ? "bg-green-400 p-2 rounded-md":"bg-white border-gray-300 border-2 p-2 rounded-md"} onClick={()=>{
+   setSearchApplied(!searchApplied)
+   setSearchPaid(false)
+ }} >Applied</button>
+   </div>
+    
+
+ <div class=" overflow-y-scroll overflow-hidden w-full flex-col content-center h-[60vh] p-3 justify-around">
+{
+         applications.map((e) => {
+          console.log(e.application.application_status)
+          if(e.application.application_status=="PAYED") 
+             return(<AdminApplicationListItem application={e}/>)
+           })
+       }
+   
+ </div>
+</div>      
+)
+}
+if(!isLoading && applications!=null && totalNewApplications!=0 && !searchPaid && searchApplied){ 
+  return(
+<div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md">
+<div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl">  Applications</p>
+</div>
+<input class="rounded-lg p-4 bg-gray-100 transition duration-200 focus:outline-none focus:ring-2 w-full"
+   placeholder="Search..."/>
+   <div class="flex justify-around p-2">
+   <button class={searchPaid ? "bg-green-400 p-2 rounded-md":"bg-white border-gray-300 border-2 p-2 rounded-md"} onClick={()=>{
+   setSearchPaid(!searchPaid)
+   setSearchApplied(false)
+ }} >Paid</button>
+ <button class={searchApplied ? "bg-green-400 p-2 rounded-md":"bg-white border-gray-300 border-2 p-2 rounded-md"} onClick={()=>{
+   setSearchApplied(!searchApplied)
+   setSearchPaid(false)
+ }} >Applied</button>
+   </div>
+    
+
+ <div class=" overflow-y-scroll overflow-hidden w-full flex-col content-center h-[60vh] p-3 justify-around">
+{
+         applications.map((e) => {
+          console.log(e.application.application_status)
+          if(e.application.application_status=="APPLIED") 
+             return(<AdminApplicationListItem application={e}/>)
+           })
+       }
+   
+ </div>
+</div>      
+)
+}
+
+
+if(!isLoading && (applications==null || totalNewApplications==0)){
   console.log("no Applications")
   return( 
     <div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md">

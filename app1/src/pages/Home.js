@@ -46,8 +46,9 @@ function Home({userType,user}) {
       <div>
         {
           userType=="admin"? 
-          <div class="flex">
+          <div class="flex "> 
             <NewApplicationsList/>
+            <AdminApplicationsList/>
           </div>
           :
           <div>
@@ -55,7 +56,7 @@ function Home({userType,user}) {
         }
         {
           userType=="client" && user!=null ?
-          <div class="flex">
+          <div class="flex ">
             <ApplicationsList/>
             
           </div>:

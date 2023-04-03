@@ -143,13 +143,18 @@ function Header({user,userType}) {
                         <p>{user.firstname} {user.lastname} (Admin)</p>
                          <button class="ml-2" onClick={()=>{
                             const prom=new Promise((resolve,reject)=>{
-                                dispatch(setUserType(null))
-                                dispatch(setUser(null));
+                              
+                                sessionStorage.removeItem("user")
+                                sessionStorage.removeItem("userType")
+                                sessionStorage.removeItem("admin")
+                                sessionStorage.removeItem("noDays")
                                 resolve()
                             })
 
                             prom.then(()=>{
-                                    navigate("/")
+                                dispatch(setUserType(null))
+                                dispatch(setUser(null));
+                                navigate("/sign-in")
                             })
                          }}>Sign Out</button>
                     </div>
@@ -161,13 +166,18 @@ function Header({user,userType}) {
                     <p>{user.firstname} {user.lastname} </p>
                      <button class="ml-2" onClick={()=>{
                         const prom=new Promise((resolve,reject)=>{
-                            dispatch(setUserType(null))
-                            dispatch(setUser(null));
+                            
+                            sessionStorage.removeItem("user")
+                            sessionStorage.removeItem("userType")
+                            sessionStorage.removeItem("admin")
+                            sessionStorage.removeItem("noDays")
                             resolve()
                         })
 
                         prom.then(()=>{
-                                navigate("/")
+                            dispatch(setUserType(null))
+                            dispatch(setUser(null));
+                            navigate("/")
                         })
                      }}>Sign Out</button>
                 </div>

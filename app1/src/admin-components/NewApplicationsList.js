@@ -14,6 +14,8 @@ function NewApplicationsList({totalNewApplications}) {
 
   const[isLoading,setIsLoading]=useState(true)
   const[applications,setApplications]=useState()
+  const [searchPaid,setSearchPaid]=useState(false)
+  const[searchApplied,setSearchApplied]=useState(false)
 
   const dispatch=useDispatch()
   useEffect(()=>{
@@ -37,13 +39,14 @@ function NewApplicationsList({totalNewApplications}) {
     })
   },[totalNewApplications]) 
 
-  if(!isLoading && applications!=null && totalNewApplications!=0){ 
+  if(!isLoading && applications!=null && totalNewApplications!=0 && !searchPaid && !searchApplied){ 
      return(
 <div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md">
   <div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl"> New Applications</p>
   </div>
    <input class="rounded-lg p-4 bg-gray-100 transition duration-200 focus:outline-none focus:ring-2 w-full"
       placeholder="Search..."/>
+   
   
     <div class=" overflow-y-scroll overflow-hidden w-full flex-col content-center h-[60vh] p-3 justify-around">
    {

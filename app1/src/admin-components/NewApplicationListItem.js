@@ -18,7 +18,8 @@ function NewApplicationListItem({application}) {
   const[noAdults,setNoAdults]=useState()
   const[seeMore,setSeeMore]=useState(false)
   const[show,setShow]=useState(true)
-
+  const [searchPaid,setSearchPaid]=useState(false)
+  const[searchApplied,setSearchApplied]=useState(false)
   const navigate=useNavigate()
   const dispatch=useDispatch()
 
@@ -35,7 +36,7 @@ function NewApplicationListItem({application}) {
   },[])
 
 
-  if(show){
+  if(show ){
   return (
     <div class="max-h-sm rounded-md ">
     <div class="py-5 m-4  bg-gray-300 border-purple-100 px-3 transition hover:bg-indigo-100 rounded-lg shadow-lg flex flex-col">
@@ -61,6 +62,7 @@ function NewApplicationListItem({application}) {
       <div class="flex  rounded-md p-3 mb-2">
       <div class="flex ">
       <p class="text-center text-2xl">{application.application.stay_start_date}-{application.application.stay_end_date}</p>
+      <p class="text-center">{application.application.firstname} {application.application.lastname}</p>
       </div>
        
        

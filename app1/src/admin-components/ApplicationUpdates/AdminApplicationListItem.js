@@ -5,12 +5,18 @@ import IonIcon from '@reacticons/ionicons';
 import { useNavigate } from 'react-router-dom';
 //assets
 import { Avatar } from "@material-ui/core";
+
+//components
 import AdminApplicantOccupant from './AdminApplicantOccupant';
+
+//outside
 import axios from 'axios';
-import { decrementTotalNewApplications } from '../../redux/admin-applications/admin-applications-actions';
+
 
 //redux
 import {useDispatch} from 'react-redux'
+import { decrementTotalNewApplications } from '../../redux/admin-applications/admin-applications-actions';
+import { setApplicationModalVisibility,setApplication } from '../../redux/admin-applications/admin-applications-actions';
 function AdminApplicationListItem({application}) {
 
   const [isLoading,setIsLoading]=useState(true)
@@ -72,17 +78,23 @@ function AdminApplicationListItem({application}) {
         }}>
           See More
         </button>
-        {
-          seeMore?
-          <div class="flex flex-col border-2 border-dashed rounded-md w-full m-2 border-gray-700 p-3">
-            <p class="font-bold text-center">date recieved:<span class="font-normal ml-1">{application.application.dateReceived.substring(0,10)}</span></p>
-            {
-              application.application.approved==0?
-              <p class="text-center font-bold"><IonIcon name="hourglass-outline" size="medium" color="bg-white"/> Awaiting Approval</p>:
-              <p></p>
-            }
-            </div>:<div></div>
-        }
+        <button class="bg-green-400 p-3 rounded-md m-2" onClick={()=>{
+          
+          const prom=new Promise((resolve,reject)=>{
+            dispatch(setApplication(application))
+            resolve()
+          })
+
+          prom.then(()=>{
+            console.log("here")
+            setApplicationModalVisibility(true)
+          })
+        }}>
+          <p class="text-white">
+            Edit
+          </p>
+        </button>
+       
        
       
         <div class="bg-gray-200 p-3 rounded-md ">

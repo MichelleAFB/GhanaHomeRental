@@ -16,3 +16,24 @@ export function decrementTotalNewApplications(){
    
   }
 }
+
+export function setApplication(application){
+  return{
+    type:actionTypes.SET_APPLICATION,
+    payload:{
+      application:application
+    }
+   
+  }
+}
+
+export function setApplicationModalVisibility(visibility){
+  console.log("CHANGING APPLICATION MODAL:"+visibility)
+  return{
+    type:actionTypes.SET_APPLICATION_VISIBILITY,
+    payload:{
+      visibility:visibility
+    }
+   
+  }
+}
