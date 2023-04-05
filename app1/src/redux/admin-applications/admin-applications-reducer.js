@@ -3,7 +3,7 @@ import * as actionTypes from './admin-applications-types'
 
 const initialState={
   totalNewApplications:null,
-  modalVisibility:false,
+  visibility:false,
   application:null,
 
 }
@@ -23,18 +23,19 @@ export  const adminApplicationsReducer=(state=initialState,action)=>{
         ...state,
         totalNewApplications:(state.totalNewApplications-1)
       }
+    case actionTypes.SET_VISIBILITY:
+        console.log("REDUX:SETTING MODAL VISIBILITY")
+        return{
+          ...state,
+          visibility:action.payload.visibility
+        }
      case actionTypes.SET_APPLICATION:
-      console.log("REDUX:SETTING USER TYPE")
+      console.log("REDUX:SETTING Application")
       return{
         ...state,
         application:action.payload
       }
-      case actionTypes.SET_APPLICATION_VISIBILITY:
-        console.log("REDUX:SETTING MODAL VISIBILITY")
-        return{
-          ...state,
-          modalVisibility:action.payload.visibility
-        }
+     
     
       default:
         return state

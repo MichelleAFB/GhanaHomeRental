@@ -18,6 +18,8 @@ export function decrementTotalNewApplications(){
 }
 
 export function setApplication(application){
+  console.log("setting application")
+  console.log(application)
   return{
     type:actionTypes.SET_APPLICATION,
     payload:{
@@ -28,7 +30,6 @@ export function setApplication(application){
 }
 
 export function setApplicationModalVisibility(visibility){
-  console.log("CHANGING APPLICATION MODAL:"+visibility)
   return{
     type:actionTypes.SET_APPLICATION_VISIBILITY,
     payload:{
@@ -37,3 +38,14 @@ export function setApplicationModalVisibility(visibility){
    
   }
 }
+export function setVisibility(visibility){
+  console.log(actionTypes.SET_VISIBILITY)
+  return{
+    type:actionTypes.SET_VISIBILITY,
+    payload:{
+      visibility:visibility
+    }
+   
+  }
+}
+

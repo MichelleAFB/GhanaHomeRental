@@ -1,10 +1,14 @@
 import React from 'react'
 
 //outside
-import {motion} from 'framer'
+
 
 import{connect} from 'react-redux'
-function ApplicationModal() {
+
+
+function ApplicationModal({visibility,application}) {
+
+
   if(visibility){
   return (
     <div class='bg-gray-200' data-testId="modal-public">
@@ -23,11 +27,14 @@ function ApplicationModal() {
       </div>
       </div>
   )
+}else{
+  return(<p></p>)
 }
 }
 const mapStateToProps = (state, props) => {
   var visibility= state.adminApplications.visibility;
   var application=state.adminApplications.application
+  console.log("visibility"+visibility)
 
   return {
    visibility:visibility,

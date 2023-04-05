@@ -16,7 +16,7 @@ import axios from 'axios';
 //redux
 import {useDispatch} from 'react-redux'
 import { decrementTotalNewApplications } from '../../redux/admin-applications/admin-applications-actions';
-import { setApplicationModalVisibility,setApplication } from '../../redux/admin-applications/admin-applications-actions';
+import { setApplicationModalVisibility,setApplication,setVisibility } from '../../redux/admin-applications/admin-applications-actions';
 function AdminApplicationListItem({application}) {
 
   const [isLoading,setIsLoading]=useState(true)
@@ -81,13 +81,15 @@ function AdminApplicationListItem({application}) {
         <button class="bg-green-400 p-3 rounded-md m-2" onClick={()=>{
           
           const prom=new Promise((resolve,reject)=>{
-            dispatch(setApplication(application))
+            setVisibility(true)
+           dispatch(setApplication(application))
+            
             resolve()
           })
 
           prom.then(()=>{
             console.log("here")
-            setApplicationModalVisibility(true)
+            
           })
         }}>
           <p class="text-white">

@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 
 // ES7 snippets to do 'rfce'
 import {useState,useEffect} from 'react'
+import ApplicationModal from "../admin-components/modals/ApplicationModal";
 
 function Home({userType,user}) {
 
@@ -41,6 +42,7 @@ function Home({userType,user}) {
     console.log(user)
   return (
     <div className='home'>
+      <ApplicationModal/>
       <Banner />
 
       <div>

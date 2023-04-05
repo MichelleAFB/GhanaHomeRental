@@ -152,8 +152,8 @@ function Header({user,userType}) {
                             })
 
                             prom.then(()=>{
-                                dispatch(setUserType(null))
-                                dispatch(setUser(null));
+                               // dispatch(setUserType(null))
+                               // dispatch(setUser(null));
                                 navigate("/sign-in")
                             })
                          }}>Sign Out</button>
