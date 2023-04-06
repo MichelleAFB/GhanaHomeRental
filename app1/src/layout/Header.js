@@ -40,7 +40,7 @@ function Header({user,userType}) {
             setIsLoading(false) 
 
         })
-    },[userType])
+    },[userType,user])
     const ad=JSON.parse(sessionStorage.getItem("admin"))
     console.log(ad)
     
@@ -154,6 +154,7 @@ function Header({user,userType}) {
                             prom.then(()=>{
                                // dispatch(setUserType(null))
                                // dispatch(setUser(null));
+                               user=null
                                 navigate("/sign-in")
                             })
                          }}>Sign Out</button>
@@ -175,9 +176,10 @@ function Header({user,userType}) {
                         })
 
                         prom.then(()=>{
-                            dispatch(setUserType(null))
-                            dispatch(setUser(null));
-                            navigate("/")
+                            //dispatch(setUserType(null))
+                            //dispatch(setUser(null));
+                            user=null
+                            navigate("/sign-in")
                         })
                      }}>Sign Out</button>
                 </div>

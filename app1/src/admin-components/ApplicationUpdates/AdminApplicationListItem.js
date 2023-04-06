@@ -81,7 +81,7 @@ function AdminApplicationListItem({application}) {
         <button class="bg-green-400 p-3 rounded-md m-2" onClick={()=>{
           
           const prom=new Promise((resolve,reject)=>{
-            setVisibility(true)
+          
            dispatch(setApplication(application))
             
             resolve()
@@ -89,6 +89,7 @@ function AdminApplicationListItem({application}) {
 
           prom.then(()=>{
             console.log("here")
+            dispatch(setVisibility(true))
             
           })
         }}>

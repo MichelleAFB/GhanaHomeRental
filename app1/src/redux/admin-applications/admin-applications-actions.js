@@ -38,12 +38,13 @@ export function setApplicationModalVisibility(visibility){
    
   }
 }
-export function setVisibility(visibility){
-  console.log(actionTypes.SET_VISIBILITY)
+
+export function setVisibility(vis){
+  console.log(actionTypes.SET_VISIBILITY+ " "+vis)
   return{
     type:actionTypes.SET_VISIBILITY,
     payload:{
-      visibility:visibility
+      visibility:vis
     }
    
   }

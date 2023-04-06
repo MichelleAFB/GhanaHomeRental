@@ -42,7 +42,7 @@ function Home({userType,user}) {
     console.log(user)
   return (
     <div className='home'>
-      <ApplicationModal/>
+      
       <Banner />
 
       <div>

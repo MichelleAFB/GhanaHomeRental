@@ -7,6 +7,9 @@ import Home from "./pages/Home";
 import SearchPage from "./pages/SearchPage";
 import SignIn from "./pages/SignIn";
 
+
+//components
+import ApplicationModal from "./admin-components/modals/ApplicationModal";
 //layout
 import Footer from "./layout/Footer";
 import Header from "./layout/Header";
@@ -20,6 +23,7 @@ function App() {
   return (
     // BEM
     <div className='app'>
+      <ApplicationModal/>
       <Router>
         <Header />
 

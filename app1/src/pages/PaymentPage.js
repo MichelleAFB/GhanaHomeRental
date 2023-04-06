@@ -18,6 +18,7 @@ function PaymentPage() {
   const {id}=useParams()
 console.log(id)
   useEffect(()=>{
+    var days
     const prom=new Promise((resolve,reject)=>{
       axios.get("http://localhost:3012/client-applications/application/"+id).then((response)=>{
         console.log(response)
@@ -26,6 +27,7 @@ console.log(id)
         axios.get("http://localhost:3012/client-applications/getNoDays/"+id).then((response1)=>{
           console.log(response1.data)
           setNoDays(response1.data.days)
+          days=response1.data.days
         })
         setTimeout(()=>{
           resolve()
@@ -35,6 +37,12 @@ console.log(id)
 
     prom.then(()=>{
 
+      const prom2=new Promise((resolve,reject)=>{
+        axios.post("http://localhost:3012/payment/checkout/"+id,{fees:[{id:"price_1MrY1oLxMJskpKlAbFZlt9et",quantity:days},{id:"price_1MrY3uLxMJskpKlAfpN870oN",quantity:1}]}).then((response)=>{
+      console.log(response)
+      setCheckOutLink(response.data.url)
+    })
+      })
    setIsLoading(false)
 
       
