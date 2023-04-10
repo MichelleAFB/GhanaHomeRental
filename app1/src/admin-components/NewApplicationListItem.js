@@ -85,6 +85,14 @@ function NewApplicationListItem({application}) {
             </p>
           </div>:<div></div>
         }
+          {
+          application.application.application_status=="RESERVED"?
+          <div class="flex m-2">
+            <p class="font-bold">
+              Status:<span class="text-green-600"> {application.application.application_status}<IonIcon name="eye-outline" size="medium"/></span>
+            </p>
+          </div>:<div></div>
+        }
         <button class="font-bold border-b-2 border-gray-600 m-3" onClick={()=>{
           setSeeMore(!seeMore)
         }}>

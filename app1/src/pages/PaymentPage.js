@@ -220,14 +220,13 @@ console.log(id)
 
 
 if(!isLoading ){
-
-  if(checkOutLink==null){
-    checkout().then(()=>{
-      console.log("checkoutLink"+checkOutLink)
-    })
-  }
+  console.log(sessionStorage.getItem("checkoutLink"))
+  const check=sessionStorage.getItem("checkoutLink")
+  const day=JSON.parse(sessionStorage.getItem("application_payment"))
+  console.log(check)
+  console.log(day)
   
-  if(checkOutLink!=null){
+  if(check!=null){ 
   return (
     <div class="flex-col p-3">
       <Link class="bg-yellow-300 p-3" to="/home">Go back</Link>

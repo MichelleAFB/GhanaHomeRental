@@ -10,6 +10,7 @@ function ApplicationsList({user,userType}) {
 
   const[isLoading,setIsLoading]=useState(true)
   const[applications,setApplications]=useState()
+  const[newApplications,setNewApplications]=useState(false)
   
   useEffect(()=>{
 
@@ -37,7 +38,24 @@ function ApplicationsList({user,userType}) {
       setIsLoading(false)
     })
   }
-  },[])
+  },[newApplications])
+
+  const myInterval = setInterval(()=>{
+    axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+      console.log(response.data.no_applications)  
+      console.log(applications) 
+      console.log(applications.length==response.data.no_applications)
+      console.log(newApplications)
+      if(applications.length!=response.data.no_applications){
+        console.log("Change Applications")
+        setNewApplications(!newApplications) 
+        
+      }
+    })
+    console.log("\n\nCHECKING\n\n")
+
+  }, 100000); 
+
 
  
         

@@ -17,16 +17,25 @@ import { connect } from "react-redux";
 import {useState,useEffect} from 'react'
 import ApplicationModal from "../admin-components/modals/ApplicationModal";
 
+//outside
+import axios from "axios";
 function Home({userType,user}) {
 
   const[isLoading,setIsLoading]=useState(true)
+  const [newApplications,setNewApplications]=useState(false)
 
   console.log(userType)
   console.log(user)
   useEffect(()=>{
 
     const prom=new Promise((resolve,reject)=>{
-        console.log("user in home:"+user)
+        axios.get("http://localhost:3012/admin-applications/new-applications").then((response)=>{
+          console.log(response)
+          if(response.data.no_applications>0){
+            setNewApplications(true)
+            
+          }
+        })
             resolve()
         
     })
@@ -49,7 +58,8 @@ function Home({userType,user}) {
         {
           userType=="admin"? 
           <div class="flex "> 
-            <NewApplicationsList/>
+            {newApplications?
+            <NewApplicationsList/>:<div></div>}
             <AdminApplicationsList/>
           </div>
           :

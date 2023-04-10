@@ -28,12 +28,13 @@ function SignIn() {
   
   
   const [formData, setFormData] = useState({
-    firstname: "",
+   /* firstname: "",
     lastname: "",
     email: "",
     phone:"",
     password: "",
     passwordConfirm: "",
+    */
     message:"Thank you for setting up your account for AAC dallas private flagship suite! We look forward to hosting you next experience at the American Airlines Center at Dallas."
   });
 
@@ -57,8 +58,8 @@ function SignIn() {
 
   useEffect(()=>{
     const prom=new Promise((resolve,reject)=>{
-      sessionStorage.removeItem("user")
-      sessionStorage.removeItem("userType")
+     
+      sessionStorage.clear()
       resolve()
     })
 
@@ -68,15 +69,14 @@ function SignIn() {
   })
 
   const onChange = (e) => {
-    e.preventDefault();
-    console.log(e.target.name);
-    if(e.target.name=="firstname"){
-      setFormData((prevState) => ({
-        ...prevState,
-        [firstname]: e.target.value,
-      })
-      );
-    }
+    
+    console.log(e.currentTarget);
+
+    var form=formData
+    form[e.currentTarget.name]=e.currentTarget.value
+    console.log(form)
+      setFormData(form)
+    
   
     
   };
@@ -115,6 +115,15 @@ function SignIn() {
             const emailResponse=sendEmail(e);
             emailResponse.then((data)=>{ 
               if(data==true){
+                sessionStorage.removeItem("admin")
+                dispatch(setUser(response.data.client))
+               
+                sessionStorage.setItem("client",JSON.stringify({firstname:firstname,lastname:lastname,email:email,phone:phone}))
+                sessionStorage.setItem('user',JSON.stringify({firstname:firstname,lastname:lastname,email:email,phone:phone}))
+                sessionStorage.setItem("signInType","signIn")
+                dispatch( setUserType("client"))
+                sessionStorage.setItem("userType",JSON.stringify("client"))
+                
                 alert("SUCCESS: account set up. confirmation email sent to "+ email)
                 
 
@@ -148,12 +157,12 @@ function SignIn() {
     e.preventDefault();
     console.log("testing emailjs functionality");
     console.log(formData.email);
-    console.log(e.target);
+    console.log(form);
     const response= await emailjs
       .sendForm(
         "service_hhij0z7",
         "signup_template_id",
-        e.target,
+        form.current,
         "3X6tKTw8npQeKEIq5"
       )
       .then(
@@ -318,8 +327,11 @@ function SignIn() {
             placeholder='First...'
             className='emailInput'
             
+            
             onChange={(e) => {
               setFirstName(e.target.value);
+              onChange(e)
+              console.log(firstname)
             
             }}
             
@@ -330,8 +342,11 @@ function SignIn() {
             name='lastname'
             placeholder='Last...'
             className='emailInput'
+            value={lastname}
             onChange={(e) => {
               setLastName(e.target.value);
+              onChange(e)
+              console.log(lastname)
               
             }}
           />
@@ -345,6 +360,7 @@ function SignIn() {
             className='emailInput'
             onChange={(e) => {
               setEmail(e.target.value);
+              onChange(e)
              
             }}
           />
@@ -356,6 +372,7 @@ function SignIn() {
             className='emailInput'
             onChange={(e) => {
               setPhone(e.target.value);
+              onChange(e)
               
             }}
           />
@@ -369,6 +386,7 @@ function SignIn() {
               placeholder='Confirm Password...'
               onChange={(e) => {
                 setPassword(e.target.value);
+                onChange(e)
                
               }}
             />
@@ -392,6 +410,7 @@ function SignIn() {
               onChange={(e) => {
                 console.log(e)
                 setPasswordConfirm(e.target.value);
+                onChange(e)
                 
               }}
             />

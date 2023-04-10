@@ -9,10 +9,10 @@ import {useNavigate} from 'react-router-dom'
 import {useEffect,useState} from 'react'
 
 //redux
-import { connect,useDispatch } from 'react-redux';
+import { connect,useDispatch, useSelector } from 'react-redux';
 import {setUser,setUserType} from '../redux/user/user-actions'
 
-function Header({user,userType}) {
+function Header({user,userType,userRedux}) {
     console.log(user)
     console.log(userType)
     const[admin,setAdmin]=useState()
@@ -23,6 +23,7 @@ function Header({user,userType}) {
 
     const dispatch=useDispatch()
     const navigate=useNavigate()
+    
     
     useEffect(()=>{
         const prom=new Promise((resolve,reject)=>{
@@ -40,7 +41,7 @@ function Header({user,userType}) {
             setIsLoading(false) 
 
         })
-    },[userType,user])
+    },[userType,user,userRedux])
     const ad=JSON.parse(sessionStorage.getItem("admin"))
     console.log(ad)
     
@@ -199,6 +200,7 @@ function Header({user,userType}) {
 const mapStateToProps = (state, props) => {
     var user= state.user.user;
     var userType=state.user.userType
+    var userRedux=state.user.user;
     if(userType==null || user==null){
         user=JSON.parse(sessionStorage.getItem("user"))
         console.log(sessionStorage.getItem("client"))
@@ -211,6 +213,7 @@ const mapStateToProps = (state, props) => {
     return {
       user: user,
       userType: userType,
+      userRedux:userRedux
     };
   };
 

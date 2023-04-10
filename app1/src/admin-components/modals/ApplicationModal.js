@@ -28,7 +28,7 @@ function ApplicationModal({visibility,application}) {
 
 
   if(!isLoading ){ 
-    console.log(application.application.application)
+    console.log(application.application)
       
   return (
     <div class='bg-gray-200' data-testId="modal-public">
@@ -39,8 +39,26 @@ function ApplicationModal({visibility,application}) {
           <div class='p-4 sm:p-7 flex flex-col'>
             <div class="flex justify-end">
                 <button onClick={()=>{
-                     dispatch(setVisibility(false))
-                     setIsLoading(true)
+
+                          const prom1=new Promise((resolve1,reject1)=>{
+                            if(application.application.application.notify_admin==1){
+                            axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application.id).then((response)=>{
+                              if(response.data.success){
+                                resolve1()
+                              }
+                            })
+                          }else{
+                            resolve1()
+                          }
+                        })
+    
+                        prom1.then(()=>{
+                          setUseConflictingDates(true) 
+                          dispatch(setVisibility(false))
+                          setIsLoading(true)
+                        })
+    
+                        
                 }}>
                     <IonIcon name="close-outline" size="large"/>
                 </button>
@@ -54,8 +72,17 @@ function ApplicationModal({visibility,application}) {
                    :<div></div>}
                     {application.application.application.application_status=="RESERVED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.dateReserved})</span></p>
                    :<div></div>}
+                      {application.application.application.application_status=="APPLIED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.dateReceived})</span></p>
+                   :<div></div>}
               </div>
             <div class='text-center'>
+      {
+        application.application.application.notify_admin_message==null || application.application.application.notify_admin_message==" " ?
+        <div></div>:
+        <div class="flex flex-col mt-2 w-full p-2 border-2 border-green-900">
+          <p class="text-center font-bold">Update</p>
+          <p class="text-center">{application.application.application.notify_admin_message}</p>
+        </div>}
             
              
             </div>
@@ -165,29 +192,50 @@ function ApplicationModal({visibility,application}) {
             <div class="flex">
               <button class="bg-purple-700 rounded-md p-3 w-full">
                 <p class="text-white" onClick={()=>{
-                  if(denyBooking){
-                    const prom=new Promise(()=>{
-                      axios.get("http://localhost:3012/admin-applications/checkAvailability/"+application.application.application.id).then((response)=>{
-                        console.log(response)
-                        if(response.data.success){
-                          console.log(response.data.paid==true)
-                          if(response.data.conflicting_dates.length==0 && response.data.paid==true){
 
-                            axios.post("http://localhost:3012/admin-applications/deny-booking/"+application.application.application.id).then((response1)=>{
-                              console.log("here")
-                              console.log(response1)
-                              if(response1.data.success){
-                                alert("SUCCESS: successfully denied")
-                              }
-                            })
-                          }
+                  if(denyBooking){
+                    const prom=new Promise((resolve,reject)=>{
+                      axios.post("http://localhost:3012/admin-applications/deny-booking/"+application.application.application.id).then((response1)=>{
+                        console.log("here")
+                        console.log(response1)
+                        if(response1.data.success){
+                          axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application.id+"/DENIED",{message:"Your application has been denied"}).then((response2)=>{
+                            console.log(response2)
+                            if(response2.data.success){
+                              alert("SUCCESS: successfully denied")
+                              resolve()
+                            }
+                          })
+                         
+
                         }
                       })
                     })
 
+                    prom.then(()=>{
+                      const prom1=new Promise((resolve1,reject1)=>{
+                        if(application.application.application.notify_admin==1){
+                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application.id).then((response)=>{
+                          if(response.data.success){
+                            resolve1()
+                          }
+                        })
+                      }else{
+                        resolve1()
+                      }
+                    })
+
+                    prom1.then(()=>{
+                      setUseConflictingDates(true) 
+                      dispatch(setVisibility(false))
+                      setIsLoading(true)
+                    })
+
+                    })
+
                   }
                   if(reserveAndPromptPay){
-                    const prom=new Promise(()=>{
+                    const prom=new Promise((resolve,reject)=>{
                       axios.get("http://localhost:3012/admin-applications/checkAvailability/"+application.application.application.id).then((response)=>{
                         console.log(response)
                         if(response.data.success){
@@ -199,25 +247,53 @@ function ApplicationModal({visibility,application}) {
                           })
                           console.log(response.data.conflicting_dates.length)
                           if(response.data.conflicting_dates.length==0 ){
-
+                              console.log("here call")
                             axios.post("http://localhost:3012/admin-applications/reserveAndPromptPay/"+application.application.application.id).then((response1)=>{
                               console.log("here")
                               console.log(response1)
                               if(response1.data.success){
-                                alert("SUCCESS: successfully denied")
+                               
+                                axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application.id+"/RESERVED",{message:"Your application has been reserved but not confirmed.Please submit your payment within 5 days to secure your reservation or it will be released"}).then((response2)=>{
+                                  console.log(response2)
+                                  if(response2.data.success){
+                                    alert("SUCCESS: successfully reserved")
+                                    resolve()
+                                  }
+                                })
+                                
                               }
                             })
                           }else{
                             setConflictingDates(response.data.conflicting_dates)
                             alert("ERROR: cannot set reserved because there are conflicting dates."+message)
+                            resolve()
                           }
                         }
                       })
                     })
 
                     prom.then(()=>{
-                      setUseConflictingDates(true) 
+
+                      const prom1=new Promise((resolve1,reject1)=>{
+                        if(application.application.application.notify_admin==1){
+                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application.id).then((response)=>{
+                          if(response.data.success){
+                            resolve1()
+                          }
+                        })
+                      }else{
+                        resolve1()
+                      }
                     })
+
+                    prom1.then(()=>{
+                      setUseConflictingDates(true) 
+                      dispatch(setVisibility(false))
+                      setIsLoading(true)
+                    })
+                  })
+                     
+                    
                     
 
 
