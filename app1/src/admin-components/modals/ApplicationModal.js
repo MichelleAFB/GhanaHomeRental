@@ -20,15 +20,51 @@ function ApplicationModal({visibility,application}) {
   const[approve,setApprove]=useState(false)
   const[conflictingDates,setConflictingDates]=useState()
   const[useconflictingDates,setUseConflictingDates]=useState(true)
+  const[isCurrent,setIsCurrent]=useState(true)
   useEffect(()=>{
+
+  
     if(visibility){
+      getCurrent(application)
       setIsLoading(false)
     }
   },[visibility])
 
 
-  if(!isLoading ){ 
+  function getCurrent(application){
+    console.log(application.application.application)
+    const cDate=new Date()
+    console.log(cDate)
+    var months= ["Jan","Feb","Mar","Apr","May","Jun","Jul",
+    "Aug","Sep","Oct","Nov","Dec"];
+    var monthnum=["01","02","03","04","05","06","07","08","09","10","11","12"]
+    console.log(application)
+   var st=application.application.application.stay_start_date.split(" ")
+    var et=application.application.application.stay_end_date.split(" ")
+   
+   const booked_dates=[] 
+   
+    const startDate=new Date(st[3],monthnum[months.indexOf(st[1])-1],st[2])
+    const endDate=new Date(et[3],monthnum[months.indexOf(et[1])-1],et[2])
+    var nextDate=new Date(startDate);
+    console.log("current:"+(startDate>=cDate))
+    console.log(startDate>=cDate)
+ 
+    console.log(cDate)
+    console.log(startDate)
+    if(startDate>=cDate){ 
+      return true
+    }else{
+      return false
+    }
+    
+  }
+  
+
+
+  if(!isLoading && getCurrent(application) ){ 
     console.log(application.application)
+    getCurrent(application)
       
   return (
     <div class='bg-gray-200' data-testId="modal-public">
@@ -63,6 +99,7 @@ function ApplicationModal({visibility,application}) {
                     <IonIcon name="close-outline" size="large"/>
                 </button>
             </div>
+            
             <div class="flex flex-col w-full justify-center">
                   <p class="text-center ">{application.application.application.firstname} {application.application.application.lastname}
                   </p>
@@ -74,7 +111,10 @@ function ApplicationModal({visibility,application}) {
                    :<div></div>}
                       {application.application.application.application_status=="APPLIED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.dateReceived})</span></p>
                    :<div></div>}
+                   {application.application.application.application_status=="DROPPED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.datePaymentDue})</span></p>
+                   :<div></div>}
               </div>
+            
             <div class='text-center'>
       {
         application.application.application.notify_admin_message==null || application.application.application.notify_admin_message==" " ?
@@ -83,10 +123,17 @@ function ApplicationModal({visibility,application}) {
           <p class="text-center font-bold">Update</p>
           <p class="text-center">{application.application.application.notify_admin_message}</p>
         </div>}
+        <div class="m-2 flex flex-col border-gray-300 border-2 rounded-md p-3">
+            <p class="text-center font-bold">Application Received:<span class="font-normal">{application.application.application.dateReceived}</span></p>
+            <p class="text-center font-bold">Date Paid:<span class="font-normal">{application.application.application.datePaymentDue}</span></p>
+           
+        </div>
             
              
             </div>
+            
             <div class="flex flex-col p-3">
+            
               {
                 alertCustomerApproval? 
                   <div class="flex p-3 rounded-md border-dashed border-gray-200 border-2">
@@ -111,6 +158,17 @@ function ApplicationModal({visibility,application}) {
                    
                   </p>
                 </div>:<div></div>
+              }
+              {
+                approve && application.application.application.application_status!="PAYED" &&
+                application.application.application.datePaid!=null?
+                <div class="flex p-3 rounded-md border-dashed border-gray-200 border-2">
+                <p class="text-center">
+                 Customer has paid despite being {application.application.application.application_status}. Please double check the payment is valid. If not, they will be reserved and promped to pay.
+                 
+                </p>
+              </div>:<div></div>
+
               }
                     {
                 approve && application.application.application.application_status=="DENIED"?
@@ -139,21 +197,13 @@ function ApplicationModal({visibility,application}) {
               }
 
             </div>
+          
             <div class="flex">
            
-              {//TODO: confirm Reservation
-              application.application.application.application_status=="PAYED"? 
-                 <button onClick={()=>{
-                  setDenyBooking(false)
-                 setApprove(!approve)
-                 
-                
-                }} class={approve? "bg-green-300 p-3 rounded-md m-3":"bg-gray-300 p-3 rounded-md m-3"}>
-                <p>Confirm</p>
-              </button>:<div></div>
-              }
+             
                {//TODO: if customer has paid lock in booking,else reserve dates requestsed for 3 days while applicant pays,after 3 days with no pay the hold is released
-              application.application.application.application_status=="APPLIED"? 
+              application.application.application.application_status!="PAYED" ||
+              application.application.application.application_status=="APPROVED"? 
               <button onClick={()=>{
                
                 setReserveAndPromptPay(!reserveAndPromptPay)
@@ -166,6 +216,7 @@ function ApplicationModal({visibility,application}) {
              <p class="text-white">Reserve & Prompt Pay</p>
            </button>:<div></div>
            }
+             
               
               {application.application.application.application_status!="DENIED"?
               <button class={denyBooking ?"bg-red-600 p-3 rounded-md m-3":"bg-gray-400 p-3 m-3 rounded-md" } onClick={()=>{
@@ -179,7 +230,8 @@ function ApplicationModal({visibility,application}) {
 
               }
 
-              {application.application.application.application_status=="DENIED"?  <button class={approve ?"bg-green-600 p-3 rounded-md m-3":"bg-gray-400 p-3 m-3 rounded-md" } onClick={()=>{
+              {application.application.application.application_status=="PAYED" || 
+              application.application.application.datePaid!=null ?  <button class={approve ?"bg-green-600 p-3 rounded-md m-3":"bg-gray-400 p-3 m-3 rounded-md" } onClick={()=>{
                 setApprove(!approve)
                 setDenyBooking(false)
                 setAlertCustomerApproval(false)
@@ -187,6 +239,7 @@ function ApplicationModal({visibility,application}) {
               }}>
                 <p class="text-white">Approve</p>
               </button>:<div></div>}
+              
              
             </div>
             <div class="flex">
@@ -298,22 +351,89 @@ function ApplicationModal({visibility,application}) {
 
 
                   }
-                  if(alertCustomerApproval){
+                  if(approve){
+
 
                   }
                 }}>
                     Submit
                 </p>
               </button>
+              
             </div>
+            
+           
           </div>
+          
           </div>
+          
           </main>
       
       </div>
       </div>
   )
-}if(application==null){
+}if(!isLoading && getCurrent(application)==false){
+  return(
+    <div class='bg-gray-200' data-testId="modal-public">
+    <div class='h-screen w-full fixed ml-0 mr-0 mt-0 mb-0 flex justify-center items-center bg-black bg-opacity-50'>
+     
+      <main id='content' role='main' class='w-full max-w-md mx-auto '>
+        <div class=' bg-white  rounded-xl shadow-lg bg-white dark:border-gray-700 mb-5'>
+          <div class='p-4 sm:p-7 flex flex-col'>
+            <div class="flex flex-col justify-end">
+              <div class="flex w-full justify-end">
+                <button onClick={()=>{
+
+                          const prom1=new Promise((resolve1,reject1)=>{
+                            if(application.application.application.notify_admin==1){
+                            axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application.id).then((response)=>{
+                              if(response.data.success){
+                                resolve1()
+                              }
+                            })
+                          }else{
+                            resolve1()
+                          }
+                        })
+    
+                        prom1.then(()=>{
+                          setUseConflictingDates(true) 
+                          dispatch(setVisibility(false))
+                          setIsLoading(true)
+                        })
+    
+                        
+                }}>
+                    <IonIcon name="close-outline" size="large"/>
+                </button>
+                </div>
+
+                <div class="flex flex-col w-full justify-center">
+                  <p class="text-center ">{application.application.application.firstname} {application.application.application.lastname}
+                  </p>
+                  <p class="text-center"><span class="font-bold">Start:</span>{application.application.application.stay_start_date}</p>
+                  <p class="text-center"><span class="font-bold">End:</span>{application.application.application.stay_end_date}</p>
+                  {application.application.application.application_status=="DENIED"?<p class="text-center text-red-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.dateDenied})</span></p>
+                   :<div></div>}
+                    {application.application.application.application_status=="RESERVED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.dateReserved})</span></p>
+                   :<div></div>}
+                      {application.application.application.application_status=="APPLIED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.dateReceived})</span></p>
+                   :<div></div>}
+                   {application.application.application.application_status=="DROPPED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.datePaymentDue})</span></p>
+                   :<div></div>}
+                    {application.application.application.application_status=="PAYED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.datePaid})</span></p>
+                   :<div></div>}
+              </div>
+            </div>
+            </div>
+            </div>
+          </main>
+        </div>
+    </div>
+  )
+
+}
+if(application==null){
   return(<p></p>)
 }else{
   return(<p></p>)

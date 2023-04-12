@@ -42,7 +42,7 @@ function ApplicationsList({user,userType}) {
 
   const myInterval = setInterval(()=>{
     axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
-      console.log(response.data.no_applications)  
+       
       console.log(applications) 
       console.log(applications.length==response.data.no_applications)
       console.log(newApplications)

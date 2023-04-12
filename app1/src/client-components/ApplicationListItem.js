@@ -23,6 +23,7 @@ function ApplicationListItem({application}) {
   const[isLoading,setIsLoading]=useState(true)
   const[checkoutLink,setCheckoutLink]=useState()
   const[checkoutLinkRecieved, setCheckoutLinkRecieved]=useState(false)
+  const[isPassedDue,setIsPassedDue]=useState(false)
   const stripePromise=loadStripe("pk_live_51MrXkxLxMJskpKlAg04tvIwsH0onrRPJH2fgU2qzrHvaWKRFjqL76UW2lwKI4SGx0Y68ICWsm9Wts6oHWjHBPi1D00JG5bQ97t") 
 
   useEffect(()=>{
@@ -32,6 +33,20 @@ function ApplicationListItem({application}) {
 
         axios.get("http://localhost:3012/admin-applications/checkPaymentDeadline/"+application.application.id).then((response)=>{
           console.log(response)
+          console.log(response)
+          setIsPassedDue(response.data.passedDue)
+          if(response.data.passedDue){
+            console.log("passed Due"+response.data.passedDue)
+            axios.post("http://localhost:3012/client-applications/release-reservation-due-to-unpaid/"+application.application.id).then((response1)=>{
+              console.log(response1)
+              if(response1.data.success){
+                axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.id+"/DROPPED",{message:"Your reservation has been dropped due to non-payment"}).then((response2)=>{
+                  console.log(response2.data)
+                })
+              }
+            })
+          }
+          sessionStorage.setItem("checkPayment_"+application.application.id,JSON.stringify(response.data))
          
           
         })
@@ -135,6 +150,14 @@ console.log("notify:"+application.application.notify_applicant)
           
             </div>
             {
+              application.application.application_status=="DROPPED"?
+              <div class="flex m-2">
+                <p class="font-bold">
+                  Status:<span class="text-orange-600"> {application.application.application_status} </span>
+                </p>
+              </div>:<div></div>
+            }
+            {
               application.application.application_status=="PAYED"?
               <div class="flex m-2">
                 <p class="font-bold">
@@ -164,6 +187,34 @@ console.log("notify:"+application.application.notify_applicant)
              </div>
              </button>
             :<div></div>}
+            {application.application.application_status=="DROPPED"&& application.application.notify_applicant==1? 
+                <div class="flex rounded-lg bg-green-600 p-3 m-2">    
+                  {
+                          !getLink ?
+                          <div class="flex flex-col">
+              
+                            <p class="text-center">
+                              {application.application.notify_applicant_message}
+                            </p>
+                           
+                            </div>:<a></a>
+                }
+                </div>
+            :<div></div>}
+                 {application.application.application_status=="DENIED"&& application.application.notify_applicant==1? 
+                <div class="flex rounded-lg p-3 m-2">    
+                  {
+                          !getLink ?
+                          <div class="flex flex-col">
+              
+                            <p class="text-center bg-yellow-300">
+                              {application.application.notify_applicant_message}
+                            </p>
+                           
+                            </div>:<a></a>
+                }
+                </div>
+            :<div></div>}
             <button class="font-bold border-b-2 border-gray-600 m-3" onClick={()=>{
               setSeeMore(!seeMore)
             }}>
@@ -172,7 +223,21 @@ console.log("notify:"+application.application.notify_applicant)
             {
               seeMore?
               <div class="flex flex-col border-2 border-dashed rounded-md w-full m-2 border-gray-700 p-3">
-                <p class="font-bold text-center">date recieved:<span class="font-normal ml-1">{application.application.dateReceived}</span></p>
+               
+                  <p class="text-center font-bold text-xl m-2">{application.application.notify_applicant_message}</p>
+                
+                <p class="font-bold text-center">Recieved:<span class="font-normal ml-1">{application.application.dateReceived}</span></p>
+
+                {
+                  application.application.application_status=="DENIED"?
+                  <div class="flex-col">
+                  <p class="text-center font-bold">Denied:<span class="font-normal">{application.application.dateDenied}</span></p>
+                  <p class="text-center font-bold">Past Due:<span class="font-normal">{application.application.datePaymentDue}</span></p>
+                  </div>
+                  :
+                  <div></div>
+                }
+              
                 {
                   application.application.application_status=="RESERVED"?
                   <div class="flex flex-col">
@@ -198,21 +263,35 @@ console.log("notify:"+application.application.notify_applicant)
                   </div>:
                   <p></p>
                 }
-        {application.application.application_status=="APPLIED"? 
-    <div class="flex rounded-lg bg-green-600 p-3 m-2">    
-         {
+          {application.application.application_status=="DROPPED"? 
+                <div class="flex rounded-lg p-3 m-2 justify-center">    
+                  {
                           !getLink ?
-                          <div class="flex flex-col">
+                          <div class=" justify-center">
+              
+                            <p class="text-center bg-yellow-100">
+                              {application.application.notify_applicant_message} on {application.application.datePaymentDue}
+                            </p>
+                           
+                            </div>:<a></a>
+                }
+                </div>
+            :<div></div>}
+        {application.application.application_status=="APPLIED"? 
+          <div class="flex rounded-lg bg-green-600 p-3 m-2 justify-center">    
+            {
+                          !getLink ?
+                          <div class="">
               
                             <a class="flex" href={sessionStorage.getItem('checkoutLink_'+application.application.id)}><p class="text-white text-center font-bold">Proceed to payment</p></a>
                            
                             </div>:<a></a>
                 }
-
-    </div>
+             </div>
             :<div></div>}
                 </div>:<div></div>
             }
+              
            
   
           

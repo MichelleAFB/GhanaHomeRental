@@ -80,6 +80,14 @@ console.log(application.application.application_status)
             </p>
           </div>:<div></div>
         }
+          {
+          application.application.application_status=="RESERVED"?
+          <div class="flex m-2">
+            <p class="font-bold">
+              Status:<span class="text-blue-600"> {application.application.application_status}<IonIcon name="eye-outline" size="medium"/></span>
+            </p>
+          </div>:<div></div>
+        }
         <button class="font-bold border-b-2 border-gray-600 m-3" onClick={()=>{
           setSeeMore(!seeMore)
         }}>
@@ -173,6 +181,31 @@ console.log(application.application.application_status)
       <div class="flex m-2">
         <p class="font-bold">
           Status:<span class="text-green-600"> {application.application.application_status}<IonIcon name="eye-outline" size="medium"/></span>
+        </p>
+      </div>:<div></div>
+    }
+     {
+      application.application.application_status=="DROPPED"?
+      <div class="flex m-2">
+        <p class="font-bold">
+          Status:<span class="text-orange-600"> {application.application.application_status}</span>
+        </p>
+        
+      </div>:<div></div>
+    }
+    {
+      application.application.application_status=="DENIED"?
+      <div class="flex m-2">
+        <p class="font-bold">
+          Status:<span class="text-red-700"> {application.application.application_status}<IonIcon name="eye-outline" size="medium"/></span>
+        </p>
+      </div>:<div></div>
+    }
+     {
+      application.application.application_status=="RESERVED"?
+      <div class="flex m-2">
+        <p class="font-bold">
+          Status:<span class="text-blue-700"> {application.application.application_status}<IonIcon name="eye-outline" size="medium"/></span>
         </p>
       </div>:<div></div>
     }
