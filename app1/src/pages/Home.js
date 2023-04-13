@@ -19,6 +19,7 @@ import ApplicationModal from "../admin-components/modals/ApplicationModal";
 
 //outside
 import axios from "axios";
+import CurrentApplicationWindow from "../client-components/CurrentApplicationWindow";
 function Home({userType,user}) {
 
   const[isLoading,setIsLoading]=useState(true)
@@ -83,15 +84,15 @@ function Home({userType,user}) {
   return  (
     <div className='home'>
       <Banner />
-
+      <CurrentApplicationWindow/>
       <div>
         {
           userType=="admin"? 
-          <div class="flex flex-col">
+          <div class="flex flex-col ">
             <div class="flex p-5">
               <NewApplicationsList/>
               </div>
-              <div class="flex p-5">
+              <div class="flex p-5 bg-green-300 rounded-md ">
                 <ApplicationsList/>
               </div>
           </div>
@@ -102,7 +103,8 @@ function Home({userType,user}) {
         {
           userType=="client" && user!=null ?
           <div class="flex">
-            <AdminApplicationsList/>
+            <CurrentApplicationWindow/>
+            <ApplicationsList/>
             
           </div>:
           <div>

@@ -8,12 +8,14 @@ import IonIcon from '@reacticons/ionicons'
 //redux
 import { setTotalNewApplications,decrementTotalNewApplications } from '../redux/admin-applications/admin-applications-actions'
 import {connect,useDispatch} from 'react-redux'
+import { setCurrentlyOccupied,setCurrentlyOccupiedApplication } from '../redux/user/user-actions'
 //components
 import ApplicationListItemOccupant from './ApplicationListItemOccupant'
 
 //outside
 import {loadStripe} from '@stripe/stripe-js';
 import axios from 'axios'
+import emailjs from "@emailjs/browser";
 function ApplicationListItem({application}) {
   const dispatch=useDispatch()
   const navigate=useNavigate()
@@ -29,6 +31,21 @@ function ApplicationListItem({application}) {
   useEffect(()=>{
 
     const prom=new Promise((resolve,reject)=>{
+      axios.get("http://localhost:3012/client-applications/getActiveStatus/"+application.application.id).then((response)=>{
+        console.log(response)
+        if(response.data.success){
+            if(response.data.currentlyOccupied==true){
+              const prom=new Promise((resolve,reject)=>{
+                dispatch(setCurrentlyOccupiedApplication(application))
+                resolve()
+              })
+
+              prom.then(()=>{
+                dispatch(setCurrentlyOccupied(true))
+              })
+            }
+        }
+      })
       if(application.application.application_status=="RESERVED"||application.application.application_status=="APPLIED" ){
 
         axios.get("http://localhost:3012/admin-applications/checkPaymentDeadline/"+application.application.id).then((response)=>{
@@ -153,7 +170,9 @@ console.log("notify:"+application.application.notify_applicant)
               application.application.application_status=="DROPPED"?
               <div class="flex m-2">
                 <p class="font-bold">
-                  Status:<span class="text-orange-600"> {application.application.application_status} </span>
+                  Status:<span class="text-orange-600"> {application.application.application_status} 
+                  <IonIcon name="arrow-down-outline" size="medium"/>
+                  </span>
                 </p>
               </div>:<div></div>
             }
@@ -161,7 +180,9 @@ console.log("notify:"+application.application.notify_applicant)
               application.application.application_status=="PAYED"?
               <div class="flex m-2">
                 <p class="font-bold">
-                  Status:<span class="text-green-600"> {application.application.application_status} </span>
+                  Status:<span class="text-green-600"> {application.application.application_status}
+                  <IonIcon name="checkmark-outline" size="medium"/>
+                   </span>
                 </p>
               </div>:<div></div>
             }
@@ -169,13 +190,28 @@ console.log("notify:"+application.application.notify_applicant)
               application.application.application_status=="APPLIED"?
               <div class="flex m-2">
                 <p class="font-bold">
-                  Status:<span class="text-gray-700"> {application.application.application_status} </span>
+                  Status:<span class="text-gray-700"> {application.application.application_status}
+                  <IonIcon name="eye-outline" size="medium"/>
+                   </span>
                 </p>
               </div>:<div></div>
             }
-              {application.application.application_status=="DENIED"? <button class="rounded-lg  p-3 m-2" ><p class="text-red-600 text-center font-bold "><span class="font-bold text-black">Status:</span>Denied</p></button>
+                  {
+              application.application.application_status=="CONFIRMED"?
+              <div class="flex m-2">
+                <p class="font-bold">
+                  Status:<span class="text-green-700"> {application.application.application_status} 
+                  <IonIcon name="checkmark-outline" size="medium"/>
+                  </span>
+                </p>
+              </div>:<div></div>
+            }
+              {application.application.application_status=="DENIED"? <button class="rounded-lg  p-3 m-2" ><p class="text-red-600 text-center font-bold "><span class="font-bold text-black">Status:</span>Denied
+              <IonIcon name="close-outline" size="medium"/></p></button>
             :<div></div>}
-             {application.application.application_status=="RESERVED"? <button class="rounded-lg  p-3 m-2" ><p class="text-reserved-600 text-center font-bold text-blue-600"><span class="font-bold text-black">Status:</span>{application.application.application_status}</p>
+             {application.application.application_status=="RESERVED"? <button class="rounded-lg  p-3 m-2" ><p class="text-reserved-600 text-center font-bold text-blue-600"><span class="font-bold text-black">Status:</span>{application.application.application_status}
+             <IonIcon name="ellipsis-horizontal-outline" size="medium" class="mt-1"/>
+             </p>
              <div class="flex flex-col p-3">
               {
                 application.application.notify_applicant==1?
@@ -277,7 +313,7 @@ console.log("notify:"+application.application.notify_applicant)
                 }
                 </div>
             :<div></div>}
-        {application.application.application_status=="APPLIED"? 
+        {application.application.application_status=="APPLIED" || application.application.application_status=="DROPPED" ? 
           <div class="flex rounded-lg bg-green-600 p-3 m-2 justify-center">    
             {
                           !getLink ?

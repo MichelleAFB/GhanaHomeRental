@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {useState,useEffect} from 'react'
+import {useState,useEffect,useRef} from 'react'
 import IonIcon from '@reacticons/ionicons';
 import { useNavigate } from 'react-router-dom';
 //assets
@@ -11,7 +11,7 @@ import AdminApplicantOccupant from './AdminApplicantOccupant';
 
 //outside
 import axios from 'axios';
-
+import emailjs from "@emailjs/browser";
 
 //redux
 import {useDispatch} from 'react-redux'
@@ -24,6 +24,11 @@ function AdminApplicationListItem({application}) {
   const[noAdults,setNoAdults]=useState()
   const[seeMore,setSeeMore]=useState(false)
   const[show,setShow]=useState(true)
+
+  //email forms
+  const[formData,setFormData]=useState()
+  const approveForm=useRef()
+  const denyForm=useRef()
 
   const navigate=useNavigate()
   const dispatch=useDispatch()
@@ -40,9 +45,16 @@ function AdminApplicationListItem({application}) {
     })
   },[])
 
-console.log(application.application.application_status)
+
+
+
+ 
+
+
   if(show){
-    console.log(application.application.notify_admin_message!=null)
+    console.log(application.application.datePaid==null)
+    
+   
   return (
     <div class="max-h-sm rounded-md ">
       {application.application.notify_admin==1?
@@ -188,7 +200,8 @@ console.log(application.application.application_status)
       application.application.application_status=="DROPPED"?
       <div class="flex m-2">
         <p class="font-bold">
-          Status:<span class="text-orange-600"> {application.application.application_status}</span>
+          Status:<span class="text-orange-600"> {application.application.application_status}
+          <IonIcon name="arrow-down-outline" size="medium"/></span>
         </p>
         
       </div>:<div></div>
@@ -197,15 +210,26 @@ console.log(application.application.application_status)
       application.application.application_status=="DENIED"?
       <div class="flex m-2">
         <p class="font-bold">
-          Status:<span class="text-red-700"> {application.application.application_status}<IonIcon name="eye-outline" size="medium"/></span>
+          Status:<span class="text-red-700"> {application.application.application_status}<IonIcon name="close-outline" size="medium"/></span>
         </p>
       </div>:<div></div>
     }
      {
       application.application.application_status=="RESERVED"?
+      <div class="flex m-2 align-center">
+        <p class="font-bold">
+          Status:<span class="text-blue-700"> {application.application.application_status}
+          <IonIcon name="ellipsis-horizontal-outline" size="medium" class="mt-1"/></span>
+        </p>
+  
+       
+      </div>:<div></div>
+    }
+      {
+      application.application.application_status=="CONFIRMED"?
       <div class="flex m-2">
         <p class="font-bold">
-          Status:<span class="text-blue-700"> {application.application.application_status}<IonIcon name="eye-outline" size="medium"/></span>
+          Status:<span class="text-green-700"> {application.application.application_status}<IonIcon name="checkmark-outline" size="medium"/></span>
         </p>
       </div>:<div></div>
     }
@@ -233,6 +257,8 @@ console.log(application.application.application_status)
         Edit
       </p>
     </button>
+   
+
    
    
   

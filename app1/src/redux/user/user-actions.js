@@ -19,3 +19,23 @@ export function setUserType(type){
 
   }
 }
+
+export function setCurrentlyOccupied(value){
+  return{
+    type:actionTypes.SET_CURRENTLY_OCCUPIED,
+    payload:{
+      isCurrentlyOccupied:value
+    }
+
+  }
+}
+
+export function setCurrentlyOccupiedApplication(application){
+  return{
+    type:actionTypes.SET_CURRENTLY_OCCUPIED_APPLICATION,
+    payload:{
+      application:application
+    }
+
+  }
+}

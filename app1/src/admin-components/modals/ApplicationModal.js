@@ -1,11 +1,15 @@
 import React from 'react'
-import {useState,useEffect} from 'react' 
+import {useState,useEffect,useRef} from 'react' 
 
 //outside
 import axios from 'axios'
+import emailjs from "@emailjs/browser";
 
+//redux
 import{connect,useDispatch} from 'react-redux'
 import { setApplication,setVisibility } from '../../redux/admin-applications/admin-applications-actions'
+
+//assets
 import IonIcon from '@reacticons/ionicons'
 
 
@@ -21,9 +25,11 @@ function ApplicationModal({visibility,application}) {
   const[conflictingDates,setConflictingDates]=useState()
   const[useconflictingDates,setUseConflictingDates]=useState(true)
   const[isCurrent,setIsCurrent]=useState(true)
-  useEffect(()=>{
 
-  
+  const approveForm=useRef()
+  const denyForm=useRef()
+
+  useEffect(()=>{
     if(visibility){
       getCurrent(application)
       setIsLoading(false)
@@ -57,17 +63,44 @@ function ApplicationModal({visibility,application}) {
     }else{
       return false
     }
-    
   }
+
+  const sendEmail = async(form) => {
+   
+    console.log("testing emailjs functionality");
+    console.log(form.current);
+    
+    const response= await emailjs
+      .sendForm(
+        "service_hhij0z7",
+        "signup_template_id",
+        form.current,
+        "3X6tKTw8npQeKEIq5"
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          return result.text
+        },
+        (error) => {
+          console.log(error.text);
+          return error.text
+        }
+      );
+      return response
+  };
   
 
 
   if(!isLoading && getCurrent(application) ){ 
     console.log(application.application)
     getCurrent(application)
+
+    
       
   return (
     <div class='bg-gray-200' data-testId="modal-public">
+     
     <div class='h-screen w-full fixed ml-0 mr-0 mt-0 mb-0 flex justify-center items-center bg-black bg-opacity-50'>
      
       <main id='content' role='main' class='w-full max-w-md mx-auto '>
@@ -99,6 +132,13 @@ function ApplicationModal({visibility,application}) {
                     <IonIcon name="close-outline" size="large"/>
                 </button>
             </div>
+            <button class="bg-green-500 p-3" onClick={()=>{
+              sendEmail(approveForm).then((response)=>{
+                console.log(response.text)
+              })
+                }}>
+              send
+            </button>
             
             <div class="flex flex-col w-full justify-center">
                   <p class="text-center ">{application.application.application.firstname} {application.application.application.lastname}
@@ -255,7 +295,16 @@ function ApplicationModal({visibility,application}) {
                           axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application.id+"/DENIED",{message:"Your application has been denied"}).then((response2)=>{
                             console.log(response2)
                             if(response2.data.success){
-                              alert("SUCCESS: successfully denied")
+                              
+                              sendEmail(denyForm).then((response)=>{
+                                console.log(response=='OK')
+                                
+                                if(response=='OK'){
+                                  alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed!")
+                                }else{
+                                  alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed! Email not set!")
+                                }
+                              })
                               resolve()
                             }
                           })
@@ -353,6 +402,40 @@ function ApplicationModal({visibility,application}) {
                   }
                   if(approve){
 
+                    const prom=new Promise((resolve,reject)=>{
+                      axios.post("http://localhost:3012/admin-applications/approve-booking/"+application.application.application.id).then((response)=>{
+                        console.log("approve response")
+                        console.log(response)
+                        console.log(response.data.hasOwnProperty('no_booked'))
+                        if(response.data.success==true){
+                          if(response.data.approved==true){
+                            axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application.id+"/CONFIRMED",{message:"Your reservation for stay["+application.application.application.stay_start_date+" through "+application.application.application.stay_end_date+"] is confirmed!"}).then((response1)=>{
+                              console.log(response1)
+                              if(response1.data.success){
+                              
+                                sendEmail(approveForm).then((response)=>{
+                                  if(response=="OK"){
+                                    alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed!")
+                                  }else{
+                                    alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed! Email not set!")
+                                  }
+                                })
+                                //TODO: send email verification
+                              }
+                            })
+
+                          }else{
+                            alert("could not book reservation")
+                          }
+                        }
+                      })
+                    })
+                    
+                    prom.then(()=>{
+                      setUseConflictingDates(true) 
+                      dispatch(setVisibility(false))
+                      setIsLoading(true)
+                    })
 
                   }
                 }}>
@@ -366,6 +449,73 @@ function ApplicationModal({visibility,application}) {
           </div>
           
           </div>
+          {application.application.application.application_status=="PAYED" || application.application.application.datePaid!=null? 
+    <form ref={approveForm}  class='mb-10 ' hidden={true}>
+          <div class="flex flex-col">
+          <input
+            type='text'
+            name='firstname'
+            placeholder='First...'
+            className='emailInput'
+            value={application.application.application.firstname}
+        
+          />
+
+          <input
+            type='text'
+            name='lastname'
+            placeholder='Last...'
+            className='emailInput'
+            value={application.application.application.lastname}
+          
+          />
+          <input
+            type='email'
+            name='email'
+            placeholder='Email...'
+            className='emailInput'
+            value={application.application.application.email}
+          />
+          <div className='flex justify-between'>
+          </div>
+          <input hidden={true} value={`Your reservation for ${application.application.application.stay_start_date} through ${application.application.application.stay_end_date} at GhanaHomeStay is confirmed. We will send instructions on closer to your stay`} name="message"/>
+          <div className='signInBar'>
+          </div>
+          </div>
+        </form>:<p></p>}
+
+        {application.application.application.application_status!="DENIED"? 
+    <form ref={denyForm}  class='mb-10 ' hidden={true}> 
+          <div class="flex flex-col">
+          <input
+            type='text'
+            name='firstname'
+            placeholder='First...'
+            className='emailInput'
+            value={application.application.application.firstname}
+          />
+          <input
+            type='text'
+            name='lastname'
+            placeholder='Last...'
+            className='emailInput'
+            value={application.application.application.lastname}
+           
+          />
+          <input
+            type='email'
+            name='email'
+            placeholder='Email...'
+            className='emailInput'
+            value={application.application.application.email}
+          />
+          <div className='flex justify-between'>
+          </div>
+          <input hidden={true} value={`Your reservation for ${application.application.application.stay_start_date} through ${application.application.application.stay_end_date} at GhanaHomeStay  has been denied.`} name="message"/>
+          <div className='signInBar'>
+          </div>
+          </div>
+        </form>:<p></p>}
           
           </main>
       

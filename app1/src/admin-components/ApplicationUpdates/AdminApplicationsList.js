@@ -42,7 +42,7 @@ function AdminApplicationsList({totalNewApplications}) {
 
   if(!isLoading && applications!=null && totalNewApplications!=0 && !searchPaid && !searchApplied){ 
      return(
-<div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md">
+<div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md w-3/4">
   <div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl">  Applications</p>
   </div>
    <input class="rounded-lg p-4 bg-gray-100 transition duration-200 focus:outline-none focus:ring-2 w-full"

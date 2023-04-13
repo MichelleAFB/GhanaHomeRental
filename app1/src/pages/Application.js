@@ -7,6 +7,7 @@ import emailjs from '@emailjs/browser'
 import axios from 'axios'
 import $ from 'jquery'
 import { sendForm } from '@emailjs/browser/es'
+import IonIcon from '@reacticons/ionicons'
 function Application() {
 
   const {email} =useParams()
@@ -75,9 +76,16 @@ function Application() {
   };
 
  
- console.log("newNoAdults:"+newNoAdults)
+ 
   return (
     <div class="flex flex-col p-3 justify-center">
+      <div class="flex justify-start">
+        <button class="flex m-2"onClick={()=>{
+          navigate("/")
+        }}>
+          <IonIcon name="arrow-back-outline" size="medium"/>
+          <p class="font-bold text-lg">Go Back</p></button>
+      </div>
       <p class="text-4xl text-center text-green-600 text-semi-bold m-5">Application</p>
       <form ref={emailForm}>
                      <input name="firstname" class="hidden" value={finalFirstName} type="text"/>
