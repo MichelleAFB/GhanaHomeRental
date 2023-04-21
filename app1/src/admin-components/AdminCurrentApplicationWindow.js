@@ -4,7 +4,7 @@ import{useState,useEffect} from 'react'
 import { useDispatch,connect,useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-function CurrentApplicationWindow({visibility,application}) {
+function AdminCurrentApplicationWindow({visibility,application}) {
 
   const navigate=useNavigate()
   console.log("HELLLLLLO"+ visibility)
@@ -14,20 +14,20 @@ function CurrentApplicationWindow({visibility,application}) {
   console.log("isitate:"+visstate)
   
   useEffect(()=>{
-    if(visibility || visstate){
+    if(application!=null){
       setIsLoading(false)
     }
 
-  },[visibility])
+  },[application])
 console.log(visibility)
-  if((visibility) && !isLoading){
+  if( !isLoading){
    return (
      <div class="w-full flex flex-col m-3 bg-green-500 rounded-md p-3">
       <div class="flex flex-col w-full">
         <p class="text-center text-white font-bold text-xl">Your Stay</p>
       </div>
       <button class="bg-green-700 rounded-md p-3" onClick={()=>{
-        navigate('/your-stay/'+application.application.id)
+        navigate('/admin-your-stay/'+application.application.id)
 
       }}>
        <p class="text-white">Go to console</p> 
@@ -40,8 +40,9 @@ console.log(visibility)
 }
 const mapStateToProps = (state, props) => {
   console.log("here")
-  var visibility= state.user.isCurrentlyOccupied;
-  var application=state.user.currentlyOccupiedApplication
+  var visibility= state.adminApplications.isCurrentlyOccupied;
+  var application=state.adminApplications.activeApplication
+  
   console.log("visibility"+application)
  
   console.log(state.user)
@@ -52,4 +53,4 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default connect(mapStateToProps)(CurrentApplicationWindow)
+export default connect(mapStateToProps)(AdminCurrentApplicationWindow)

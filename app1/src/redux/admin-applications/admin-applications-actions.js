@@ -50,3 +50,29 @@ export function setVisibility(vis){
   }
 }
 
+export function setActiveApplication(application){
+  console.log("setting active  application")
+  console.log(application)
+  return{
+    type:actionTypes.SET_ACTIVE_APPLICATION,
+    payload:{
+      application:application
+    }
+   
+  }
+
+}
+
+export function setHasActiveApplication(val){
+  console.log("setting HAS active  application:"+val)
+  
+  return{
+    type:actionTypes.SET_HAS_ACTIVE_APPLICATION,
+    payload:{
+      hasActiveApplication:val
+    }
+   
+  }
+
+}
+

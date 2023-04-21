@@ -10,6 +10,7 @@ import AdminApplicationListItem from './AdminApplicationListItem'
 //redux
 import {connect,useDispatch} from 'react-redux'
 import { setTotalNewApplications } from '../../redux/admin-applications/admin-applications-actions'
+import { setActiveApplication,setHasActiveApplication } from '../../redux/admin-applications/admin-applications-actions'
 
 function AdminApplicationsList({totalNewApplications}) {
 
@@ -18,25 +19,64 @@ function AdminApplicationsList({totalNewApplications}) {
   const[searchPaid,setSearchPaid]=useState(false) 
   const[searchApplied,setSearchApplied]=useState(false)
 
+  const[activeApplication,setActive]=useState()
   const dispatch=useDispatch()
   useEffect(()=>{
-
+    var apps
+    
     const prom=new Promise((resolve,reject)=>{
         axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
           console.log(response)
           if(response.data.success){
             setApplications(response.data.applications)
+            apps=response.data.applications
+          const prom1=new Promise((resolve1,reject1)=>{
+
+          })
+            
             if(response.data.applications.length>0){
                dispatch(setTotalNewApplications(response.data.applications.length))
             }
           }
-          resolve()
+          resolve(apps)
         })
 
     })
 
-    prom.then(()=>{
-        setIsLoading(false)
+    prom.then((apps)=>{
+        var hasActive=false
+        console.log("apps")
+        console.log(apps)
+        const prom1=new Promise((resolve1,reject1)=>{
+          apps.map((a)=>{
+            axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
+              console.log("response1")
+              console.log(response1)
+              if(response1.data.currentlyOccupied==true){
+                console.log("occupied:"+response1.data.currentlyOccupied)
+                dispatch(setActiveApplication(a))
+                hasActive=true
+                setActive(a)
+                dispatch(setHasActiveApplication(true))
+
+                resolve1(hasActive)
+                
+                
+  
+              }
+              resolve1(hasActive)
+            })
+          })
+
+        })
+
+        prom1.then((hasActive)=>{
+          console.log("hasActive:"+hasActive)
+          console.log(activeApplication)
+          
+          setIsLoading(false)
+        })
+      
     })
   },[]) 
 

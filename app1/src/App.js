@@ -17,6 +17,8 @@ import PreApplication from "./pages/PreApplication";
 import Application from "./pages/Application";
 import PaymentPage from "./pages/PaymentPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+import YourStay from "./pages/YourStay";
+import AdminYourStay from "./pages/AdminYourStay";
 
  
 function App() {
@@ -37,6 +39,8 @@ function App() {
           <Route path='/pre-application/:startDate/:endDate/:noAdults/:noChildren' element={<PreApplication/>}/>
           <Route path="/payment/:id" element={<PaymentPage/>}/>
           <Route path="/payment/success/:id" element={<PaymentSuccessPage/>}/>
+          <Route path="/your-stay/:id" element={<YourStay/>}/>
+          <Route path="/admin-your-stay/:id" element={<AdminYourStay/>}/>
         </Routes>
 
         <Footer />

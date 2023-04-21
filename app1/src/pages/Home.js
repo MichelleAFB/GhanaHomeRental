@@ -20,7 +20,9 @@ import ApplicationModal from "../admin-components/modals/ApplicationModal";
 //outside
 import axios from "axios";
 import CurrentApplicationWindow from "../client-components/CurrentApplicationWindow";
-function Home({userType,user}) {
+import Appwindow from "../client-components/Appwindow";
+import AdminCurrentApplicationWindow from "../admin-components/AdminCurrentApplicationWindow";
+function Home({userType,user,activeApplication}) {
 
   const[isLoading,setIsLoading]=useState(true)
   const [newApplications,setNewApplications]=useState(false)
@@ -58,10 +60,18 @@ function Home({userType,user}) {
       <div>
         {
           userType=="admin"? 
-          <div class="flex "> 
-            {newApplications?
-            <NewApplicationsList/>:<div></div>}
-            <AdminApplicationsList/>
+          <div class="flex flex-col"> 
+          {
+            activeApplication!=null?
+            <AdminCurrentApplicationWindow/>
+            :
+            <div></div>
+          }
+          <div class="flex">
+              {newApplications?
+              <NewApplicationsList/>:<div></div>}
+              <AdminApplicationsList/>
+            </div>
           </div>
           :
           <div>
@@ -69,7 +79,8 @@ function Home({userType,user}) {
         }
         {
           userType=="client" && user!=null ?
-          <div class="flex ">
+          <div class="flex flex-col p-5 ">
+             <CurrentApplicationWindow/>
             <ApplicationsList/>
             
           </div>:
@@ -102,7 +113,8 @@ function Home({userType,user}) {
         }
         {
           userType=="client" && user!=null ?
-          <div class="flex">
+          <div class="flex flex-col">
+            <Appwindow/>
             <CurrentApplicationWindow/>
             <ApplicationsList/>
             
@@ -119,6 +131,7 @@ const mapStateToProps = (state, props) => {
  
   var user= state.user.user;
   var userType=state.user.userType
+  var activeApplication=state.adminApplications.activeApplication
   if(userType==null || user==null){
     console.log("user is null")
       user=JSON.parse(sessionStorage.getItem("user"))
@@ -130,6 +143,7 @@ const mapStateToProps = (state, props) => {
   return {
     user: user,
     userType: userType,
+    activeApplication:activeApplication
   };
 };
 

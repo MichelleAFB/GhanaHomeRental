@@ -40,7 +40,7 @@ function ApplicationsList({user,userType}) {
   }
   },[newApplications])
 
-  const myInterval = setInterval(()=>{
+ /* const myInterval = setInterval(()=>{
     axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
        
       console.log(applications) 
@@ -55,6 +55,7 @@ function ApplicationsList({user,userType}) {
     console.log("\n\nCHECKING\n\n")
 
   }, 100000); 
+  */
 
 
  
