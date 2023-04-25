@@ -254,12 +254,13 @@ function SignIn() {
                                 if( message!=null){
                                   alert(message)
                                 }
+                                console.log("HERE")
                               axios.post("http://localhost:3012/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
                                 console.log(response)
                                 if(response.data.success){
                                   sessionStorage.removeItem("admin")
                                   dispatch(setUser(response.data.client))
-                                 
+                                 console.log("here")
                                   sessionStorage.setItem("client",JSON.stringify({firstname:response.data.client.firstname,lastname:response.data.client.lastname,email:email,phone:response.data.client.phone}))
                                   sessionStorage.setItem('user',JSON.stringify(response.data.client))
                                   sessionStorage.setItem("signInType","signIn")

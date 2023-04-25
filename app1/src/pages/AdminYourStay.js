@@ -1,15 +1,19 @@
 import React from 'react'
 import { useEffect,useState } from 'react'
 import { useParams } from 'react-router-dom'
-
+import { useNavigate } from 'react-router-dom'
 //components
-import Guests from '../client-components/YourStayComponents/Guests'
+
 
 //outside
 import axios from 'axios'
-import Maintenance from '../client-components/YourStayComponents/Maintenance'
-import RestrictedIndividuals from '../client-components/YourStayComponents/RestrictedIndividuals'
-import { useNavigate } from 'react-router-dom'
+
+//components
+import Maintenance from '../admin-components/AdminYourStayComponents/Maintenance'
+import RestrictedIndividuals from '../admin-components/AdminYourStayComponents/RestrictedIndividuals'
+import Guests from '../admin-components/AdminYourStayComponents/Guests'
+import Home from '../admin-components/AdminYourStayComponents/Home'
+
 function AdminYourStay() {
 
   const[application,setApplication]=useState()
@@ -73,7 +77,7 @@ function AdminYourStay() {
         {
           home?
           <div class="flex bg-gray-400 rounded-md w-full min-h-screen">
-            home
+            <Home application={application}/>
           </div>:
           <div>
           </div>

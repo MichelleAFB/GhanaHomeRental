@@ -3,9 +3,11 @@ import{useState,useEffect} from 'react'
 //redux
 import { useDispatch,connect,useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import ReactFromModule from 'react'
 
 function CurrentApplicationWindow({visibility,application}) {
-
+  console.log(React === ReactFromModule) 
+  
   const navigate=useNavigate()
   console.log("HELLLLLLO"+ visibility)
   console.log(application) 
@@ -26,7 +28,7 @@ console.log(visibility)
       <div class="flex flex-col w-full">
         <p class="text-center text-white font-bold text-xl">Your Stay</p>
       </div>
-      <button class="bg-green-700 rounded-md p-3" onClick={()=>{
+      <button class="bg-green-700 rounded-md p-3 m-3" onClick={()=>{
         navigate('/your-stay/'+application.application.id)
 
       }}>

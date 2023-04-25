@@ -31,7 +31,8 @@ function ApplicationModal({visibility,application}) {
 
   useEffect(()=>{
     if(visibility){
-      getCurrent(application)
+      //getCurrent(application)
+      console.log(application.application.application.id +" "+getCurrent(application))
       setIsLoading(false)
     }
   },[visibility])
@@ -90,13 +91,14 @@ function ApplicationModal({visibility,application}) {
       return response
   };
   
-
+  
 
   if(!isLoading && getCurrent(application) ){ 
-    console.log(application.application)
-    getCurrent(application)
+    //console.log(application.application)
+   // getCurrent(application)
 
-    
+  
+   
       
   return (
     <div class='bg-gray-200' data-testId="modal-public">
@@ -152,6 +154,8 @@ function ApplicationModal({visibility,application}) {
                       {application.application.application.application_status=="APPLIED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.dateReceived})</span></p>
                    :<div></div>}
                    {application.application.application.application_status=="DROPPED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.datePaymentDue})</span></p>
+                   :<div></div>}
+                     {application.application.application.application_status=="CHECKEDOUT"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.datePaymentDue})</span></p>
                    :<div></div>}
               </div>
             
@@ -528,10 +532,11 @@ function ApplicationModal({visibility,application}) {
     <div class='h-screen w-full fixed ml-0 mr-0 mt-0 mb-0 flex justify-center items-center bg-black bg-opacity-50'>
      
       <main id='content' role='main' class='w-full max-w-md mx-auto '>
-        <div class=' bg-white  rounded-xl shadow-lg bg-white dark:border-gray-700 mb-5'>
+        <div class='opacity-[.75]  rounded-xl shadow-lg bg-white dark:border-gray-700 mb-5'>
           <div class='p-4 sm:p-7 flex flex-col'>
             <div class="flex flex-col justify-end">
               <div class="flex w-full justify-end">
+                
                 <button onClick={()=>{
 
                           const prom1=new Promise((resolve1,reject1)=>{
@@ -567,12 +572,249 @@ function ApplicationModal({visibility,application}) {
                    :<div></div>}
                     {application.application.application.application_status=="RESERVED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.dateReserved})</span></p>
                    :<div></div>}
+                     {application.application.application.application_status=="CONFIRMED"?<p class="text-center text-purple-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.dateApproved})</span></p>
+                   :<div></div>}
+                    {application.application.application.application_status=="CHECKEDOUT"?
+                    <div class="flex flex-col ">
+                  
+                      <p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.checkoutTime})</span>
+                    </p>
+                    {
+                      application.application.application.notify_admin==1?
+                      <div class="bg-purple-300 rounded-md">
+                      <p class="m-3 font-bold text-center">
+                      {application.application.application.notify_admin_message}
+                    </p>
+                    </div>:
+                    <p></p>
+                     }
+                    {
+                      application.application.application.review!=null?
+                      <div class="bg-yellow-400 rounded-md m-2 p-2">
+                        <p class="text-center font-bold">Review:</p>
+                        <p>{application.application.application.review}</p>
+                      </div>
+                      :
+                      <div>
+                      </div>
+                    }
+                    </div>
+                   
+                   :<div></div>}
                       {application.application.application.application_status=="APPLIED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.dateReceived})</span></p>
                    :<div></div>}
                    {application.application.application.application_status=="DROPPED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.datePaymentDue})</span></p>
                    :<div></div>}
-                    {application.application.application.application_status=="PAYED"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.datePaid})</span></p>
+                    {application.application.application.application_status=="PAYED"?<p class="text-center text-purple-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.datePaid})</span></p>
                    :<div></div>}
+                   
+                    
+              </div>
+              <div class="flex">
+              {
+                  application.application.application.application_status=="APPLIED" || application.application.application.application_status=="PAYED"?
+                  <div class="flex flex-col">
+       <div class="flex">
+          <button class={denyBooking ?"bg-red-600 p-3 rounded-md m-3":"bg-gray-400 p-3 m-3 rounded-md" } onClick={()=>{
+                setDenyBooking(!denyBooking)
+                setAlertCustomerApproval(false)
+                setReserveAndPromptPay(false)
+                setApprove(false)
+              }}>
+                <p class="text-white">Deny</p>
+              </button>
+              <button class={approve ?"bg-green-600 p-3 rounded-md m-3":"bg-gray-400 p-3 m-3 rounded-md" } onClick={()=>{
+                setDenyBooking(false)
+                setAlertCustomerApproval(false)
+                setReserveAndPromptPay(false)
+                setApprove(true)
+              }}>
+                <p class="text-white">Approve</p>
+              </button>
+              {
+                application.application.application.application_status=="APPLIED"?
+                <button onClick={()=>{
+               
+                  setReserveAndPromptPay(!reserveAndPromptPay)
+   
+                  setApprove(false)
+                  setDenyBooking(false)
+                  console.log("reserved:"+reserveAndPromptPay)
+               
+               }} class={reserveAndPromptPay? "bg-green-600 p-3 rounded-md m-3":"bg-gray-400 p-3 rounded-md m-3"}>
+               <p class="text-white">Reserve & Prompt Pay</p>
+             </button>:
+             <div></div>
+              }
+             </div>
+             <button class="bg-purple-700 rounded-md p-3 flex w-full">
+                <p class="text-white" onClick={()=>{
+                  console.log("here")
+                  if(denyBooking){
+                    const prom=new Promise((resolve,reject)=>{
+                      axios.post("http://localhost:3012/admin-applications/deny-booking/"+application.application.application.id).then((response1)=>{
+                        console.log("here")
+                        console.log(response1)
+                        if(response1.data.success){
+                          axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application.id+"/DENIED",{message:"Your application has been denied"}).then((response2)=>{
+                            console.log(response2)
+                            if(response2.data.success){
+                              
+                              sendEmail(denyForm).then((response)=>{
+                                console.log(response=='OK')
+                                
+                                if(response=='OK'){
+                                  alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed!")
+                                }else{
+                                  alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed! Email not set!")
+                                }
+                              })
+                              resolve()
+                            }
+                          })
+                         
+
+                        }
+                      })
+                    })
+
+                    prom.then(()=>{
+                      const prom1=new Promise((resolve1,reject1)=>{
+                        if(application.application.application.notify_admin==1){
+                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application.id).then((response)=>{
+                          if(response.data.success){
+                            resolve1()
+                          }
+                        })
+                      }else{
+                        resolve1()
+                      }
+                    })
+
+                    prom1.then(()=>{
+                      setUseConflictingDates(true) 
+                      dispatch(setVisibility(false))
+                      setIsLoading(true)
+                    })
+
+                    })
+
+                  }
+                  if(reserveAndPromptPay){
+                    const prom=new Promise((resolve,reject)=>{
+                      axios.get("http://localhost:3012/admin-applications/checkAvailability/"+application.application.application.id).then((response)=>{
+                        console.log(response)
+                        if(response.data.success){
+                          console.log(response.data.paid==true)
+                          var message
+
+                          response.data.conflicting_dates.map((m)=>{
+                            message=message+m
+                          })
+                          console.log(response.data.conflicting_dates.length)
+                          if(response.data.conflicting_dates.length==0 ){
+                              console.log("here call")
+                            axios.post("http://localhost:3012/admin-applications/reserveAndPromptPay/"+application.application.application.id).then((response1)=>{
+                              console.log("here")
+                              console.log(response1)
+                              if(response1.data.success){
+                               
+                                axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application.id+"/RESERVED",{message:"Your application has been reserved but not confirmed.Please submit your payment within 5 days to secure your reservation or it will be released"}).then((response2)=>{
+                                  console.log(response2)
+                                  if(response2.data.success){
+                                    alert("SUCCESS: successfully reserved")
+                                    resolve()
+                                  }
+                                })
+                                
+                              }
+                            })
+                          }else{
+                            setConflictingDates(response.data.conflicting_dates)
+                            alert("ERROR: cannot set reserved because there are conflicting dates."+message)
+                            resolve()
+                          }
+                        }
+                      })
+                    })
+
+                    prom.then(()=>{
+
+                      const prom1=new Promise((resolve1,reject1)=>{
+                        if(application.application.application.notify_admin==1){
+                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application.id).then((response)=>{
+                          if(response.data.success){
+                            resolve1()
+                          }
+                        })
+                      }else{
+                        resolve1()
+                      }
+                    })
+
+                    prom1.then(()=>{
+                      setUseConflictingDates(true) 
+                      dispatch(setVisibility(false))
+                      setIsLoading(true)
+                    })
+                  })
+                     
+                    
+                    
+
+
+                  }
+                  console.log("here")
+                  if(approve){
+
+                    const prom=new Promise((resolve,reject)=>{
+                      console.log("here")
+                      axios.post("http://localhost:3012/admin-applications/approve-booking/"+application.application.application.id).then((response)=>{
+                        console.log("approve response")
+                        console.log(response)
+                        console.log(response.data.hasOwnProperty('no_booked'))
+                        if(response.data.success==true){
+                          if(response.data.approved==true){
+                            axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application.id+"/CONFIRMED",{message:"Your reservation for stay["+application.application.application.stay_start_date+" through "+application.application.application.stay_end_date+"] is confirmed!"}).then((response1)=>{
+                              console.log(response1)
+                              if(response1.data.success){
+                              
+                                sendEmail(approveForm).then((response)=>{
+                                  if(response=="OK"){
+                                    alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed!")
+                                  }else{
+                                    alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed! Email not set!")
+                                  }
+                                })
+                                //TODO: send email verification
+                              }
+                            })
+
+                          }else{
+                            alert("could not book reservation")
+                          }
+                        }
+                      })
+                    })
+                    
+                    prom.then(()=>{
+                      setUseConflictingDates(true) 
+                      dispatch(setVisibility(false))
+                      setIsLoading(true)
+                    })
+
+                  }
+                }}>
+                    Submit
+                </p>
+              </button> 
+                  </div>:
+                  <div>
+
+                  </div>
+                }
+              
+                
               </div>
             </div>
             </div>

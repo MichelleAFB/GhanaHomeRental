@@ -26,7 +26,10 @@ console.log(visibility)
       <div class="flex flex-col w-full">
         <p class="text-center text-white font-bold text-xl">Your Stay</p>
       </div>
-      <button class="bg-green-700 rounded-md p-3" onClick={()=>{
+      <div class="flex flex-col p-2 m-2">
+        <p class="text-center font-bold text-2xl">{application.application.stay_start_date}-{application.application.stay_end_date}</p>
+      </div>
+      <button class="bg-green-700 rounded-md p-3 m-3" onClick={()=>{
         navigate('/admin-your-stay/'+application.application.id)
 
       }}>

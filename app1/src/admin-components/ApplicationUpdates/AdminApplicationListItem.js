@@ -233,6 +233,14 @@ function AdminApplicationListItem({application}) {
         </p>
       </div>:<div></div>
     }
+      {
+          application.application.application_status=="CHECKEDOUT"?
+          <div class="flex m-2">
+            <p class="font-bold">
+              Status:<span class="text-blue-600"> {application.application.application_status}<IonIcon name="eye-outline" size="medium"/></span>
+            </p>
+          </div>:<div></div>
+        }
     <button class="font-bold border-b-2 border-gray-600 m-3" onClick={()=>{
       setSeeMore(!seeMore)
     }}>
@@ -305,7 +313,9 @@ function AdminApplicationListItem({application}) {
  }
     </div>
   )
-   }if(application.application.currentlyOccupied==1 && application.application.notify_admin==0){
+   }
+   
+   if( application.application.notify_admin==0){
     return(
       <div class="max-h-sm rounded-md ">
       {application.application.notify_admin==1 && application.application.currentlyOccupied==0?
@@ -337,6 +347,14 @@ function AdminApplicationListItem({application}) {
         }
           {
           application.application.application_status=="RESERVED"?
+          <div class="flex m-2">
+            <p class="font-bold">
+              Status:<span class="text-blue-600"> {application.application.application_status}<IonIcon name="eye-outline" size="medium"/></span>
+            </p>
+          </div>:<div></div>
+        }
+             {
+          application.application.application_status=="CHECKEDOUT"?
           <div class="flex m-2">
             <p class="font-bold">
               Status:<span class="text-blue-600"> {application.application.application_status}<IonIcon name="eye-outline" size="medium"/></span>

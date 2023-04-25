@@ -87,7 +87,7 @@ function Header({user,userType,userRedux}) {
                             })
 
                             prom.then(()=>{
-                                    navigate("/")
+                                    navigate("/sign-in")
                             })
                          }}>Sign Out</button>
                     </div>

@@ -10,6 +10,7 @@ import axios from 'axios'
 import Maintenance from '../client-components/YourStayComponents/Maintenance'
 import RestrictedIndividuals from '../client-components/YourStayComponents/RestrictedIndividuals'
 import { useNavigate } from 'react-router-dom'
+import Home from '../client-components/YourStayComponents/Home'
 function YourStay() {
 
   const[application,setApplication]=useState()
@@ -73,7 +74,7 @@ function YourStay() {
         {
           home?
           <div class="flex bg-gray-400 rounded-md w-full min-h-screen">
-            home
+            <Home application={application}/>
           </div>:
           <div>
           </div>

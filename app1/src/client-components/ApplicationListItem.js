@@ -313,7 +313,7 @@ console.log("notify:"+application.application.notify_applicant)
                 }
                 </div>
             :<div></div>}
-        {application.application.application_status=="APPLIED" || application.application.application_status=="DROPPED" ? 
+        {application.application.application_status=="APPLIED" || application.application.application_status=="DROPPED"   ? 
           <div class="flex rounded-lg bg-green-600 p-3 m-2 justify-center">    
             {
                           !getLink ?
@@ -327,6 +327,8 @@ console.log("notify:"+application.application.notify_applicant)
             :<div></div>}
                 </div>:<div></div>
             }
+          
+        
               
            
   

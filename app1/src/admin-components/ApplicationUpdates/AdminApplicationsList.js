@@ -18,8 +18,9 @@ function AdminApplicationsList({totalNewApplications}) {
   const[applications,setApplications]=useState()
   const[searchPaid,setSearchPaid]=useState(false) 
   const[searchApplied,setSearchApplied]=useState(false)
+  
 
-  const[activeApplication,setActive]=useState()
+  const[active,setActive]=useState()
   const dispatch=useDispatch()
   useEffect(()=>{
     var apps
@@ -30,15 +31,19 @@ function AdminApplicationsList({totalNewApplications}) {
           if(response.data.success){
             setApplications(response.data.applications)
             apps=response.data.applications
-          const prom1=new Promise((resolve1,reject1)=>{
-
-          })
+          const storageApps=JSON.parse(sessionStorage.getItem("applications"))
+          if(storageApps==null){
+            sessionStorage.setItem("applications",JSON.stringify(response.data.applications))
+          }
             
             if(response.data.applications.length>0){
                dispatch(setTotalNewApplications(response.data.applications.length))
             }
           }
-          resolve(apps)
+          
+        }).then(()=>{
+          console.log("after prom")
+          resolve()
         })
 
     })
@@ -46,33 +51,37 @@ function AdminApplicationsList({totalNewApplications}) {
     prom.then((apps)=>{
         var hasActive=false
         console.log("apps")
-        console.log(apps)
+        console.log(applications)
         const prom1=new Promise((resolve1,reject1)=>{
-          apps.map((a)=>{
+          applications.map((a)=>{
+            console.log(a)
             axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
               console.log("response1")
               console.log(response1)
-              if(response1.data.currentlyOccupied==true){
+              if(response1.data.success==false){
+                reject1()
+              }
+              if(response1.data.success &&response1.data.currentlyOccupied==true){
                 console.log("occupied:"+response1.data.currentlyOccupied)
                 dispatch(setActiveApplication(a))
                 hasActive=true
                 setActive(a)
                 dispatch(setHasActiveApplication(true))
-
-                resolve1(hasActive)
-                
-                
-  
-              }
-              resolve1(hasActive)
+              } 
             })
+            setTimeout(()=>{
+                resolve1()
+            },500)
           })
 
         })
 
         prom1.then((hasActive)=>{
           console.log("hasActive:"+hasActive)
-          console.log(activeApplication)
+          if(active==null){
+            console.log("no active app") 
+          }
+          console.log(active)
           
           setIsLoading(false)
         })
@@ -80,7 +89,9 @@ function AdminApplicationsList({totalNewApplications}) {
     })
   },[]) 
 
-  if(!isLoading && applications!=null && totalNewApplications!=0 && !searchPaid && !searchApplied){ 
+  console.log(isLoading)
+
+  if(!isLoading && applications!=null && !searchPaid && !searchApplied){ 
      return(
 <div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md w-3/4">
   <div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl">  Applications</p>
@@ -109,7 +120,7 @@ function AdminApplicationsList({totalNewApplications}) {
     </div>
 </div>      
 )
-}  if(!isLoading && applications!=null && totalNewApplications!=0 && searchPaid && !searchApplied){ 
+}  if(!isLoading && applications!=null && searchPaid && !searchApplied){ 
   return(
 <div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md">
 <div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl">  Applications</p>
@@ -141,7 +152,7 @@ function AdminApplicationsList({totalNewApplications}) {
 </div>      
 )
 }
-if(!isLoading && applications!=null && totalNewApplications!=0 && !searchPaid && searchApplied){ 
+if(!isLoading && applications!=null  && !searchPaid && searchApplied){ 
   return(
 <div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md">
 <div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl">  Applications</p>
@@ -186,17 +197,9 @@ if(!isLoading && (applications==null || totalNewApplications==0)){
       </div>
       
   )
-  }else{
-    console.log("no Applications")
-    return( 
-      <div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md">
-    <div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl"> No  Applications</p>
-      </div>
-     <input class="rounded-lg p-4 bg-gray-100 transition duration-200 focus:outline-none focus:ring-2 w-full"
-        placeholder="Search..."/>
-        </div>
-        
-    )
+  }
+  else{
+    return(<div></div>)
   }
 }
 

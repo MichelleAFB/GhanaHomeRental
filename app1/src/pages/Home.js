@@ -11,8 +11,8 @@ import AdminApplicationsList from "../admin-components/ApplicationUpdates/AdminA
 import ApplicationsList from "../client-components/ApplicationsList";
 
 //redux
-import { connect } from "react-redux";  
-
+import { connect ,useDispatch} from "react-redux";  
+import { setActiveApplication,setHasActiveApplication } from "../redux/admin-applications/admin-applications-actions";
 // ES7 snippets to do 'rfce'
 import {useState,useEffect} from 'react'
 import ApplicationModal from "../admin-components/modals/ApplicationModal";
@@ -26,9 +26,10 @@ function Home({userType,user,activeApplication}) {
 
   const[isLoading,setIsLoading]=useState(true)
   const [newApplications,setNewApplications]=useState(false)
-
+  const dispatch=useDispatch()
   console.log(userType)
   console.log(user)
+  console.log("user")
   useEffect(()=>{
 
     const prom=new Promise((resolve,reject)=>{
@@ -38,15 +39,52 @@ function Home({userType,user,activeApplication}) {
             setNewApplications(true)
             
           }
+          resolve()
+          axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
+            console.log(response)
+            if(response.data.success){
+              const apps=response.data.applications
+              
+              
+              apps.map((a)=>{
+                axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
+                  console.log(response1)
+                  if(response1.data.success && response1.data.currentlyOccupied){
+                    dispatch(setActiveApplication(a))
+                    dispatch(true)
+
+                  }
+                  
+                })
+              })
+              resolve()
+            }
+          })
         })
-            resolve()
+        if(userType=="client"){
+          axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+            console.log("user apps")
+            console.log(response)
+            const apps=response.data.applications
+            apps.map((a)=>{
+              axios.get("http://localhost:3012/client-applications/getActiveStatus/"+a.application.id).then((response1)=>{
+                console.log("user current")
+                console.log(response1)
+                resolve()
+              })
+            })
+
+          })
+        }
+            
         
     })
 
     prom.then(()=>{
+      
       setIsLoading(false)
     })
-  },[userType,user])
+  },[userType])
 
   console.log(user)
   if(!isLoading ){
