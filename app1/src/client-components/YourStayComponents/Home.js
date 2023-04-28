@@ -15,6 +15,7 @@ function Home({application}) {
  const[isLoading,setIsLoading]=useState(true)
  const[review,setReview]=useState()
  const[files,setFiles]=useState()
+ const[checkedOut,setCheckedOut]=useState(false)
 
 
   useEffect(()=>{
@@ -183,6 +184,7 @@ if(!isLoading){
         {
            application.application.application_status!="CHECKEDOUT" && over? <div class="bg-orange-300 rounded-md p-3 flex flex-col  w-full m-3">
             <p class="text-xl text-center font-bold">Your stay has come to an end</p>
+            <p class="text-center m-2">Please check out by 11:00AM and confirm your checkout.</p>
             <button class="bg-gray-300 rounded-md  flex flex-col w-full p-3 m-2" onClick={()=>{
               const currDate=new Date()
               axios.post("http://localhost:3012/current-resident/checkout/"+application.application.id,{checkoutTime:currDate}).then((response)=>{

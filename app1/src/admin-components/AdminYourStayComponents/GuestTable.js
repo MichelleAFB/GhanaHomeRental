@@ -202,20 +202,7 @@ function GuestTable({occupant,guests}) {
         </tr>}
        
     </table>
-    <button class="bg-green-400 rounded-md w-full  flex-col justify-items-center p-3 m-2" onClick={()=>{
-        const prom=new Promise((resolve,reject)=>{
-          axios.post("http://localhost:3012/current-resident/edit-guests/"+occupant.application_id+"/"+occupant.id,{guests:guestsList}).then((response)=>{
-            console.log(response)
-            if(response.data.success){
-              alert("SUCCESS: "+response.data.no_guests+" have been added to "+occupant.firstname+ " "+occupant.lastname+"'s guest list")
-            }
-          })
-        })
-    }}>
-          <p class="text-center text-white font-bold">
-            Submit
-          </p>
-        </button>
+
     </div>
   )
     }else{

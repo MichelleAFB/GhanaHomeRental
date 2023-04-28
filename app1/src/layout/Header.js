@@ -83,6 +83,8 @@ function Header({user,userType,userRedux}) {
                             const prom=new Promise((resolve,reject)=>{
                                 dispatch(setUserType(null))
                                 dispatch(setUser(null));
+                                sessionStorage.removeItem("user")
+                                sessionStorage.removeItem("userType")
                                 resolve()
                             })
 

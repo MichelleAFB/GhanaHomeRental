@@ -5,7 +5,9 @@ const initialState={
   user:null,
   userType:"",
   isCurrentlyOccupied:false,
-  currentlyOccupiedApplication:null
+  currentlyOccupiedApplication:null,
+  reviewModalVisibility:false,
+  reviewModalApplication:null
 
 }
 
@@ -36,6 +38,19 @@ export  const userReducer=(state=initialState,action)=>{
             ...state,
             currentlyOccupiedApplication:action.payload.application
           }
+      case actionTypes.SET_REVIEW_MODAL_VISIBILITY:
+            console.log("REDUX:SETTING REVIEW VISIBILITY")
+            console.log(action)
+            return{
+              ...state,
+             reviewModalVisibility:action.payload.reviewModalVisibility
+            }
+        case actionTypes.SET_REVIEW_MODAL_APPLICATION:
+              console.log("REDUX:SETTING REVIEW MODAL")
+              return{
+                ...state,
+               reviewModalApplication:action.payload.reviewModalApplication
+              }
     
       default:
         return state

@@ -29,16 +29,30 @@ function AdminYourStay() {
   
 
   useEffect(()=>{
+    var apps
     const prom=new Promise((resolve,reject)=>{
         axios.get("http://localhost:3012/client-applications/application/"+id).then((response)=>{
           console.log(response)
-          setApplication(response.data)
+          apps=response.data
+          
+          
+          
+        }).then(()=>{
           resolve()
         })
     })
 
     prom.then(()=>{
-      setIsLoading(false)
+     
+      const prom1=new Promise((resolve1,reject1)=>{
+        setApplication(apps)
+        resolve1()
+      })
+
+      prom1.then(()=>{
+        setIsLoading(false)
+      })
+      
     })
 
   },[])

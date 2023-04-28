@@ -43,7 +43,7 @@ function AdminApplicationsList({totalNewApplications}) {
           
         }).then(()=>{
           console.log("after prom")
-          resolve()
+          resolve(apps)
         })
 
     })
@@ -51,9 +51,10 @@ function AdminApplicationsList({totalNewApplications}) {
     prom.then((apps)=>{
         var hasActive=false
         console.log("apps")
+        console.log(apps)
         console.log(applications)
         const prom1=new Promise((resolve1,reject1)=>{
-          applications.map((a)=>{
+          apps.map((a)=>{
             console.log(a)
             axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
               console.log("response1")

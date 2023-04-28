@@ -15,7 +15,7 @@ function Home({application}) {
  const[isLoading,setIsLoading]=useState(true)
  const[review,setReview]=useState()
  const[files,setFiles]=useState()
-
+  const[maintenanceIssues,setMaintenanceIssues]=useState()
 
   useEffect(()=>{
     const prom=new Promise((resolve,reject)=>{
@@ -51,7 +51,25 @@ function Home({application}) {
     })
 
     prom.then(()=>{
-      setIsLoading(false)
+
+      const prom1=new Promise((resolve1,reject1)=>{
+
+        axios.get("http://localhost:3012/admin-current-resident/maintenance-issues/"+application.application.id).then((response1)=>{
+          console.log(response1)
+          if(response1.data.success){
+            if(response1.data.no_issues>0){
+              setMaintenanceIssues(response1.issues)
+            }
+            resolve1()
+          }
+
+        })
+      })
+
+      prom1.then(()=>{
+        setIsLoading(false)
+      })
+     
 
     })
 
@@ -130,6 +148,39 @@ if(!isLoading){
         
           <p class="text-center text-bold  font-bold text-4xl mt-4">Stay</p>
           <p class="text-center font-semibold mt-2">{application.application.stay_start_date}-{application.application.stay_end_date}</p>
+        {
+          application.occupants.length>0?
+          <div class="flex flex-col w-full flex p-3 rounded-md bg-gray-300 m-3">
+             <p class="font-bold underline">
+              Occupants
+            </p>
+            {application.occupants.map((p)=>{ 
+              return(<p>{p.firstname} {p.lastname}</p>)
+            })}
+          </div>
+          :
+          <div class="flex flex-col w-full flex p-3 rounded-md bg-gray-300 m-3"></div>
+        }
+        {
+          maintenanceIssues!=null?
+          <div class="flex flex-col w-full flex p-3 rounded-md bg-gray-300 m03">
+            <p class="font-bold underline">
+              Maintenance
+            </p>
+            <p class="">
+              <p class="font-semibold">Issues:<span class="font-normal">{maintenanceIssues.length}</span></p>
+            </p>
+          </div>
+          :
+          <div class="flex flex-col w-full flex p-3 rounded-md bg-gray-300 m-3">
+          <p class="font-bold underline">
+            Maintenance
+          </p>
+          <p class="">
+            <p class="font-semibold">Issues:<span class="font-normal">No maintenence issues</span></p>
+          </p>
+        </div>
+        }
        
         {
           application.application.application_status=="CHECKEDOUT" && over?

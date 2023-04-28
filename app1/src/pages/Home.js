@@ -22,72 +22,86 @@ import axios from "axios";
 import CurrentApplicationWindow from "../client-components/CurrentApplicationWindow";
 import Appwindow from "../client-components/Appwindow";
 import AdminCurrentApplicationWindow from "../admin-components/AdminCurrentApplicationWindow";
+import ReviewWindow from "../client-components/ReviewWindow";
+import ReviewModal from "../client-components/ReviewModal";
 function Home({userType,user,activeApplication}) {
 
   const[isLoading,setIsLoading]=useState(true)
   const [newApplications,setNewApplications]=useState(false)
   const dispatch=useDispatch()
-  console.log(userType)
-  console.log(user)
-  console.log("user")
+ 
+
+
+
+
+ 
+
   useEffect(()=>{
-
-    const prom=new Promise((resolve,reject)=>{
-        axios.get("http://localhost:3012/admin-applications/new-applications").then((response)=>{
-          console.log(response)
-          if(response.data.no_applications>0){
-            setNewApplications(true)
-            
-          }
-          resolve()
-          axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
+    if(user!=null){
+      const prom=new Promise((resolve,reject)=>{
+          axios.get("http://localhost:3012/admin-applications/new-applications").then((response)=>{
             console.log(response)
-            if(response.data.success){
+            if(response.data.no_applications>0){
+              setNewApplications(true)
+              
+            }
+            resolve()
+            axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
+              console.log(response)
+              if(response.data.success){
+                const apps=response.data.applications
+                
+                
+                apps.map((a)=>{
+                  axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
+                    console.log(response1)
+                    if(response1.data.success && response1.data.currentlyOccupied){
+                      dispatch(setActiveApplication(a))
+                      dispatch(setHasActiveApplication(true))
+  
+                    }
+                    
+                  })
+                })
+              
+              
+              }
+            })
+          })
+          if(userType=="client"){
+            axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+              console.log("user apps")
+              console.log(response)
               const apps=response.data.applications
-              
-              
               apps.map((a)=>{
-                axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
+                axios.get("http://localhost:3012/client-applications/getActiveStatus/"+a.application.id).then((response1)=>{
+                  console.log("user current")
                   console.log(response1)
-                  if(response1.data.success && response1.data.currentlyOccupied){
-                    dispatch(setActiveApplication(a))
-                    dispatch(true)
-
-                  }
-                  
+              
                 })
               })
-              resolve()
-            }
-          })
-        })
-        if(userType=="client"){
-          axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
-            console.log("user apps")
-            console.log(response)
-            const apps=response.data.applications
-            apps.map((a)=>{
-              axios.get("http://localhost:3012/client-applications/getActiveStatus/"+a.application.id).then((response1)=>{
-                console.log("user current")
-                console.log(response1)
-                resolve()
-              })
+  
             })
-
-          })
-        }
-            
-        
-    })
-
-    prom.then(()=>{
-      
-      setIsLoading(false)
-    })
+            console.log("MADE IT TO CLIENT")
+          }
+          setTimeout(()=>{
+            resolve()
+          },1000)
+              
+          
+      })
+  
+      prom.then(()=>{
+        console.log("MADE IT TO THEN")
+        setIsLoading(false)
+      })
+    }
+  
   },[userType])
 
-  console.log(user)
-  if(!isLoading ){
+  console.log(isLoading)
+  if(!isLoading && user!=null){
+    
     console.log("in home")
     console.log(user)
   return (
@@ -99,16 +113,15 @@ function Home({userType,user,activeApplication}) {
         {
           userType=="admin"? 
           <div class="flex flex-col"> 
-          {
-            activeApplication!=null?
-            <AdminCurrentApplicationWindow/>
-            :
-            <div></div>
-          }
-          <div class="flex">
+      
+          <div class="flex flex-col">
+          <AdminCurrentApplicationWindow/>
+            <div class="flex">
               {newApplications?
               <NewApplicationsList/>:<div></div>}
+              
               <AdminApplicationsList/>
+              </div>
             </div>
           </div>
           :
@@ -118,6 +131,8 @@ function Home({userType,user,activeApplication}) {
         {
           userType=="client" && user!=null ?
           <div class="flex flex-col p-5 ">
+            <ReviewModal/>
+            <ReviewWindow/>
              <CurrentApplicationWindow/>
             <ApplicationsList/>
             
@@ -129,41 +144,21 @@ function Home({userType,user,activeApplication}) {
       </div>
     </div>
   );
-}else{
+}if(user==null){
+  console.log("DO not laod")
   return  (
     <div className='home'>
       <Banner />
-      <CurrentApplicationWindow/>
+    
       <div>
-        {
-          userType=="admin"? 
-          <div class="flex flex-col ">
-            <div class="flex p-5">
-              <NewApplicationsList/>
-              </div>
-              <div class="flex p-5 bg-green-300 rounded-md ">
-                <ApplicationsList/>
-              </div>
-          </div>
-          :
-          <div>
-          </div>
-        }
-        {
-          userType=="client" && user!=null ?
-          <div class="flex flex-col">
-            <Appwindow/>
-            <CurrentApplicationWindow/>
-            <ApplicationsList/>
-            
-          </div>:
-          <div>
-          </div>
-        }
-
       </div>
     </div>
   )
+}else{
+  return(
+  <div className="home">
+        <Banner/>
+  </div>)
 }}
 const mapStateToProps = (state, props) => {
  
@@ -186,3 +181,69 @@ const mapStateToProps = (state, props) => {
 };
 
 export default connect(mapStateToProps)(Home);
+
+
+/*
+   if(user!=null){
+    const prom=new Promise((resolve,reject)=>{
+        axios.get("http://localhost:3012/admin-applications/new-applications").then((response)=>{
+          console.log(response)
+          if(response.data.no_applications>0){
+            setNewApplications(true)
+            
+          }
+          resolve()
+          axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
+            console.log(response)
+            if(response.data.success){
+              const apps=response.data.applications
+              
+              
+              apps.map((a)=>{
+                axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
+                  console.log(response1)
+                  if(response1.data.success && response1.data.currentlyOccupied){
+                    dispatch(setActiveApplication(a))
+                    dispatch(setHasActiveApplication(true))
+
+                  }
+                  
+                })
+              })
+            
+            
+            }
+          })
+        })
+        if(userType=="client"){
+          axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+            console.log("user apps")
+            console.log(response)
+            const apps=response.data.applications
+            apps.map((a)=>{
+              axios.get("http://localhost:3012/client-applications/getActiveStatus/"+a.application.id).then((response1)=>{
+                console.log("user current")
+                console.log(response1)
+            
+              })
+            })
+
+          })
+          console.log("MADE IT TO CLIENT")
+        }
+        setTimeout(()=>{
+          resolve()
+        },1000)
+            
+        
+    })
+
+    prom.then(()=>{
+      console.log("MADE IT TO THEN")
+      setIsLoading(false)
+    })
+  }
+
+
+
+*/
