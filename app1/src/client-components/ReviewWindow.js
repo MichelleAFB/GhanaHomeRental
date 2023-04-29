@@ -20,7 +20,7 @@ function ReviewWindow() {
           apps.map((a)=>{
             console.log("review:"+a.application.review)
             console.log( a.application.application_status=="CHECKEDOUT")
-            if( a.application.application_status=="CHECKEDOUT" ){
+            if( a.application.application_status=="CHECKEDOUT"&& a.application.review==null ){
               console.log(a)
                 app.push(a)
                 console.log(app)

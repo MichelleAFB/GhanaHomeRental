@@ -38,7 +38,7 @@ console.log(visibility)
      </div>
    )
   }else{
-    return(<div>hi</div>)
+    return(<div></div>)
   }
 }
 const mapStateToProps = (state, props) => {

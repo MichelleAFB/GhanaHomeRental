@@ -32,6 +32,7 @@ function CurrentApplicationWindow() {
               setApplication(a)
               resolve()
             }
+            
           })
         })
       }
@@ -39,13 +40,14 @@ function CurrentApplicationWindow() {
    })
 
    prom.then(()=>{
+    console.log(application)
     setIsLoading(false)
    })
 
   },[])
 
-
-  if( !isLoading){
+  console.log(isLoading)
+  if( !isLoading ){
    return (
      <div class="w-full flex flex-col m-3 bg-green-500 rounded-md p-3">
       <div class="flex flex-col w-full">
@@ -61,7 +63,7 @@ function CurrentApplicationWindow() {
      </div>
    )
   }else{
-    return(<div>hi</div>)
+    return(<div></div>)
   }
 }
 const mapStateToProps = (state, props) => {

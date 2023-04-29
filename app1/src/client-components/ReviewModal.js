@@ -60,7 +60,7 @@ function ReviewModal({visibility,application}) {
   }
 
   if(visibility){
-   
+   console.log(application.application.review)
   return (
   
     <div class='h-screen w-full fixed ml-0 mr-0 mt-0 mb-0 flex justify-center items-center '>
@@ -87,7 +87,7 @@ function ReviewModal({visibility,application}) {
             You checkout at:{application.application.checkoutTime}
           </p>
           <label class="m-2 text-xl font-semibold">Leave A Review:</label>
-          <textarea rows="10" cols="40" class="rounded-md m-2" onClick={(e)=>{
+          <textarea rows="10" cols="40" placeholder={application.application.review}  class="rounded-md m-2" onClick={(e)=>{
             setReview(e.target.value)
           }}>
 
@@ -100,6 +100,7 @@ function ReviewModal({visibility,application}) {
               <button class="flex flex-col bg-green-300 rounded-md p-3 m-3" onClick={()=>{
                 const prom=new Promise((resolve,reject)=>{
                   sendImages(files).then(()=>{
+                    console.log(files)
                       axios.post("http://localhost:3012/current-resident/review/"+application.application.id,{review:review,images:JSON.parse(sessionStorage.getItem('images'))}).then((response)=>{
                         console.log(response.data)
                         if(response.data.success){

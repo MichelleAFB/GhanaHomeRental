@@ -19,6 +19,8 @@ import PaymentPage from "./pages/PaymentPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import YourStay from "./pages/YourStay";
 import AdminYourStay from "./pages/AdminYourStay";
+import Reviews from "./pages/Reviews";
+import { Menu } from "@material-ui/core";
 
  
 function App() {
@@ -28,10 +30,11 @@ function App() {
       <ApplicationModal/>
       <Router>
         <Header />
+        <Menu/>
 
         <Routes>
         
-
+        <Route path='/reviews' element={<Reviews />}/>
           <Route path='/search' element={<SearchPage />}/>
           <Route path='/' element={<Home />}/>
           <Route path='/sign-in' element={<SignIn />}/>

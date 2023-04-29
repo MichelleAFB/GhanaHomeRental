@@ -6,7 +6,8 @@ import { setReviewModalApplication,setReviewModalVisibility } from '../redux/use
 function ReviewItem({application}) {
 
   const dispatch=useDispatch()
-  console.log(application)
+  console.log(application.application)
+  if(application.application.review==null || application.application.review=="" || application.application.length==0){
   return (
     <div class="flex flex-col bg-gray-200 rounded-md p-3 m-3">
       <p class="text-center font-bold">Your Stay</p>
@@ -28,6 +29,9 @@ function ReviewItem({application}) {
 
     </div>
   )
+    }else{
+      return(<div></div>)
+    }
 }
 
 export default ReviewItem

@@ -65,8 +65,13 @@ function Header({user,userType,userRedux}) {
             
            
             <div className='flex align-middle'>
-                <div><input type="text" class="rounded-lg border-gray-300 border-2 m-2" /></div>
-                  <div class="mt-2"><SearchIcon/> </div>  
+            <div class="flex m-3">
+            <Link to="/" ><p class="hover:text-purple-400 text-xl text-center text-gray-600 font-bold">Home</p></Link>
+            </div>
+            <div class="flex m-3">
+                <Link to="/reviews" ><p class="hover:text-purple-400 text-xl text-center text-gray-600 font-bold">Reviews</p></Link>
+            </div>
+          
                 
             </div>
 

@@ -59,7 +59,8 @@ function ApplicationModal({visibility,application}) {
  
     console.log(cDate)
     console.log(startDate)
-    if(startDate>cDate){ 
+    if(startDate>=cDate || startDate.toString().substring(0,15)==cDate.toString().substring(0,15)){ 
+      console.log(startDate>=cDate)
       return true
     }else{
       return false
