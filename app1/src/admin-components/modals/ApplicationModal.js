@@ -59,7 +59,7 @@ function ApplicationModal({visibility,application}) {
  
     console.log(cDate)
     console.log(startDate)
-    if(startDate>=cDate){ 
+    if(startDate>cDate){ 
       return true
     }else{
       return false

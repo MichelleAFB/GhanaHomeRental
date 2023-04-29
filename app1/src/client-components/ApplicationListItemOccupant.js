@@ -10,8 +10,9 @@ function ApplicationListItemOccupant({occupant}) {
 
   
   return (
-    <div class="flex m-2">
-      <Avatar onClick={()=>{
+    <div class="flex m-2 z-10">
+     
+      <Avatar class="h-10 w-10 " onClick={()=>{
         setShowInfo(!showInfo)
       }}/>
       {

@@ -24,6 +24,7 @@ import Appwindow from "../client-components/Appwindow";
 import AdminCurrentApplicationWindow from "../admin-components/AdminCurrentApplicationWindow";
 import ReviewWindow from "../client-components/ReviewWindow";
 import ReviewModal from "../client-components/ReviewModal";
+import { Menu } from "@material-ui/core";
 function Home({userType,user,activeApplication}) {
 
   const[isLoading,setIsLoading]=useState(true)
@@ -106,8 +107,10 @@ function Home({userType,user,activeApplication}) {
     console.log(user)
   return (
     <div className='home'>
-      
+       <ReviewModal/>
+       <Menu/>
       <Banner />
+     
 
       <div>
         {
@@ -131,7 +134,7 @@ function Home({userType,user,activeApplication}) {
         {
           userType=="client" && user!=null ?
           <div class="flex flex-col p-5 ">
-            <ReviewModal/>
+           
             <ReviewWindow/>
              <CurrentApplicationWindow/>
             <ApplicationsList/>
