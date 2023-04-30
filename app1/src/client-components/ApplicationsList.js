@@ -63,7 +63,7 @@ function ApplicationsList({user,userType}) {
 console.log(userType+" "+ isLoading)
   if(!isLoading && userType!=null){
   return (
-    <div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md">
+    <div class="flex flex-col w-full p-4 bg-gray-400 m-10 rounded-md ">
     <div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl"> Your Applications</p>
     </div>
     

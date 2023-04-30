@@ -30,7 +30,7 @@ function App() {
       <ApplicationModal/>
       <Router>
         <Header />
-        <Menu/>
+        
 
         <Routes>
         

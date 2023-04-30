@@ -14,6 +14,7 @@ import {byRadius} from "@cloudinary/url-gen/actions/roundCorners";
 import {focusOn} from "@cloudinary/url-gen/qualifiers/gravity";
 import {FocusOn} from "@cloudinary/url-gen/qualifiers/focusOn";
 import Carousel from 'react-gallery-carousel';
+import ReviewImageCarousel from './ReviewImageCarousel';
 function Review({application}) {
 
   const[app,setApp]=useState(application.application)
@@ -34,24 +35,16 @@ function Review({application}) {
     prom.then(()=>{
       var index=0
       const prom1=new Promise((resolve1,reject1)=>{
-        images.map((r)=>{
-          cldImages.push(`    
-          <Image cloudName="michelle-badu" class="m-2" publicId=${r.img_url}>
-            <Transformation crop="scale"  angle="10" />
-           </Image>
-         )
-        })`)
-        index++
-        console.log(images)
-        console.log(cldImages)
-      if(index+1==images.length){
+        
+     
+     
         resolve1()
-      }
-      })
+      
+    
       })
 
       prom1.then(()=>{
-        console.log(cldImages)
+       
         setIsLoading(false)
       })
      
@@ -61,7 +54,7 @@ function Review({application}) {
   if(!isLoading){
     console.log(app.application)
   return (
-    <div class="h-[60vh] bg-purple-300 rounded-md p-3 m-3 ">
+    <div class="h-[80vh] bg-purple-300 rounded-md p-3 m-3 block">
         <p class=" font-bold text-xl">{app.application.stay_start_date}-{app.application.stay_end_date}</p>
         <div class="flex p-3">
           <p class="m-3 font-semibold">
@@ -69,20 +62,9 @@ function Review({application}) {
             <br/>- {app.application.firstname} {app.application.lastname}
           </p>
         </div>
-        <div class="flex rounded-md bg-gray-200 p-3 m-3 overflow-x-scroll overflow-hidden h-[40vh] w-[80vw]">
-            {
-              images.map((m)=>{
-
-                
-                
-                return( 
-                
-                <Image cloudName="michelle-badu" class="m-2" publicId={m.img_url}>
-                  <Transformation crop="scale"  angle="10" />
-                 </Image>
-               )
-              })
-            }
+        <div class="flex rounded-md bg-gray-200 p-3 m-3 overflow-x-scroll overflow-hidden h-[40vh] w-[80vw] object-contain">
+        
+           <ReviewImageCarousel images={images}/>
             
         </div>
         <div>

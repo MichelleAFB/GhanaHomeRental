@@ -108,23 +108,25 @@ function Home({userType,user,activeApplication}) {
   return (
     <div className='home'>
        <ReviewModal/>
-       <Menu/>
+  
       <Banner />
      
 
       <div>
         {
           userType=="admin"? 
-          <div class="flex flex-col"> 
+          <div class="block mt-[150px] m-5"> 
       
-          <div class="flex flex-col">
+          <div class="flex flex-col m-3">
           <AdminCurrentApplicationWindow/>
+          <div class="block">
             <div class="flex">
               {newApplications?
               <NewApplicationsList/>:<div></div>}
               
               <AdminApplicationsList/>
               </div>
+            </div>
             </div>
           </div>
           :
@@ -133,12 +135,17 @@ function Home({userType,user,activeApplication}) {
         }
         {
           userType=="client" && user!=null ?
+          <div class="block m-3 mt-[150px] m-5">
           <div class="flex flex-col p-5 ">
-           <AdminCurrentApplicationWindow/>
-            <ReviewWindow/>
+            <div class="flex p-3 m-3">
+                <AdminCurrentApplicationWindow/>
+             
+                <ReviewWindow/>
+            
+            </div>
            
             <ApplicationsList/>
-            
+            </div>
           </div>:
           <div>
           </div>

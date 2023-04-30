@@ -99,6 +99,7 @@ function ReviewModal({visibility,application}) {
               </div>
               <button class="flex flex-col bg-green-300 rounded-md p-3 m-3" onClick={()=>{
                 const prom=new Promise((resolve,reject)=>{
+                  if(files!=null){
                   sendImages(files).then(()=>{
                     console.log(files)
                       axios.post("http://localhost:3012/current-resident/review/"+application.application.id,{review:review,images:JSON.parse(sessionStorage.getItem('images'))}).then((response)=>{
@@ -109,6 +110,17 @@ function ReviewModal({visibility,application}) {
                         }
                       })
                   });
+                }else{
+
+                  axios.post("http://localhost:3012/current-resident/review/"+application.application.id,{review:review,images:JSON.parse(sessionStorage.getItem('images'))}).then((response)=>{
+                    console.log(response.data)
+                    if(response.data.success){
+                      alert("Thank you for your review!")
+                      sessionStorage.removeItem("images")
+                    }
+                  })
+
+                }
 
                 })
               }}>

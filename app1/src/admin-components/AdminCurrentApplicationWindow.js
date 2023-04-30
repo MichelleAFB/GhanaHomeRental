@@ -22,7 +22,7 @@ function AdminCurrentApplicationWindow({visibility,application}) {
 console.log(visibility)
   if( !isLoading){
    return (
-     <div class="w-full flex flex-col m-3 bg-green-500 rounded-md p-3">
+     <div class=" flex flex-col  bg-green-500 rounded-md p-3 m-5">
       <div class="flex flex-col w-full">
         <p class="text-center text-white font-bold text-xl">Your Stay</p>
       </div>

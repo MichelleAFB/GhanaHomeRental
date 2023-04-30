@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 
 import{house} from '../home_photos/Entry & Egress 2.jpg'
 import{bedroom2} from '../home_photos/Bedroom 2.jpg'
+import CarouselImages from './CarouselImages';
 
 function Banner({user,userType}) {
     const navigate = useNavigate();
@@ -30,17 +31,15 @@ function Banner({user,userType}) {
     if(!isLoading){
     return (
         <div className='banner'>
-            <div className='banner__search'>
+            <div className='banner__search'> 
                 {showSearch && <Search />}
-                <img src='../home_photos/Entry & Egress 2.jpg' alt="house"/>
-                <img src='../home_photos/Bedroom Chair.png' alt="house"/>
-
+              
                 <Button onClick={() => setShowSearch(!showSearch)} className='banner__searchButton' variant='outlined'>
                     {showSearch ? "Hide" : "Search Dates"}
                 </Button>
-            </div>
-          
-            
+               
+                        <CarouselImages class="block"/> 
+            </div> 
         </div>
     ) 
     }else{
