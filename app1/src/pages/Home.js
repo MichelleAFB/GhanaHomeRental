@@ -134,9 +134,9 @@ function Home({userType,user,activeApplication}) {
         {
           userType=="client" && user!=null ?
           <div class="flex flex-col p-5 ">
-           
+           <AdminCurrentApplicationWindow/>
             <ReviewWindow/>
-             <CurrentApplicationWindow/>
+           
             <ApplicationsList/>
             
           </div>:

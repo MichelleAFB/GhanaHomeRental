@@ -4,6 +4,11 @@ import { useEffect,useState } from 'react'
 
 //outside
 import axios from 'axios'
+import Carousel from 'react-gallery-carousel';
+import 'react-gallery-carousel/dist/index.css';
+
+
+//components
 import Review from '../client-components/Review'
 
 function Reviews() {
@@ -15,30 +20,56 @@ function Reviews() {
 
   useEffect(()=>{
 
+
+    var arr
+    const arr2=[]
     const prom=new Promise((resolve,reject)=>{
       axios.get("http://localhost:3012/client-applications/get-all-reviews").then((response)=>{
       console.log(response)
       if(response.data.success){
           setReviews(response.data.reviews)
+          arr=response.data.reviews
       }
       resolve()
       })
     })
 
     prom.then(()=>{
-
+      console.log(arr)
       const prom1=new Promise((resolve1,reject1)=>{
         axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
           console.log(response)
           if(response.data.success){
-            setApplications(response.data.applications)
-          }
+            //setApplications(response.data.applications)
+            var index=0
+            arr.map((r)=>{
+              console.log(r)
+              response.data.applications.map((a)=>{
+                if(a.application.id==r.application_id){
+                  console.log("match")
+                  arr[index].application=a;
+                 
+                  index++
+                }
+              })
+            })
+          } 
         })
-        resolve1()
+        setTimeout(()=>{
+          resolve1(arr)
+        },800)
+       
     })
 
-    prom1.then(()=>{
-      setIsLoading(false)
+    prom1.then((arr)=>{
+       const prom2=new Promise((resolve2,reject2)=>{
+          setApplications(arr)
+          resolve2()
+       })
+
+       prom2.then(()=>{
+        setIsLoading(false)
+       })
     })
   })
 
@@ -48,31 +79,21 @@ function Reviews() {
   if(!isLoading && applications!=null){
   return (
     
-    <div className='home'>
+  
       <div class="flex flex-col">
-        <div class="flex">
-     
+        <div class="flex flex-col bg-gray-300 rounded-md m-5">
+          
+        <div class=" overflow-y-scroll overflow-hidden w-full flex-col content-center h-[100vh] p-3 justify-around">
           {
             applications.map((a)=>{
-              reviews.map((r)=>{
-               
-                if(r.application_id==a.application.id){
-                  console.log("r:"+r.application_id)
-                  console.log("a:"+a.application.id)
-                  
-                    return(
-                    <div class="bg-green-300 p-3 m-3">
-
-                    </div>)
-                }
-              })
-
+                return(<Review application={a}/>)
             })
           }
+          </div>
          
         </div>
       </div>
-    </div>
+  
   )
   }else{
     return(<div></div>)
