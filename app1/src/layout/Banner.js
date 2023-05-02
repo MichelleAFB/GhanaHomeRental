@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 
 import{house} from '../home_photos/Entry & Egress 2.jpg'
 import{bedroom2} from '../home_photos/Bedroom 2.jpg'
-import CarouselImages from './CarouselImages';
+import CarouselImages from '../client-components/CarouselImages';
 
 function Banner({user,userType}) {
     const navigate = useNavigate();

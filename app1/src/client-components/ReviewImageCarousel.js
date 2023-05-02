@@ -1,6 +1,6 @@
 
 import {Cloudinary} from "@cloudinary/url-gen";
-import {fill} from "@cloudinary/url-gen/actions/resize";
+import {fill,crop} from "@cloudinary/url-gen/actions/resize";
 import {CloudinaryImage} from '@cloudinary/url-gen';
 import {AdvancedImage} from '@cloudinary/react';
 import {Image, Video, Transformation} from 'cloudinary-react';
@@ -40,7 +40,7 @@ function ReviewImageCarousel({images}) {
         }
       })
         images.map((r)=>{
-            arr.push(cld.image(r.img_url).resize(fill().width(50).height(50)))
+            arr.push(cld.image(r.img_url).resize(fill().width(100).height(80)))
         })
 
         setTimeout(()=>{
@@ -65,27 +65,25 @@ function ReviewImageCarousel({images}) {
 
  
 
-      if(!isLoading){ 
+      if(!isLoading && ourImages!=null){ 
         return (
-            <Carousel autoPlay class="h-150 p-3 object-contain block m-3 " showThumbs={false}>
-              hi
-              {
-              images!=null?
-                <div>
-                  {
-                    ourImages.map((m)=>{
-                      <div>
-                    <Image cloudName="michelle-badu" publicId={m.publicID}>
-                      <Transformation crop="scale" width="20" angle="10" />
-                   </Image>: 
-                      </div>
-                    })
-                  }
-                </div>:
-                <div></div>
-              }
+          <div  class="h-[100vh] overflow-hidden p-3 objext-cover ">
+            <Carousel autoPlay>
+            {
+              ourImages.map((m)=>{
+                return(
+                  <div class="h-[80vh] object-cover">
+                     <Image cloudName="michelle-badu" publicId={m.publicID}>
+                      <Transformation crop="scale" angle="10"/>
+                   </Image>
+                  </div>
+                )
+              })
+            }
             </Carousel>
+          </div>
         )
+
      }else{
       return(<div></div>)
      }

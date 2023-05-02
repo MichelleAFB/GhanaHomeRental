@@ -4,7 +4,7 @@ import { useEffect,useState } from 'react'
 
 //outside
 import axios from 'axios'
-import Carousel from 'react-gallery-carousel';
+import { Carousel } from 'react-responsive-carousel';
 import 'react-gallery-carousel/dist/index.css';
 
 
@@ -81,14 +81,16 @@ function Reviews() {
     
   
       <div class="flex flex-col">
-        <div class="flex flex-col bg-gray-300 rounded-md m-5">
-          
-        <div class=" overflow-y-scroll overflow-hidden w-full flex-col content-center h-[100vh] p-3 justify-around">
+        <div class="flex flex-col bg-gray-600  p-5">
+        <p class="text-center font-bold text-2xl m-5 text-white">Experiences</p>
+       <div class="p-5">
+        <Carousel autoPlay showThumbs={true} thumbWidth={200} >
           {
             applications.map((a)=>{
                 return(<Review application={a}/>)
             })
           }
+          </Carousel>
           </div>
          
         </div>

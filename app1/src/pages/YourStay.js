@@ -11,13 +11,14 @@ import Maintenance from '../client-components/YourStayComponents/Maintenance'
 import RestrictedIndividuals from '../client-components/YourStayComponents/RestrictedIndividuals'
 import { useNavigate } from 'react-router-dom'
 import Home from '../client-components/YourStayComponents/Home'
+import FacialRecognition from '../client-components/YourStayComponents/FacialRecognition'
 function YourStay() {
 
   const[application,setApplication]=useState()
   const[home,setHome]=useState(true)
   const[guestTab,setGuestsTab]=useState(false)
   const[maintenanceTab,setMaintenanceTab]=useState(false)
-
+  const[facialRecognition,setFacialRecognition]=useState(false)
   const[isLoading,setIsLoading]=useState(true)
 
   const{id}=useParams()
@@ -52,6 +53,7 @@ function YourStay() {
           </p>
         </button>
         <button class="m-2" onClick={()=>{
+          setFacialRecognition(false)
           setMaintenanceTab(true)
           setGuestsTab(false)
           setHome(false)
@@ -61,12 +63,23 @@ function YourStay() {
           </p>
         </button>
         <button class="m-2" onClick={()=>{
+          setFacialRecognition(false)
            setGuestsTab(true)
            setHome(false)
            setMaintenanceTab(false)
         }}>
           <p class="text-gray-600 font-bold hover:text-purple-500">
             Guests & Restricted 
+          </p>
+        </button>
+        <button class="m-2" onClick={()=>{
+           setGuestsTab(false)
+           setHome(false)
+           setMaintenanceTab(false)
+           setFacialRecognition(true)
+        }}>
+          <p class="text-gray-600 font-bold hover:text-purple-500">
+            Identification
           </p>
         </button>
       </div>
@@ -95,6 +108,13 @@ function YourStay() {
           </div>:
           <div>
           </div>
+        }
+        {
+          facialRecognition?
+          <div class="flex flex-col bg-greay-400 rounded-md w-full">
+            <FacialRecognition/>
+          </div>:
+          <div></div>
         }
       </div>
      

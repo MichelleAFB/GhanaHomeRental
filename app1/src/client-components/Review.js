@@ -54,7 +54,7 @@ function Review({application}) {
   if(!isLoading){
     console.log(app.application)
   return (
-    <div class="h-[80vh] bg-purple-300 rounded-md p-3 m-3 block">
+    <div class="h-[110vh] bg-purple-300 rounded-md p-3 m-3 block ">
         <p class=" font-bold text-xl">{app.application.stay_start_date}-{app.application.stay_end_date}</p>
         <div class="flex p-3">
           <p class="m-3 font-semibold">
@@ -62,11 +62,13 @@ function Review({application}) {
             <br/>- {app.application.firstname} {app.application.lastname}
           </p>
         </div>
-        <div class="flex rounded-md bg-gray-200 p-3 m-3 overflow-x-scroll overflow-hidden h-[40vh] w-[80vw] object-contain">
+       <div class="flex flex-col p-8">
+         <ReviewImageCarousel images={images}/>
+       </div>
         
-           <ReviewImageCarousel images={images}/>
+          
             
-        </div>
+        
         <div>
          
         </div>
