@@ -135,7 +135,7 @@ function Home({userType,user,activeApplication}) {
         }
         {
           userType=="client" && user!=null ?
-          <div class="block m-3 mt-[150px] m-5">
+          <div class="block m-3 mt-[200px] m-5">
           <div class="flex flex-col p-5 ">
             <div class="flex p-3 m-3">
                 <CurrentApplicationWindow/>

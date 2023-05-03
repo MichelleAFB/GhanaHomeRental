@@ -112,7 +112,7 @@ function YourStay() {
         {
           facialRecognition?
           <div class="flex flex-col bg-greay-400 rounded-md w-full">
-            <FacialRecognition/>
+            <FacialRecognition application={application}/>
           </div>:
           <div></div>
         }

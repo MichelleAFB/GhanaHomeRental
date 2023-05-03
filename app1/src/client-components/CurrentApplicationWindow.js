@@ -18,6 +18,7 @@ function CurrentApplicationWindow() {
   const[isLoading,setIsLoading]=useState(true)
  
   useEffect(()=>{
+    var app
    const prom=new Promise((resolve,reject)=>{
     const user=JSON.parse(sessionStorage.getItem("user"))
     axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
@@ -25,12 +26,17 @@ function CurrentApplicationWindow() {
       if(response.data.applications!=null && response.data.success){
         const apps=response.data.applications
         apps.map((a)=>{
-          console.log(a)
+          
           axios.get("http://localhost:3012/current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
             console.log(response1)
-            if(response1.data.success && response1.isCurrentlyOccupied){
+            if(response1.data.success && response1.data.currentlyOccupied){
               setApplication(a)
-              resolve()
+              console.log("found")
+              app=a
+              setTimeout(()=>{
+                resolve(a)
+              },500)
+            
             }
             
           })
@@ -40,8 +46,19 @@ function CurrentApplicationWindow() {
    })
 
    prom.then(()=>{
-    console.log(application)
-    setIsLoading(false)
+    console.log(app)
+    console.log(app)
+    const prom1=new Promise((resolve1,reject1)=>{
+      setApplication(app)
+      setTimeout(()=>{
+          resolve1()
+      },400)
+    })
+
+    prom1.then(()=>{
+      setIsLoading(false)
+    })
+    
    })
 
   },[])
