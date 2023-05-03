@@ -140,7 +140,7 @@ function FacialRecognition({application}) {
         console.log("here")
         faceMyDetect()
       }).catch((err)=>{
-      console.log(+err)
+      console.log(err)
     })
     }
 
