@@ -24,8 +24,8 @@ function FacialRecognition({application}) {
   const canvasRef=useRef()
 
   useEffect(()=>{
-    startVideo()
-    loadModels(videoRef2)
+    startVideo(videoRef2)
+     loadModels(videoRef2)
 
     const prom=new Promise((resolve,reject)=>{
       /*getVideo(videoRef).then((response)=>{
@@ -129,55 +129,111 @@ function FacialRecognition({application}) {
 
 
     const loadModels=(videoRef2)=>{
+      console.log("here")
+      console.log(faceapi.nets.tinyFaceDetector.load("./models"))
       Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri("./models"),
-        //faceapi.nets.faceLandmark68Net.loadFromUri("./models"),
-       // faceapi.nets.faceRecognitionNet.loadFromUri("./models"),
-        faceapi.nets.faceExpressionNet.loadFromUri("./models")
+        faceapi.nets.tinyFaceDetector.load("./models"),
+        faceapi.nets.faceLandmark68Net.loadFromUri("./models"),
+        faceapi.nets.faceRecognitionNet.loadFromUri("./models"),
+        faceapi.nets.faceExpressionNet.load("./models")
 
 
       ]).then((videoRef2)=>{
         console.log("here")
-        faceMyDetect()
+        faceMyDetect(videoRef2)
       }).catch((err)=>{
       console.log(err)
     })
     }
 
-    const faceMyDetect=(videoRef2)=>{
-      console.log("here")
-      setInterval(async()=>{
-        console.log("here")
-        const detections=await faceapi.detectAllFaces(videoRef.current,
-          new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
-
-          canvasRef.current.innerHtml=faceapi.createCanvasFromMedia(videoRef.current)
-          faceapi.matchDimensions(canvasRef.current,{
-            width:940,
-            width:650
-          })
-
-          const resized=faceapi.resizeResults(detections,
-           { width:940,
-            height:650
-           })
-           console.log("hello")
-           faceapi.draw.drawDetections(canvasRef.current.resized)
-           faceapi.draw.drawFaceLandmarks(canvasRef.current,resized)
-           faceapi.draw.drawFaceExpressions(canvasRef.current,resized)
-
-      },1000)
+    const startVideo = (videoRef2)=>{
+      navigator.mediaDevices.getUserMedia({video:true})
+      .then((currentStream)=>{
+        console.log(videoRef2)
+        videoRef2.current.srcObject = currentStream
+        console.log("startVideoSuccess")
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
     }
+    
+  const faceMyDetect = (videoRef)=>{
+    setInterval(async()=>{
+      const detections = await faceapi.detectAllFaces(videoRef.current,
+        new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
+
+      // DRAW YOU FACE IN WEBCAM
+      canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(videoRef.current)
+      faceapi.matchDimensions(canvasRef.current,{
+        width:940,
+        height:650
+      })
+
+      const resized = faceapi.resizeResults(detections,{
+         width:940,
+        height:650
+      })
+
+      faceapi.draw.drawDetections(canvasRef.current,resized)
+      faceapi.draw.drawFaceLandmarks(canvasRef.current,resized)
+      faceapi.draw.drawFaceExpressions(canvasRef.current,resized)
+
+
+    },1000)
+  }
+/*
  
-  const startVideo=()=>{
-    console.log(navigator.mediaDevices.getUserMedia({video:true}))
-    navigator.mediaDevices.getUserMedia({video:true}).then((currentStream)=>{
-      videoRef2.current.srcObject=currentStream
-    }).catch((err)=>{
-      console.log("err:"+err)
+  // OPEN YOU FACE WEBCAM
+  const startVideo = ()=>{
+    navigator.mediaDevices.getUserMedia({video:true})
+    .then((currentStream)=>{
+      videoRef.current.srcObject = currentStream
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+  }
+  // LOAD MODELS FROM FACE API
+
+  const loadModels = ()=>{
+    Promise.all([
+      // THIS FOR FACE DETECT AND LOAD FROM YOU PUBLIC/MODELS DIRECTORY
+      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
+      faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+      faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+      faceapi.nets.faceExpressionNet.loadFromUri("/models")
+
+      ]).then(()=>{
+      faceMyDetect()
     })
   }
 
+  const faceMyDetect = (videoRef2)=>{
+    setInterval(async(videoRef2)=>{
+      const detections = await faceapi.detectAllFaces(videoRef.current,
+        new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
+
+      // DRAW YOU FACE IN WEBCAM
+      canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(videoRef2.current)
+      faceapi.matchDimensions(canvasRef.current,{
+        width:940,
+        height:650
+      })
+
+      const resized = faceapi.resizeResults(detections,{
+         width:940,
+        height:650
+      })
+
+      faceapi.draw.drawDetections(canvasRef.current,resized)
+      faceapi.draw.drawFaceLandmarks(canvasRef.current,resized)
+      faceapi.draw.drawFaceExpressions(canvasRef.current,resized)
+
+
+    },1000)
+  }
+*/
   if(!isLoading){
 
     console.log(webcamRef)
