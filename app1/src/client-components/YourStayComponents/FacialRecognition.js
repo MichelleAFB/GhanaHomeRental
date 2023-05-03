@@ -20,8 +20,12 @@ function FacialRecognition({application}) {
   const videoRef=useRef(null) 
   console.log(window.navigator.mediaDevices.attributes)
 
+  const videoRef2=useRef()
+  const canvasRef=useRef()
 
   useEffect(()=>{
+    startVideo()
+    loadModels(videoRef2)
 
     const prom=new Promise((resolve,reject)=>{
       /*getVideo(videoRef).then((response)=>{
@@ -29,17 +33,17 @@ function FacialRecognition({application}) {
         resolve()
       })
       */
-     startVideo()
-     videoRef && loadModels()
+
      setTimeout(()=>{
       resolve()
-     },1000)
+     },2000)
     
     })
 
     prom.then(()=>{
       console.log(videoRef)
-      setIsLoading(false)
+  
+    
     }).catch((err)=>{
       alert(err)
     })
@@ -122,24 +126,28 @@ function FacialRecognition({application}) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('');
 
-    const videoRef2=useRef()
-    const canvasRef=useRef()
 
-    const loadModels=()=>{
+
+    const loadModels=(videoRef2)=>{
       Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri("./face/public"),
-        faceapi.nets.faceLandmark68Net.loadFromUri("./face/public/models"),
-        faceapi.nets.faceRecognitionNet.loadFromUri("./face/public/models"),
-        faceapi.nets.faceExpressionNet.loadFromUri("./face/public/models")
+        faceapi.nets.tinyFaceDetector.loadFromUri("./models"),
+        //faceapi.nets.faceLandmark68Net.loadFromUri("./models"),
+       // faceapi.nets.faceRecognitionNet.loadFromUri("./models"),
+        faceapi.nets.faceExpressionNet.loadFromUri("./models")
 
 
-      ]).then(()=>{
+      ]).then((videoRef2)=>{
+        console.log("here")
         faceMyDetect()
-      })
+      }).catch((err)=>{
+      console.log(+err)
+    })
     }
 
-    const faceMyDetect=()=>{
+    const faceMyDetect=(videoRef2)=>{
+      console.log("here")
       setInterval(async()=>{
+        console.log("here")
         const detections=await faceapi.detectAllFaces(videoRef.current,
           new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
 
@@ -153,7 +161,7 @@ function FacialRecognition({application}) {
            { width:940,
             height:650
            })
-
+           console.log("hello")
            faceapi.draw.drawDetections(canvasRef.current.resized)
            faceapi.draw.drawFaceLandmarks(canvasRef.current,resized)
            faceapi.draw.drawFaceExpressions(canvasRef.current,resized)
@@ -166,7 +174,7 @@ function FacialRecognition({application}) {
     navigator.mediaDevices.getUserMedia({video:true}).then((currentStream)=>{
       videoRef2.current.srcObject=currentStream
     }).catch((err)=>{
-      console.log(err)
+      console.log("err:"+err)
     })
   }
 
