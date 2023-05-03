@@ -2,10 +2,10 @@ import React from 'react'
 import {useState,useEffect,useRef} from 'react'
 import { useMemo } from 'react';
 import Webcam from 'react-webcam';
-import { WebcamCapture} from './WebcamComponent'
 
 
 
+import * as faceapi from 'face-api.js'
 
 function FacialRecognition({application}) {
   //var ref=useRef()
@@ -15,6 +15,7 @@ function FacialRecognition({application}) {
   const[isLoading,setIsLoading]=useState(false)
   const [startRecord,setStartRecordWebcam]=useState(false)
   const [video,setVideo]=useState() 
+  const [images,setImages]=useState([])
 
   const videoRef=useRef(null) 
   console.log(window.navigator.mediaDevices.attributes)
@@ -28,7 +29,12 @@ function FacialRecognition({application}) {
         resolve()
       })
       */
-     resolve()
+     startVideo()
+     videoRef && loadModels()
+     setTimeout(()=>{
+      resolve()
+     },1000)
+    
     })
 
     prom.then(()=>{
@@ -43,6 +49,8 @@ function FacialRecognition({application}) {
   const mediaRecorderRef = useRef(null);
   const [capturing, setCapturing] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState([]);
+
+
 
   /*
   const handleDataAvailable = useMemo(
@@ -114,11 +122,52 @@ function FacialRecognition({application}) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('');
 
+    const videoRef2=useRef()
+    const canvasRef=useRef()
 
-  const submitForm = () => {
-      alert("Form submitted");
-      setName('');
-      setEmail('');
+    const loadModels=()=>{
+      Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri("./face/public"),
+        faceapi.nets.faceLandmark68Net.loadFromUri("./face/public/models"),
+        faceapi.nets.faceRecognitionNet.loadFromUri("./face/public/models"),
+        faceapi.nets.faceExpressionNet.loadFromUri("./face/public/models")
+
+
+      ]).then(()=>{
+        faceMyDetect()
+      })
+    }
+
+    const faceMyDetect=()=>{
+      setInterval(async()=>{
+        const detections=await faceapi.detectAllFaces(videoRef.current,
+          new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
+
+          canvasRef.current.innerHtml=faceapi.createCanvasFromMedia(videoRef.current)
+          faceapi.matchDimensions(canvasRef.current,{
+            width:940,
+            width:650
+          })
+
+          const resized=faceapi.resizeResults(detections,
+           { width:940,
+            height:650
+           })
+
+           faceapi.draw.drawDetections(canvasRef.current.resized)
+           faceapi.draw.drawFaceLandmarks(canvasRef.current,resized)
+           faceapi.draw.drawFaceExpressions(canvasRef.current,resized)
+
+      },1000)
+    }
+ 
+  const startVideo=()=>{
+    console.log(navigator.mediaDevices.getUserMedia({video:true}))
+    navigator.mediaDevices.getUserMedia({video:true}).then((currentStream)=>{
+      videoRef2.current.srcObject=currentStream
+    }).catch((err)=>{
+      console.log(err)
+    })
   }
 
   if(!isLoading){
@@ -126,26 +175,113 @@ function FacialRecognition({application}) {
     console.log(webcamRef)
   return (
    <div class="flex flex-col m-2">
-      
-      
-      <div class="flex-col">
-        <Webcam audio={false}
-        ref={webcamRef}
-        />
-      
-  
-      <button onClick={(e)=>{
-        e.preventDefault();
-        capture(webcamRef)}}>Capture</button>
-    </div>
+        <video crossOrigin="anonymous" ref={videoRef2} autoPlay></video>
+        <canvas ref={canvasRef} width="950" hight="650"/>
     <div>
-      <FaceEm
+      <Profile />
     </div>
   </div>)
   }else{
     return(<div></div>)
   }
 }
+
+
+
+const WebcamComponent = () => <Webcam />
+const videoConstraints = {
+  width: 400,
+  height: 400,
+  facingMode: 'user',
+}
+export const Profile = () => {
+  const [picture, setPicture] = useState('')
+  const [images,setImages]=useState([])
+  const webcamRef = React.useRef(null)
+  const[files,setFiles]=useState([])
+  const[hasImages,setHasImages]=useState(false)
+  const capture = React.useCallback(() => {
+    const pictureSrc = webcamRef.current.getScreenshot()
+    //setPicture(pictureSrc)
+    const prev=images
+   
+    var base64Icon = `data:image/jpg;base64,${pictureSrc}`;
+    prev.push(pictureSrc)
+    setImages(prev)
+    const f=files
+ 
+    console.log(typeof(pictureSrc))
+    console.log(images)
+    
+  })
+
+
+  return (
+    <div>
+      <h2 className="mb-5 text-center">
+        React Photo Capture using Webcam Examle
+      </h2>
+      <div>
+        
+        {picture == '' ? (
+          <Webcam
+            audio={false}
+            height={400}
+            ref={webcamRef}
+            width={400}
+            screenshotFormat="image/jpeg"
+            videoConstraints={videoConstraints}
+          />
+        ) : (
+          <img src={picture} />
+        )}
+      </div>
+      <div>
+        {picture != '' ? (
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              setPicture()
+            }}
+            className="btn btn-primary"
+          >
+            Retake
+          </button>
+        ) : (
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              capture()
+            }}
+            className="btn btn-danger"
+          >
+            Capture
+          </button>
+        )}
+        <button class="bg-green-400 p-3 rounded-md" onClick={()=>{
+          setHasImages(true)
+        }}>
+          show
+        </button>
+        {
+          hasImages? 
+          <div class="flex-row">
+            {images.map((i)=>{
+              return(<div>
+                <img src={i} alt="img"/>
+
+                <p>hi</p>
+                </div>)
+            })}
+          </div>
+          :
+          <div></div>
+        }
+      </div>
+    </div>
+  )
+
+};
 
 /*
 
