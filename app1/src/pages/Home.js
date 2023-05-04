@@ -115,7 +115,7 @@ function Home({userType,user,activeApplication}) {
       <div>
         {
           userType=="admin"? 
-          <div class="block mt-[150px] m-5"> 
+          <div class="block mt-[250px] m-5"> 
       
           <div class="flex flex-col m-3">
           <AdminCurrentApplicationWindow/>

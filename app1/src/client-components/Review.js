@@ -17,7 +17,7 @@ import Carousel from 'react-gallery-carousel';
 import ReviewImageCarousel from './ReviewImageCarousel';
 function Review({application}) {
 
-  const[app,setApp]=useState(application.application)
+  const[app,setApplication]=useState(application.application)
   const[images,setImages]=useState()
   const[isLoading,setIsLoading]=useState(true)
   const cldImages=[]
@@ -26,10 +26,12 @@ function Review({application}) {
 
  
     const prom=new Promise((resolve,reject)=>{
-      setApp(application.application)
+      setApplication(application.application)
       setImages(application.images)
-      
+     setTimeout(()=>{
       resolve()
+     },1000) 
+   
     })
 
     prom.then(()=>{
@@ -52,15 +54,15 @@ function Review({application}) {
   },[])
   
   if(!isLoading){
-    console.log(app.application)
+    console.log(application.application)
   return (
-    <div class="h-[110vh] bg-purple-300 rounded-md p-3 m-3 block ">
+    <div class="h-[110vh] bg-gray-300 rounded-md p-3 m-3 block ">
         <p class=" font-bold text-xl">{app.application.stay_start_date}-{app.application.stay_end_date}</p>
         <div class="flex p-3">
-          <p class="m-3 font-semibold">
-             {app.application.review} 
-            <br/>- {app.application.firstname} {app.application.lastname}
-          </p>
+          <i class="m-3 font-semibold">
+             "{app.application.review} ""
+            <br/>- <p class="text-normal font-bold">{app.application.firstname} {app.application.lastname}</p>
+          </i>
         </div>
        <div class="flex flex-col p-8">
          <ReviewImageCarousel images={images}/>

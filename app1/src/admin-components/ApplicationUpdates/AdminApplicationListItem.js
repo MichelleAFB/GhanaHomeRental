@@ -36,6 +36,8 @@ function AdminApplicationListItem({application}) {
   useEffect(()=>{
 
     const prom=new Promise((resolve,reject)=>{
+
+      axios.get("")
       
         resolve()
     })
@@ -56,7 +58,7 @@ function AdminApplicationListItem({application}) {
     console.log(application.application)
    
   return (
-    <div class="max-h-sm rounded-md ">
+    <div class="max-h-sm rounded-md z-10">
       {application.application.notify_admin==1 && application.application.currentlyOccupied==0 ?
       <div class="py-5 m-4  bg-green-300 border-purple-100 px-3 transition hover:bg-indigo-100 rounded-lg shadow-lg flex flex-col">
    

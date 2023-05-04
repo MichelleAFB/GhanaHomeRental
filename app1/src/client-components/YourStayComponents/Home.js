@@ -16,6 +16,7 @@ function Home({application}) {
  const[review,setReview]=useState()
  const[files,setFiles]=useState()
  const[checkedOut,setCheckedOut]=useState(false)
+ const[promptCheckIn,setPromptCheckIn]=useState(false)
 
 
   useEffect(()=>{
@@ -40,13 +41,21 @@ function Home({application}) {
       warnDate=new Date(warnDate) 
       console.log("warning date"+warnDate)
       console.log(endDate)  
-      console.log(cDate)
+      console.log("warnDate:"+cDate)
+        console.log("\n"+cDate.toString().substring(0,15))
+        console.log("\n"+ endDate.toString().substring(0,15))
+
+        if(cDate.toString()==startDate.toString() && application.application.checkedIn!=1){
+          setPromptCheckIn(true)
+        }
       if(cDate.toString().substring(0,15)==warnDate.toString().substring(0,15) ){
         setWarnOver(true)
       }
-      if(cDate.toString().substring(0,15)==endDate.toString().substring(0,15) || warnDate<cDate){
+   
+      else{if(cDate.toString().substring(0,15)==endDate.toString().substring(0,15) ){
         setOver(true)
          }
+        }
          resolve()
 
     })
@@ -131,6 +140,21 @@ if(!isLoading){
         
           <p class="text-center text-bold  font-bold text-4xl mt-4">Stay</p>
           <p class="text-center font-semibold mt-2">{application.application.stay_start_date}-{application.application.stay_end_date}</p>
+        {
+          promptCheckIn?
+          <div class="bg-gray-300 rounded-md p-3 flex flex-col  w-full m-3">
+            < p class="text-center font-bold mb-3">
+                  Please let checking in be the first thing you do when you arrive to the villa
+                </p>
+              <button class="bg-blue-500 hover:bg-blue-300 rounded-md flex w-full p-3 rouned-md">
+                
+                <p class="text-white text-center font-bold">
+                  CHECK IN
+                </p>
+              </button>
+            </div>:
+            <div></div>
+        }
        
         {
           application.application.application_status=="CHECKEDOUT" && over?

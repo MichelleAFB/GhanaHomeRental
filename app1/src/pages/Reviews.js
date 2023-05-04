@@ -57,14 +57,16 @@ function Reviews() {
         })
         setTimeout(()=>{
           resolve1(arr)
-        },800)
+        },1000)
        
     })
 
     prom1.then((arr)=>{
        const prom2=new Promise((resolve2,reject2)=>{
           setApplications(arr)
+         setTimeout(()=>{ 
           resolve2()
+         },500) 
        })
 
        prom2.then(()=>{

@@ -1,6 +1,9 @@
 import React from 'react'
 import {useState,useEffect,useRef} from 'react' 
 
+
+//components
+import ImageForm from './ImageForm'
 //outside
 import axios from 'axios'
 import emailjs from "@emailjs/browser";
@@ -17,6 +20,7 @@ function ApplicationModal({visibility,application}) {
 
   const dispatch=useDispatch()
   console.log(visibility)
+  const[sent,setSent]=useState(false)
   const[isLoading,setIsLoading]=useState(true)
   const[alertCustomerApproval,setAlertCustomerApproval]=useState(false)
   const[denyBooking,setDenyBooking]=useState(false)
@@ -91,7 +95,7 @@ function ApplicationModal({visibility,application}) {
       );
       return response
   };
-  
+ 
   
 
   if(!isLoading && getCurrent(application) ){ 
@@ -99,10 +103,10 @@ function ApplicationModal({visibility,application}) {
    // getCurrent(application)
 
   
-   
+     
       
   return (
-    <div class='bg-gray-200' data-testId="modal-public">
+    <div class='bg-gray-200 z-30' data-testId="modal-public">
      
     <div class='h-screen w-full fixed ml-0 mr-0 mt-0 mb-0 flex justify-center items-center bg-black bg-opacity-50'>
      
@@ -135,13 +139,7 @@ function ApplicationModal({visibility,application}) {
                     <IonIcon name="close-outline" size="large"/>
                 </button>
             </div>
-            <button class="bg-green-500 p-3" onClick={()=>{
-              sendEmail(approveForm).then((response)=>{
-                console.log(response.text)
-              })
-                }}>
-              send
-            </button>
+        
             
             <div class="flex flex-col w-full justify-center">
                   <p class="text-center ">{application.application.application.firstname} {application.application.application.lastname}
@@ -159,20 +157,25 @@ function ApplicationModal({visibility,application}) {
                      {application.application.application.application_status=="CHECKEDOUT"?<p class="text-center text-blue-600 font-semibold"><span class="font-bold text-black">Status:</span>{application.application.application.application_status}<span class="text-black"> on ({application.application.application.datePaymentDue})</span></p>
                    :<div></div>}
               </div>
+           <div class="flex flex-col p-3">
+            <p class="text-center font-bold">Application Received:<span class="font-normal">{application.application.application.dateReceived}</span></p>
+            {
+              application.application.application.appication_status="PAYED"?
+              <p class="text-center font-bold">Date Paid:<span class="font-normal">{application.application.application.datePaid}</span></p>:
+              <p></p>
+            }
+           
+        </div>
             
             <div class='text-center'>
       {
         application.application.application.notify_admin_message==null || application.application.application.notify_admin_message==" " ?
         <div></div>:
-        <div class="flex flex-col mt-2 w-full p-2 border-2 border-green-900">
+        <div class="flex flex-col mt-2 w-full p-2 border-2 bg-green-400 border-green-400">
           <p class="text-center font-bold">Update</p>
           <p class="text-center">{application.application.application.notify_admin_message}</p>
         </div>}
-        <div class="m-2 flex flex-col border-gray-300 border-2 rounded-md p-3">
-            <p class="text-center font-bold">Application Received:<span class="font-normal">{application.application.application.dateReceived}</span></p>
-            <p class="text-center font-bold">Date Paid:<span class="font-normal">{application.application.application.datePaymentDue}</span></p>
-           
-        </div>
+     
             
              
             </div>
@@ -394,6 +397,7 @@ function ApplicationModal({visibility,application}) {
                     })
 
                     prom1.then(()=>{
+
                       setUseConflictingDates(true) 
                       dispatch(setVisibility(false))
                       setIsLoading(true)
@@ -783,6 +787,7 @@ function ApplicationModal({visibility,application}) {
                                 sendEmail(approveForm).then((response)=>{
                                   if(response=="OK"){
                                     alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed!")
+                                    setSent(true)
                                   }else{
                                     alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed! Email not set!")
                                   }
@@ -809,6 +814,14 @@ function ApplicationModal({visibility,application}) {
                     Submit
                 </p>
               </button> 
+              {
+                application.occupants.map((o)=>{
+                  return(
+                  <div>
+                      <ImageForm occupant={o} send={(sent&&approve)}/>
+                  </div>)
+                })
+              }
                   </div>:
                   <div>
 

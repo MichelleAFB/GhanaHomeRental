@@ -6,6 +6,8 @@ function PaymentSuccessPage() {
 
   const {id}=useParams()
   const navigate=useNavigate()
+
+  console.log("hello  hu")
   return (
     <div class="flex flex-col p-3 m-3">
       <div class="flex flex-col m-3 rounded-md bg-gray-300 p-3">

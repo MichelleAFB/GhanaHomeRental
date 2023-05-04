@@ -41,8 +41,8 @@ function Maintenance({application}) {
       <div class="flex-col w-full p-3 bg-yellow-400 rounded-md m-2">
         <p class="text-center font-bold text-xl m-2">Maintence Reports</p>
         <div class="h-[40vh] overflow-y-scroll w-full overflow-hidden rounded-md bg-white">
-          {noIssues<0?
-          <p class="">
+          {noIssues<1?
+          <p class="font-semibold">
               No Maintenance reports
           </p>:
           <div>

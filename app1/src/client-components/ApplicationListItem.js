@@ -106,16 +106,17 @@ function ApplicationListItem({application}) {
     })
 
   },[])
-  
+  console.log(process.env.REACT_APP_SAMPLE_CLEANING)
 console.log(application) 
   async function getCheckoutLink(q){
     console.log("CHECKOUT")
-    await axios.post("http://localhost:3012/payment/checkout/"+application.application.id,{fees:[{id:"price_1MrY1oLxMJskpKlAbFZlt9et",quantity:q},{id:"price_1MrY3uLxMJskpKlAfpN870oN",quantity:1}]}).then((response)=>{
+    await axios.post("http://localhost:3012/payment/checkout/"+application.application.id,{fees:[{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:q},{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:1}]}).then((response)=>{
         console.log(response.data)
         sessionStorage.setItem("checkoutLink_"+application.application.id,response.data.url)
         console.log(response.data)
         setCheckoutLinkRecieved(true)
         setCheckoutLink(response.data.url)
+        console.log(response.data.url)
         return response.data.url
       })
   }
@@ -131,18 +132,21 @@ console.log(application)
  }
  const[getLink,setGetLink]=useState(true)
   if(!isLoading){
-    checkout()
-    if(sessionStorage.getItem("application_payment_"+application.application.id)==null){
-      console.log("calling")
-      
-    }if(sessionStorage.getItem("application_payment_"+application.application.id)!=null && getLink==true){
-      console.log("run checkout")
-      const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application.id))
-      console.log( days.no_days)
-      getCheckoutLink(days.no_days)
-      setGetLink(false)
-
-    }
+    checkout().then((response)=>{
+      console.log(response)
+      if(sessionStorage.getItem("application_payment_"+application.application.id)==null){
+        console.log("calling")
+        
+      }if(sessionStorage.getItem("application_payment_"+application.application.id)!=null && getLink==true){
+        console.log("run checkout")
+        const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application.id))
+        console.log( days.no_days)
+        getCheckoutLink(days.no_days)
+        setGetLink(false)
+  
+      }
+    })
+ 
 
     console.log("link recieved:"+checkoutLinkRecieved)
     console.log("days remaining:"+daysRemainingToPay)

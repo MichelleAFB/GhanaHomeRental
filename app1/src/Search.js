@@ -30,9 +30,9 @@ function Search({userType,user}) {
 
     console.log(startDate)
     return (
-        <div className='search'>
+        <div className='search z-20'>
             <DateRangePicker ranges={[selectionRange]} onChange={handleSelect} />
-            <div class="w-[560px] ">
+            <div class="w-[560px] z-20 ">
                 <div class="flex flex-col bg-gray-100 w-[560px]  ">
                     
                     <div class="flex p-3 m-2 justify-between">

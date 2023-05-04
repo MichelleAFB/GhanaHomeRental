@@ -68,7 +68,7 @@ function ReviewImageCarousel({images}) {
       if(!isLoading && ourImages!=null){ 
         return (
           <div  class="h-[100vh] overflow-hidden p-3 objext-cover ">
-            <Carousel autoPlay>
+            <Carousel showThumbs={true} autoPlay>
             {
               ourImages.map((m)=>{
                 return(

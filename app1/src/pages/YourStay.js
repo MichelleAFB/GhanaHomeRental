@@ -23,6 +23,7 @@ function YourStay() {
 
   const{id}=useParams()
   const navigate=useNavigate()
+  const [active,setActive]=useState(false)
 
   
 
@@ -31,11 +32,48 @@ function YourStay() {
         axios.get("http://localhost:3012/client-applications/application/"+id).then((response)=>{
           console.log(response)
           setApplication(response.data)
+
+          var months= ["Jan","Feb","Mar","Apr","May","Jun","Jul",
+          "Aug","Sep","Oct","Nov","Dec"];
+          var monthnum=["01","02","03","04","05","06","07","08","09","10","11","12"]
+          var cDate=new Date()
+         
+          var index=1
+          console.log(cDate)
+          var st=application.application.stay_start_date.split(" ")
+          var et=application.application.stay_end_date.split(" ") 
+         
+         
+         
+          const startDate=new Date(st[3],monthnum[months.indexOf(st[1])-1],st[2])
+          const endDate=new Date(et[3],monthnum[months.indexOf(et[1])-1],et[2])
+          var nextDate=new Date(startDate);
+          var warnDate=new Date(endDate)
+          warnDate=warnDate.setDate(endDate.getDate()-1)
+          warnDate=new Date(warnDate) 
+          console.log("warning date"+warnDate)
+          console.log(endDate)  
+          console.log("warnDate:"+cDate)
+            console.log("\n"+cDate.toString().substring(0,15))
+            console.log("\n"+ endDate.toString().substring(0,15))
+
+            if(cDate.toString().substring(0,15)==startDate.toString().substring(0,15) && application.application.checkedIn==0){
+              setActive(true)
+            }
           resolve()
         })
     })
 
     prom.then(()=>{
+
+      const prom1=new Promise((resolve1,reject1)=>{
+
+      })
+
+      prom1.then(()=>{
+
+      })
+
       setIsLoading(false)
     })
 
@@ -50,6 +88,16 @@ function YourStay() {
         }}>
           <p class="text-gray-600 font-bold hover:text-purple-500">
             Go back home
+          </p>
+        </button>
+        <button class="m-2" onClick={()=>{
+          setHome(true)
+          setMaintenanceTab(false)
+          setGuestsTab(false)
+          setFacialRecognition(false)
+        }}>
+          <p class="text-gray-600 font-bold hover:text-purple-500">
+            Home
           </p>
         </button>
         <button class="m-2" onClick={()=>{
@@ -102,7 +150,7 @@ function YourStay() {
           </div>
         }
          {
-          maintenanceTab?
+          maintenanceTab && active?
           <div class="flex bg-gray-400 rounded-md w-full ">
             <Maintenance application={application}/>
           </div>:

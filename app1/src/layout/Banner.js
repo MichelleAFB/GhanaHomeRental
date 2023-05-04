@@ -38,7 +38,7 @@ function Banner({user,userType}) {
                     {showSearch ? "Hide" : "Search Dates"}
                 </Button>
                
-                        <CarouselImages class="block"/> 
+                        <CarouselImages class="block z-10"/> 
             </div> 
         </div>
     ) 

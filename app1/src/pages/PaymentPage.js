@@ -9,7 +9,7 @@ import axios from 'axios';
 
 function PaymentPage() {
   console.log(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY)
-  const stripePromise=loadStripe("pk_live_51MrXkxLxMJskpKlAg04tvIwsH0onrRPJH2fgU2qzrHvaWKRFjqL76UW2lwKI4SGx0Y68ICWsm9Wts6oHWjHBPi1D00JG5bQ97t") 
+  const stripePromise=loadStripe("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") 
 
   const[isLoading,setIsLoading]=useState(true)
   const [application,setApplication]=useState()
@@ -18,6 +18,7 @@ function PaymentPage() {
   const {id}=useParams()
 console.log(id)
   useEffect(()=>{
+    console.log(process.env.REACT_APP_SAMPLE_CLEANING)
     var days
     const prom=new Promise((resolve,reject)=>{
       axios.get("http://localhost:3012/client-applications/application/"+id).then((response)=>{
@@ -38,7 +39,7 @@ console.log(id)
     prom.then(()=>{
 
       const prom2=new Promise((resolve,reject)=>{
-        axios.post("http://localhost:3012/payment/checkout/"+id,{fees:[{id:"price_1MrY1oLxMJskpKlAbFZlt9et",quantity:days},{id:"price_1MrY3uLxMJskpKlAfpN870oN",quantity:1}]}).then((response)=>{
+        axios.post("http://localhost:3012/payment/checkout/"+id,{fees:[{id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:days},{id:process.env.REACT_APP_SAMPLE_CLEANING,quantity:1}]}).then((response)=>{
       console.log(response)
       setCheckOutLink(response.data.url)
     })
@@ -49,7 +50,7 @@ console.log(id)
      
     })
   },[])
-
+ 
   const getDays=async(application)=>{
     console.log("start:"+application.application.stay_start_date)
     console.log("end:"+application.application.stay_end_date)

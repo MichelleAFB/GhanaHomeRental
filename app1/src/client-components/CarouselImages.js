@@ -62,7 +62,7 @@ import { Carousel } from 'react-responsive-carousel';
 class CarouselImages extends Component {
     render() {
         return (
-            <Carousel autoPlay class="h-150 p-3 object-contain block m-3 " showThumbs={false}>
+            <Carousel autoPlay class="h-150 p-3 object-contain block m-3 z-10 " showThumbs={false}>
                 <div>
                    <img src={require('../home_photos/Entry & Egress 2.jpg')} 
                      class="object-cover h-[450px]"  alt="house"/>
