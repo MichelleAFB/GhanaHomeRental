@@ -19,7 +19,7 @@ function ApplicationsList({user,userType}) {
     const prom= new Promise((resolve,reject)=>{
       
 
-      axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+      axios.get("https://ghanahomerental.herokuapp.com/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
         console.log(response)
         console.log(response)
         console.log("hi")
@@ -41,7 +41,7 @@ function ApplicationsList({user,userType}) {
   },[newApplications])
 
  /* const myInterval = setInterval(()=>{
-    axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+    axios.get("https://ghanahomerental.herokuapp.com/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
        
       console.log(applications) 
       console.log(applications.length==response.data.no_applications)

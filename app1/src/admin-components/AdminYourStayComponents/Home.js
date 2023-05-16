@@ -54,7 +54,7 @@ function Home({application}) {
 
       const prom1=new Promise((resolve1,reject1)=>{
 
-        axios.get("http://localhost:3012/admin-current-resident/maintenance-issues/"+application.application.id).then((response1)=>{
+        axios.get("https://ghanahomerental.herokuapp.com/admin-current-resident/maintenance-issues/"+application.application.id).then((response1)=>{
           console.log(response1)
           if(response1.data.success){
             if(response1.data.no_issues>0){
@@ -213,7 +213,7 @@ if(!isLoading){
           console.log(newArr)
              console.log(images)
              const newImages=JSON.parse(sessionStorage.getItem("review_images"))
-            axios.post("http://localhost:3012/current-resident/review/"+application.application.id,{review:review,images:newImages}).then((response)=>{
+            axios.post("https://ghanahomerental.herokuapp.com/current-resident/review/"+application.application.id,{review:review,images:newImages}).then((response)=>{
           console.log(response)
           if(response.data.success){
             const arr=[]
@@ -236,10 +236,10 @@ if(!isLoading){
             <p class="text-xl text-center font-bold">Your stay has come to an end</p>
             <button class="bg-gray-300 rounded-md  flex flex-col w-full p-3 m-2" onClick={()=>{
               const currDate=new Date()
-              axios.post("http://localhost:3012/current-resident/checkout/"+application.application.id,{checkoutTime:currDate}).then((response)=>{
+              axios.post("https://ghanahomerental.herokuapp.com/current-resident/checkout/"+application.application.id,{checkoutTime:currDate}).then((response)=>{
                 console.log(response)
                 if(response.data.success){
-                  axios.post("http://localhost:3012/client-applications/setStatus/"+application.application.id+"/CHECKEDOUT",{message:"Residents in this reservation have checked out at "+ currDate}).then((response1)=>{
+                  axios.post("https://ghanahomerental.herokuapp.com/client-applications/setStatus/"+application.application.id+"/CHECKEDOUT",{message:"Residents in this reservation have checked out at "+ currDate}).then((response1)=>{
                     console.log(response1)
                     if(response.data.success){
                       alert("SUCCESS:You have successfully check out! We hope to host you soon!")

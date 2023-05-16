@@ -131,7 +131,7 @@ function Home({application}) {
      return images
      
    }
-
+    //TODO:Add checkin functionality
 if(!isLoading){
   console.log(files)
   return (
@@ -140,6 +140,9 @@ if(!isLoading){
         
           <p class="text-center text-bold  font-bold text-4xl mt-4">Stay</p>
           <p class="text-center font-semibold mt-2">{application.application.stay_start_date}-{application.application.stay_end_date}</p>
+          <div class="bg-green-400 flex rounded-md p-3">
+            Add arrival instructions
+          </div>
         {
           promptCheckIn?
           <div class="bg-gray-300 rounded-md p-3 flex flex-col  w-full m-3">
@@ -187,7 +190,7 @@ if(!isLoading){
           console.log(newArr)
              console.log(images)
              const newImages=JSON.parse(sessionStorage.getItem("review_images"))
-            axios.post("http://localhost:3012/current-resident/review/"+application.application.id,{review:review,images:newImages}).then((response)=>{
+            axios.post("https://ghanahomerental.herokuapp.com/current-resident/review/"+application.application.id,{review:review,images:newImages}).then((response)=>{
           console.log(response)
           if(response.data.success){
             const arr=[]
@@ -211,10 +214,10 @@ if(!isLoading){
             <p class="text-center m-2">Please check out by 11:00AM and confirm your checkout.</p>
             <button class="bg-gray-300 rounded-md  flex flex-col w-full p-3 m-2" onClick={()=>{
               const currDate=new Date()
-              axios.post("http://localhost:3012/current-resident/checkout/"+application.application.id,{checkoutTime:currDate}).then((response)=>{
+              axios.post("https://ghanahomerental.herokuapp.com/current-resident/checkout/"+application.application.id,{checkoutTime:currDate}).then((response)=>{
                 console.log(response)
                 if(response.data.success){
-                  axios.post("http://localhost:3012/client-applications/setStatus/"+application.application.id+"/CHECKEDOUT",{message:"Residents in this reservation have checked out at "+ currDate}).then((response1)=>{
+                  axios.post("https://ghanahomerental.herokuapp.com/client-applications/setStatus/"+application.application.id+"/CHECKEDOUT",{message:"Residents in this reservation have checked out at "+ currDate}).then((response1)=>{
                     console.log(response1)
                     if(response.data.success){
                       alert("SUCCESS:You have successfully check out! We hope to host you soon!")

@@ -43,7 +43,7 @@ function NewApplicationListItem({application}) {
     <div class="w-full justify-end flex">
             <button onClick={()=>{
               const prom=new Promise((resolve,reject)=>{
-                axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.id).then((response)=>{
+                axios.post("https://ghanahomerental.herokuapp.com/admin-applications/turnOffAdminNotify/"+application.application.id).then((response)=>{
                   console.log(response)
                   if(response.data.success){
                     dispatch(decrementTotalNewApplications())

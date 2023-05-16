@@ -39,14 +39,10 @@ function ImageForm({occupant,send}) {
       return response
   };
 
-  const sendIt = useMemo((send) => {
-    if(send){
-      sendEmail(formRef)
-    }
-  });
+ console.log("hello")
     console.log(formRef)
   return (
-    <form class="hidden" ref={formRef}>
+    <form class="bg-red-400 p-3" ref={formRef}>
       <input type="text" value={occupant.firstname} name="first"/>
       <input type="text" value={occupant.lasttname} name="last"/>
       <input type="text" value={occupant.email} name="email"/>

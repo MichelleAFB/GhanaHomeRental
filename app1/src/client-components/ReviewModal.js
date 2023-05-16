@@ -102,7 +102,7 @@ function ReviewModal({visibility,application}) {
                   if(files!=null){
                   sendImages(files).then(()=>{
                     console.log(files)
-                      axios.post("http://localhost:3012/current-resident/review/"+application.application.id,{review:review,images:JSON.parse(sessionStorage.getItem('images'))}).then((response)=>{
+                      axios.post("https://ghanahomerental.herokuapp.com/current-resident/review/"+application.application.id,{review:review,images:JSON.parse(sessionStorage.getItem('images'))}).then((response)=>{
                         console.log(response.data)
                         if(response.data.success){
                           alert("Thank you for your review!")
@@ -112,7 +112,7 @@ function ReviewModal({visibility,application}) {
                   });
                 }else{
 
-                  axios.post("http://localhost:3012/current-resident/review/"+application.application.id,{review:review,images:JSON.parse(sessionStorage.getItem('images'))}).then((response)=>{
+                  axios.post("https://ghanahomerental.herokuapp.com/current-resident/review/"+application.application.id,{review:review,images:JSON.parse(sessionStorage.getItem('images'))}).then((response)=>{
                     console.log(response.data)
                     if(response.data.success){
                       alert("Thank you for your review!")

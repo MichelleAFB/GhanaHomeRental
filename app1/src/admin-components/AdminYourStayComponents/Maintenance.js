@@ -14,7 +14,7 @@ function Maintenance({application}) {
   useEffect(()=>{
 
     const prom=new Promise((resolve,reject)=>{
-        axios.get("http://localhost:3012/current-resident/maintenance-issues/"+application.application.id).then((response)=>{
+        axios.get("https://ghanahomerental.herokuapp.com/current-resident/maintenance-issues/"+application.application.id).then((response)=>{
           console.log(response)
           if(response.data.success){
             
@@ -105,7 +105,7 @@ function Maintenance({application}) {
           }else{
             var cDate=new Date()
             var currDate=cDate.toString().substring(0,15)
-            axios.post("http://localhost:3012/current-resident/new-maintenance/"+application.application.id,{issue:{mechanism:mechanism,message:message,dateRecieved:currDate}}).then((response)=>{
+            axios.post("https://ghanahomerental.herokuapp.com/current-resident/new-maintenance/"+application.application.id,{issue:{mechanism:mechanism,message:message,dateRecieved:currDate}}).then((response)=>{
               console.log(response)
               if(response.data.success){
                 alert("Your maintenace issue has been recieved! We will contact you shortly.")

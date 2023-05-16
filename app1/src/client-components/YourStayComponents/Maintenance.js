@@ -14,7 +14,7 @@ function Maintenance({application}) {
   useEffect(()=>{
 
     const prom=new Promise((resolve,reject)=>{
-        axios.get("http://localhost:3012/current-resident/maintenance-issues/"+application.application.id).then((response)=>{
+        axios.get("https://ghanahomerental.herokuapp.com/current-resident/maintenance-issues/"+application.application.id).then((response)=>{
           console.log(response)
           if(response.data.success){
             
@@ -40,18 +40,21 @@ function Maintenance({application}) {
     <div class="flex-col w-full min-h-screen">
       <div class="flex-col w-full p-3 bg-yellow-400 rounded-md m-2">
         <p class="text-center font-bold text-xl m-2">Maintence Reports</p>
-        <div class="h-[40vh] overflow-y-scroll w-full overflow-hidden rounded-md bg-white">
-          {noIssues<1?
-          <p class="font-semibold">
-              No Maintenance reports
-          </p>:
-          <div>
-           { issues.map((issue)=>{
+        {
+          noIssues<1 ?
+          <div class="h-[100vh] overflow-y-scroll w-full overflow-hidden rounded-md bg-gray-200">
+            <p class="text-center text-xl">No Maintenance Issues</p>
+          </div>:
+          <div class="h-[40vh] overflow-y-scroll w-full overflow-hidden rounded-md bg-white">
+               { issues.map((issue)=>{
             console.log(issue)
+            console.log("hi")
              return(<MaintenanceListItem issue={issue}/>)
            })}
-          </div>
-            }
+            </div>
+        }
+        <div class="h-[40vh] overflow-y-scroll w-full overflow-hidden rounded-md bg-white">
+      
         </div>
 
       </div>
@@ -105,7 +108,7 @@ function Maintenance({application}) {
           }else{
             var cDate=new Date()
             var currDate=cDate.toString().substring(0,15)
-            axios.post("http://localhost:3012/current-resident/new-maintenance/"+application.application.id,{issue:{mechanism:mechanism,message:message,dateRecieved:currDate}}).then((response)=>{
+            axios.post("https://ghanahomerental.herokuapp.com/current-resident/new-maintenance/"+application.application.id,{issue:{mechanism:mechanism,message:message,dateRecieved:currDate}}).then((response)=>{
               console.log(response)
               if(response.data.success){
                 alert("Your maintenace issue has been recieved! We will contact you shortly.")

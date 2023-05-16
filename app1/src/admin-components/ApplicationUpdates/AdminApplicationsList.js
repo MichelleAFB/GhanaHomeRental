@@ -26,7 +26,7 @@ function AdminApplicationsList({totalNewApplications}) {
     var apps
     
     const prom=new Promise((resolve,reject)=>{
-        axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
+        axios.get("https://ghanahomerental.herokuapp.com/admin-applications/applications").then((response)=>{
           console.log(response)
           if(response.data.success){
             setApplications(response.data.applications)
@@ -56,7 +56,7 @@ function AdminApplicationsList({totalNewApplications}) {
         const prom1=new Promise((resolve1,reject1)=>{
           apps.map((a)=>{
             console.log(a)
-            axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
+            axios.get("https://ghanahomerental.herokuapp.com/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
               console.log("response1")
               console.log(response1)
               if(response1.data.success==false){

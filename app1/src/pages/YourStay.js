@@ -29,10 +29,10 @@ function YourStay() {
 
   useEffect(()=>{
     const prom=new Promise((resolve,reject)=>{
-        axios.get("http://localhost:3012/client-applications/application/"+id).then((response)=>{
+        axios.get("https://ghanahomerental.herokuapp.com/client-applications/application/"+id).then((response)=>{
           console.log(response)
           setApplication(response.data)
-
+          const app=response.data 
           var months= ["Jan","Feb","Mar","Apr","May","Jun","Jul",
           "Aug","Sep","Oct","Nov","Dec"];
           var monthnum=["01","02","03","04","05","06","07","08","09","10","11","12"]
@@ -40,8 +40,8 @@ function YourStay() {
          
           var index=1
           console.log(cDate)
-          var st=application.application.stay_start_date.split(" ")
-          var et=application.application.stay_end_date.split(" ") 
+          var st=app.application.stay_start_date.split(" ")
+          var et=app.application.stay_end_date.split(" ") 
          
          
          
@@ -57,10 +57,12 @@ function YourStay() {
             console.log("\n"+cDate.toString().substring(0,15))
             console.log("\n"+ endDate.toString().substring(0,15))
 
-            if(cDate.toString().substring(0,15)==startDate.toString().substring(0,15) && application.application.checkedIn==0){
+            if((cDate.toString().substring(0,15)==startDate.toString().substring(0,15) && app.application.checkedIn==0) || (cDate>=startDate && cDate<=endDate)){
               setActive(true)
             }
+         setTimeout(()=>{
           resolve()
+         },500) 
         })
     })
 
@@ -80,6 +82,7 @@ function YourStay() {
   },[])
   if(!isLoading){
     console.log(application)
+    console.log(active)
   return (
     <div class="flex">
       <div class="flex flex-col w-1/5 bg-gray-300 p-2 ml-0 mt-0 mb-0">
@@ -100,16 +103,21 @@ function YourStay() {
             Home
           </p>
         </button>
+        {active ? 
         <button class="m-2" onClick={()=>{
           setFacialRecognition(false)
           setMaintenanceTab(true)
           setGuestsTab(false)
           setHome(false)
         }}>
-          <p class="text-gray-600 font-bold hover:text-purple-500">
+           <p class="text-gray-600 font-bold hover:text-purple-500">
             Maintenance
           </p>
         </button>
+          :
+          <p></p>
+        }
+         
         <button class="m-2" onClick={()=>{
           setFacialRecognition(false)
            setGuestsTab(true)
@@ -120,16 +128,7 @@ function YourStay() {
             Guests & Restricted 
           </p>
         </button>
-        <button class="m-2" onClick={()=>{
-           setGuestsTab(false)
-           setHome(false)
-           setMaintenanceTab(false)
-           setFacialRecognition(true)
-        }}>
-          <p class="text-gray-600 font-bold hover:text-purple-500">
-            Identification
-          </p>
-        </button>
+    
       </div>
       <div class="flex w-full">
         {

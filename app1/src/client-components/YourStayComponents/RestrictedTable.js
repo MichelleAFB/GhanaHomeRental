@@ -342,7 +342,7 @@ function RestrictedTable({restricted,occupant}) {
            
             console.log(arr)
 
-                      axios.post("http://localhost:3012/current-resident/restricted-individuals/"+occupant.application_id+"/"+occupant.id,{restricted:arr,no_restricted:arr.length}).then((response)=>{
+                      axios.post("https://ghanahomerental.herokuapp.com/current-resident/restricted-individuals/"+occupant.application_id+"/"+occupant.id,{restricted:arr,no_restricted:arr.length}).then((response)=>{
               console.log(response)
               if(response.data.success){
                 alert("SUCCESS: "+response.data.no_restricted+" have been restricted "+restricted.length+" to "+occupant.firstname+ " "+occupant.lastname+"'s guest list")

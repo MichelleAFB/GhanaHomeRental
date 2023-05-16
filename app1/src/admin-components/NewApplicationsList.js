@@ -21,7 +21,7 @@ function NewApplicationsList({totalNewApplications}) {
   useEffect(()=>{
 
     const prom=new Promise((resolve,reject)=>{
-        axios.get("http://localhost:3012/admin-applications/new-applications").then((response)=>{
+        axios.get("https://ghanahomerental.herokuapp.com/admin-applications/new-applications").then((response)=>{
           console.log(response)
           if(response.data.success){
             setApplications(response.data.applications)

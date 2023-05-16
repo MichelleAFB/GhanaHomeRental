@@ -16,7 +16,7 @@ function PaymentSuccessPage() {
           <button class="bg-green-400 rounded-md p-3 " onClick={()=>{
             const prom=new Promise((resolve,reject)=>{
               console.log("here")
-              axios.post("http://localhost:3012/client-applications/setStatus/"+id+"/PAYED",{message:"Application "+id+" was recently paid"}).then((response)=>{
+              axios.post("https://ghanahomerental.herokuapp.com/client-applications/setStatus/"+id+"/PAYED",{message:"Application "+id+" was recently paid"}).then((response)=>{
                 console.log(response)
                 if(response.data.success){
                   navigate("/")

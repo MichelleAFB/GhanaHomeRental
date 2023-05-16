@@ -24,7 +24,7 @@ function Reviews() {
     var arr
     const arr2=[]
     const prom=new Promise((resolve,reject)=>{
-      axios.get("http://localhost:3012/client-applications/get-all-reviews").then((response)=>{
+      axios.get("https://ghanahomerental.herokuapp.com/client-applications/get-all-reviews").then((response)=>{
       console.log(response)
       if(response.data.success){
           setReviews(response.data.reviews)
@@ -37,7 +37,7 @@ function Reviews() {
     prom.then(()=>{
       console.log(arr)
       const prom1=new Promise((resolve1,reject1)=>{
-        axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
+        axios.get("https://ghanahomerental.herokuapp.com/admin-applications/applications").then((response)=>{
           console.log(response)
           if(response.data.success){
             //setApplications(response.data.applications)

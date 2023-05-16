@@ -40,21 +40,21 @@ function Home({userType,user,activeApplication}) {
   useEffect(()=>{
     if(user!=null){
       const prom=new Promise((resolve,reject)=>{
-          axios.get("http://localhost:3012/admin-applications/new-applications").then((response)=>{
+          axios.get("https://ghanahomerental.herokuapp.com/admin-applications/new-applications").then((response)=>{
             console.log(response)
             if(response.data.no_applications>0){
               setNewApplications(true)
               
             }
             resolve()
-            axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
+            axios.get("https://ghanahomerental.herokuapp.com/admin-applications/applications").then((response)=>{
               console.log(response)
               if(response.data.success){
                 const apps=response.data.applications
                 
                 
                 apps.map((a)=>{
-                  axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
+                  axios.get("https://ghanahomerental.herokuapp.com/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
                     console.log(response1)
                     if(response1.data.success && response1.data.currentlyOccupied){
                       dispatch(setActiveApplication(a))
@@ -70,12 +70,12 @@ function Home({userType,user,activeApplication}) {
             })
           })
           if(userType=="client"){
-            axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+            axios.get("https://ghanahomerental.herokuapp.com/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
               console.log("user apps")
               console.log(response)
               const apps=response.data.applications
               apps.map((a)=>{
-                axios.get("http://localhost:3012/client-applications/getActiveStatus/"+a.application.id).then((response1)=>{
+                axios.get("https://ghanahomerental.herokuapp.com/client-applications/getActiveStatus/"+a.application.id).then((response1)=>{
                   console.log("user current")
                   console.log(response1)
               
@@ -196,21 +196,21 @@ export default connect(mapStateToProps)(Home);
 /*
    if(user!=null){
     const prom=new Promise((resolve,reject)=>{
-        axios.get("http://localhost:3012/admin-applications/new-applications").then((response)=>{
+        axios.get("https://ghanahomerental.herokuapp.com/admin-applications/new-applications").then((response)=>{
           console.log(response)
           if(response.data.no_applications>0){
             setNewApplications(true)
             
           }
           resolve()
-          axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
+          axios.get("https://ghanahomerental.herokuapp.com/admin-applications/applications").then((response)=>{
             console.log(response)
             if(response.data.success){
               const apps=response.data.applications
               
               
               apps.map((a)=>{
-                axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
+                axios.get("https://ghanahomerental.herokuapp.com/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
                   console.log(response1)
                   if(response1.data.success && response1.data.currentlyOccupied){
                     dispatch(setActiveApplication(a))
@@ -226,12 +226,12 @@ export default connect(mapStateToProps)(Home);
           })
         })
         if(userType=="client"){
-          axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+          axios.get("https://ghanahomerental.herokuapp.com/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
             console.log("user apps")
             console.log(response)
             const apps=response.data.applications
             apps.map((a)=>{
-              axios.get("http://localhost:3012/client-applications/getActiveStatus/"+a.application.id).then((response1)=>{
+              axios.get("https://ghanahomerental.herokuapp.com/client-applications/getActiveStatus/"+a.application.id).then((response1)=>{
                 console.log("user current")
                 console.log(response1)
             

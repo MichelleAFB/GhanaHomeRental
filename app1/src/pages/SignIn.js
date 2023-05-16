@@ -102,7 +102,7 @@ function SignIn() {
     } else {
       console.log(email);
       axios
-        .post("http://localhost:3012/sign-up/create-user", {
+        .post("https://ghanahomerental.herokuapp.com/sign-up/create-user", {
           firstname: firstname,
           lastname: lastname,
           email: email,
@@ -255,7 +255,7 @@ function SignIn() {
                                   alert(message)
                                 }
                                 console.log("HERE")
-                              axios.post("http://localhost:3012/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
+                              axios.post("https://ghanahomerental.herokuapp.com/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
                                 console.log(response)
                                 if(response.data.success){
                                   sessionStorage.removeItem("admin")
@@ -270,7 +270,7 @@ function SignIn() {
                                 }
                               })
                             }else{
-                              axios.post("http://localhost:3012/sign-in/sign-in-admin",{email:email,password:password,adminId:adminId}).then((response)=>{
+                              axios.post("https://ghanahomerental.herokuapp.com/sign-in/sign-in-admin",{email:email,password:password,adminId:adminId}).then((response)=>{
                                 console.log(response)
 
                                 if(response.data.success){
