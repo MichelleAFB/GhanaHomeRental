@@ -102,7 +102,7 @@ function SignIn() {
     } else {
       console.log(email);
       axios
-        .post("https://ghanahomerental.herokuapp.com/sign-up/create-user", {
+        .post("http://localhost:3012/sign-up/create-user", {
           firstname: firstname,
           lastname: lastname,
           email: email,
@@ -255,13 +255,14 @@ function SignIn() {
                                   alert(message)
                                 }
                                 console.log("HERE")
-                              axios.post("https://ghanahomerental.herokuapp.com/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
+                              axios.post("http://localhost:3012/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
                                 console.log(response)
                                 if(response.data.success){
+                                  console.log(response.data.client)
                                   sessionStorage.removeItem("admin")
                                   dispatch(setUser(response.data.client))
                                  console.log("here")
-                                  sessionStorage.setItem("client",JSON.stringify({firstname:response.data.client.firstname,lastname:response.data.client.lastname,email:email,phone:response.data.client.phone}))
+                                  sessionStorage.setItem("client",JSON.stringify(response.data.client))
                                   sessionStorage.setItem('user',JSON.stringify(response.data.client))
                                   sessionStorage.setItem("signInType","signIn")
                                   setTimeout(()=>{
@@ -270,7 +271,7 @@ function SignIn() {
                                 }
                               })
                             }else{
-                              axios.post("https://ghanahomerental.herokuapp.com/sign-in/sign-in-admin",{email:email,password:password,adminId:adminId}).then((response)=>{
+                              axios.post("http://localhost:3012/sign-in/sign-in-admin",{email:email,password:password,adminId:adminId}).then((response)=>{
                                 console.log(response)
 
                                 if(response.data.success){

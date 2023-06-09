@@ -21,13 +21,13 @@ function CurrentApplicationWindow() {
     var app
    const prom=new Promise((resolve,reject)=>{
     const user=JSON.parse(sessionStorage.getItem("user"))
-    axios.get("https://ghanahomerental.herokuapp.com/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+    axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
       console.log(response)
       if(response.data.applications!=null && response.data.success){
         const apps=response.data.applications
         apps.map((a)=>{
-          
-          axios.get("https://ghanahomerental.herokuapp.com/current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
+          console.log(a.application)
+          axios.get("http://localhost:3012/current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
             console.log(response1)
             if(response1.data.success && response1.data.currentlyOccupied){
               setApplication(a)

@@ -31,8 +31,11 @@ function ApplicationListItem({application}) {
   useEffect(()=>{
 
     const prom=new Promise((resolve,reject)=>{
-      axios.get("https://ghanahomerental.herokuapp.com/client-applications/getActiveStatus/"+application.application.id).then((response)=>{
+      console.log("app")
+      console.log("app id:"+application.application.id)
+      axios.get("http://localhost:3012/client-applications/getActiveStatus/"+application.application.id).then((response)=>{
         console.log(response)
+        console.log(application.application.id)
         if(response.data.success){
             if(response.data.currentlyOccupied==true){
               const prom=new Promise((resolve,reject)=>{
@@ -48,16 +51,16 @@ function ApplicationListItem({application}) {
       })
       if(application.application.application_status=="RESERVED"||application.application.application_status=="APPLIED" ){
 
-        axios.get("https://ghanahomerental.herokuapp.com/admin-applications/checkPaymentDeadline/"+application.application.id).then((response)=>{
+        axios.get("http://localhost:3012/admin-applications/checkPaymentDeadline/"+application.application.id).then((response)=>{
           console.log(response)
           console.log(response)
           setIsPassedDue(response.data.passedDue)
           if(response.data.passedDue){
             console.log("passed Due"+response.data.passedDue)
-            axios.post("https://ghanahomerental.herokuapp.com/client-applications/release-reservation-due-to-unpaid/"+application.application.id).then((response1)=>{
+            axios.post("http://localhost:3012/client-applications/release-reservation-due-to-unpaid/"+application.application.id).then((response1)=>{
               console.log(response1)
               if(response1.data.success){
-                axios.post("https://ghanahomerental.herokuapp.com/admin-applications/setStatus/"+application.application.id+"/DROPPED",{message:"Your reservation has been dropped due to non-payment"}).then((response2)=>{
+                axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.id+"/DROPPED",{message:"Your reservation has been dropped due to non-payment"}).then((response2)=>{
                   console.log(response2.data)
                 })
               }
@@ -89,6 +92,7 @@ function ApplicationListItem({application}) {
      const prom1=new Promise((resolve1,reject1)=>{
       if(application.application.application_status=="RESERVED" ||application.application.application_status=="APPLIED" ){
         console.log("useeffect")
+        console.log(application.application)
         getCheckoutLink().then(()=>{
           resolve1()
         })
@@ -104,13 +108,13 @@ function ApplicationListItem({application}) {
      })
       
     })
-
   },[])
+  
   console.log(process.env.REACT_APP_SAMPLE_CLEANING)
 console.log(application) 
   async function getCheckoutLink(q){
     console.log("CHECKOUT")
-    await axios.post("https://ghanahomerental.herokuapp.com/payment/checkout/"+application.application.id,{fees:[{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:q},{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:1}]}).then((response)=>{
+    await axios.post("http://localhost:3012/payment/checkout/"+application.application.id,{fees:[{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:q},{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:1}]}).then((response)=>{
         console.log(response.data)
         sessionStorage.setItem("checkoutLink_"+application.application.id,response.data.url)
         console.log(response.data)
@@ -123,7 +127,7 @@ console.log(application)
 
   async function checkout(){
     
-    await axios.get("https://ghanahomerental.herokuapp.com/client-applications/allBookingDatesForApplication/"+application.application.id).then((response1)=>{
+    await axios.get("http://localhost:3012/client-applications/allBookingDatesForApplication/"+application.application.id).then((response1)=>{
       console.log(response1)
       sessionStorage.setItem("application_payment_"+application.application.id,JSON.stringify({no_days:response1.data.no_days}))
       console.log(response1.data)
@@ -155,7 +159,7 @@ console.log("notify:"+application.application.notify_applicant)
     <div class="max-h-sm rounded-md ">
         <div class={application.application.notify_applicant==1?"py-5 m-4  bg-green-300 border-green-100 px-3 transition hover:bg-indigo-100 rounded-lg shadow-lg flex flex-col":"py-5 m-4  bg-gray-300 border-purple-100 px-3 transition hover:bg-indigo-100 rounded-lg shadow-lg flex flex-col"} onMouseOver={()=>{
           if(turnOffNotify){
-            axios.post("https://ghanahomerental.herokuapp.com/client-applications/turnOffNotifyApplicant/"+application.application.id).then((response)=>{
+            axios.post("http://localhost:3012/client-applications/turnOffNotifyApplicant/"+application.application.id).then((response)=>{
               console.log(response)
               setTurnOffNotify(false)
             })

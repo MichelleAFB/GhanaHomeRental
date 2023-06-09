@@ -19,7 +19,7 @@ function ApplicationsList({user,userType}) {
     const prom= new Promise((resolve,reject)=>{
       
 
-      axios.get("https://ghanahomerental.herokuapp.com/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+      axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
         console.log(response)
         console.log(response)
         console.log("hi")
@@ -37,31 +37,19 @@ function ApplicationsList({user,userType}) {
     prom.then(()=>{
       setIsLoading(false)
     })
+  }else{
+   const checkUser= sessionStorage.getItem("client")
+   console.log(checkUser)
   }
   },[newApplications])
-
- /* const myInterval = setInterval(()=>{
-    axios.get("https://ghanahomerental.herokuapp.com/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
-       
-      console.log(applications) 
-      console.log(applications.length==response.data.no_applications)
-      console.log(newApplications)
-      if(applications.length!=response.data.no_applications){
-        console.log("Change Applications")
-        setNewApplications(!newApplications) 
-        
-      }
-    })
-    console.log("\n\nCHECKING\n\n")
-
-  }, 100000); 
-  */
-
 
  
         
 console.log(userType+" "+ isLoading)
+console.log(user)
+
   if(!isLoading && userType!=null){
+
   return (
     <div class="flex flex-col w-full p-4 bg-gray-400 m-10 rounded-md ">
     <div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl"> Your Applications</p>
