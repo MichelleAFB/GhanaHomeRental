@@ -9,6 +9,7 @@ function ReviewItem({application}) {
   console.log(application.application)
   if(application.application.review==null || application.application.review=="" || application.application.length==0){
   return (
+    <div class="flex h-full">
     <div class="flex flex-col bg-gray-200 rounded-md p-3 m-3">
       <p class="text-center font-bold">Your Stay</p>
       <p class="text-center">{application.application.stay_start_date}-{application.application.stay_end_date}</p>
@@ -26,7 +27,7 @@ function ReviewItem({application}) {
       }}>
         <p class="text-white font-bold">Review</p>
       </button>
-
+      </div>
     </div>
   )
     }else{

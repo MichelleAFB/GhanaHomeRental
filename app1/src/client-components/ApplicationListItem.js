@@ -33,7 +33,7 @@ function ApplicationListItem({application}) {
     const prom=new Promise((resolve,reject)=>{
       console.log("app")
       console.log("app id:"+application.application.id)
-      axios.get("http://localhost:3012/client-applications/getActiveStatus/"+application.application.id).then((response)=>{
+      axios.get("http://localhost:3012/client-applications/getActiveStatus/"+application.application._id).then((response)=>{
         console.log(response)
         console.log(application.application.id)
         if(response.data.success){
@@ -51,16 +51,16 @@ function ApplicationListItem({application}) {
       })
       if(application.application.application_status=="RESERVED"||application.application.application_status=="APPLIED" ){
 
-        axios.get("http://localhost:3012/admin-applications/checkPaymentDeadline/"+application.application.id).then((response)=>{
+        axios.get("http://localhost:3012/admin-applications/checkPaymentDeadline/"+application.application._id).then((response)=>{
           console.log(response)
           console.log(response)
           setIsPassedDue(response.data.passedDue)
           if(response.data.passedDue){
             console.log("passed Due"+response.data.passedDue)
-            axios.post("http://localhost:3012/client-applications/release-reservation-due-to-unpaid/"+application.application.id).then((response1)=>{
+            axios.post("http://localhost:3012/client-applications/release-reservation-due-to-unpaid/"+application.application._id).then((response1)=>{
               console.log(response1)
               if(response1.data.success){
-                axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.id+"/DROPPED",{message:"Your reservation has been dropped due to non-payment"}).then((response2)=>{
+                axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application._id+"/DROPPED",{message:"Your reservation has been dropped due to non-payment"}).then((response2)=>{
                   console.log(response2.data)
                 })
               }
@@ -110,13 +110,12 @@ function ApplicationListItem({application}) {
     })
   },[])
   
-  console.log(process.env.REACT_APP_SAMPLE_CLEANING)
-console.log(application) 
+ console.log(application.application._id) 
   async function getCheckoutLink(q){
     console.log("CHECKOUT")
-    await axios.post("http://localhost:3012/payment/checkout/"+application.application.id,{fees:[{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:q},{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:1}]}).then((response)=>{
+    await axios.post("http://localhost:3012/payment/checkout/"+application.application._id,{fees:[{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:q},{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:1}]}).then((response)=>{
         console.log(response.data)
-        sessionStorage.setItem("checkoutLink_"+application.application.id,response.data.url)
+        sessionStorage.setItem("checkoutLink_"+application.application._id,response.data.url)
         console.log(response.data)
         setCheckoutLinkRecieved(true)
         setCheckoutLink(response.data.url)
@@ -126,10 +125,10 @@ console.log(application)
   }
 
   async function checkout(){
-    
-    await axios.get("http://localhost:3012/client-applications/allBookingDatesForApplication/"+application.application.id).then((response1)=>{
+    console.log(application.application._id)
+    await axios.get("http://localhost:3012/client-applications/allBookingDatesForApplication/"+application.application._id).then((response1)=>{
       console.log(response1)
-      sessionStorage.setItem("application_payment_"+application.application.id,JSON.stringify({no_days:response1.data.no_days}))
+      sessionStorage.setItem("application_payment_"+application.application._id,JSON.stringify({no_days:response1.data.no_days}))
       console.log(response1.data)
      // return getCheckoutLink(response1.data.days)
     }) 
@@ -138,12 +137,12 @@ console.log(application)
   if(!isLoading){
     checkout().then((response)=>{
       console.log(response)
-      if(sessionStorage.getItem("application_payment_"+application.application.id)==null){
+      if(sessionStorage.getItem("application_payment_"+application.application._id)==null){
         console.log("calling")
         
-      }if(sessionStorage.getItem("application_payment_"+application.application.id)!=null && getLink==true){
+      }if(sessionStorage.getItem("application_payment_"+application.application._id)!=null && getLink==true){
         console.log("run checkout")
-        const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application.id))
+        const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
         console.log( days.no_days)
         getCheckoutLink(days.no_days)
         setGetLink(false)
@@ -159,7 +158,7 @@ console.log("notify:"+application.application.notify_applicant)
     <div class="max-h-sm rounded-md ">
         <div class={application.application.notify_applicant==1?"py-5 m-4  bg-green-300 border-green-100 px-3 transition hover:bg-indigo-100 rounded-lg shadow-lg flex flex-col":"py-5 m-4  bg-gray-300 border-purple-100 px-3 transition hover:bg-indigo-100 rounded-lg shadow-lg flex flex-col"} onMouseOver={()=>{
           if(turnOffNotify){
-            axios.post("http://localhost:3012/client-applications/turnOffNotifyApplicant/"+application.application.id).then((response)=>{
+            axios.post("http://localhost:3012/client-applications/turnOffNotifyApplicant/"+application.application._id).then((response)=>{
               console.log(response)
               setTurnOffNotify(false)
             })
@@ -298,7 +297,7 @@ console.log("notify:"+application.application.notify_applicant)
                           !getLink ?
                           <div class="flex p-3">
                           <button class="p-3 bg-purple-600 rounded-md w-full" >
-                            <a class="text-white" href={sessionStorage.getItem('checkoutLink_'+application.application.id)}>Proceed to payment</a>
+                            <a class="text-white" href={sessionStorage.getItem('checkoutLink_'+application.application._id)}>Proceed to payment</a>
                             </button>
                             </div>:<a></a>
                         }
@@ -327,7 +326,7 @@ console.log("notify:"+application.application.notify_applicant)
                           !getLink ?
                           <div class="">
               
-                            <a class="flex" href={sessionStorage.getItem('checkoutLink_'+application.application.id)}><p class="text-white text-center font-bold">Proceed to payment</p></a>
+                            <a class="flex" href={sessionStorage.getItem('checkoutLink_'+application.application._id)}><p class="text-white text-center font-bold">Proceed to payment</p></a>
                            
                             </div>:<a></a>
                 }

@@ -48,7 +48,7 @@ function ReviewWindow() {
 
 if(!isLoading){
   return (
-    <div class="flex flex-col w-full bg-purple-400 rounded-md m-3 p-3">
+    <div class="flex flex-col w-full bg-purple-400 rounded-md m-3 p-3 ">
       <p class="text-2xl text-center font-bold text-white">Tell Us About Your Stay</p>
     <div class=" overflow-y-scroll overflow-hidden w-full flex-col content-center h-[40vh] p-3 justify-around">
       {

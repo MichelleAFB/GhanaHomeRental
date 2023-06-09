@@ -24,7 +24,7 @@ function Reviews() {
     var arr
     const arr2=[]
     const prom=new Promise((resolve,reject)=>{
-      axios.get("https://ghanahomerental.herokuapp.com/client-applications/get-all-reviews").then((response)=>{
+      axios.get("http://localhost:3012/client-applications/get-all-reviews").then((response)=>{
       console.log(response)
       if(response.data.success){
           setReviews(response.data.reviews)
@@ -37,17 +37,20 @@ function Reviews() {
     prom.then(()=>{
       console.log(arr)
       const prom1=new Promise((resolve1,reject1)=>{
-        axios.get("https://ghanahomerental.herokuapp.com/admin-applications/applications").then((response)=>{
+        axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
           console.log(response)
           if(response.data.success){
             //setApplications(response.data.applications)
             var index=0
+            console.log(response.data)
             arr.map((r)=>{
               console.log(r)
               response.data.applications.map((a)=>{
-                if(a.application.id==r.application_id){
+                console.log(a)
+                if(a.application._id==r.application_id){
                   console.log("match")
                   arr[index].application=a;
+                  console.log(arr)
                  
                   index++
                 }
@@ -81,11 +84,10 @@ function Reviews() {
   if(!isLoading && applications!=null){
   return (
     
-  
-      <div class="flex flex-col">
-        <div class="flex flex-col bg-gray-600  p-5">
-        <p class="text-center font-bold text-2xl m-5 text-white">Experiences</p>
-       <div class="p-5">
+    <div class="flex h-full">
+      <div class="flex flex-col ">
+        <div class="flex flex-col   p-5 bg-gray-400">
+       <div class="p-10">
         <Carousel autoPlay showThumbs={true} thumbWidth={200} >
           {
             applications.map((a)=>{
@@ -97,7 +99,7 @@ function Reviews() {
          
         </div>
       </div>
-  
+     </div>
   )
   }else{
     return(<div></div>)

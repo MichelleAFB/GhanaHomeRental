@@ -56,7 +56,7 @@ function AdminApplicationsList({totalNewApplications}) {
         const prom1=new Promise((resolve1,reject1)=>{
           apps.map((a)=>{
             console.log(a)
-            axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
+            axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application._id).then((response1)=>{
               console.log("response1")
               console.log(response1)
               if(response1.data.success==false){
@@ -72,7 +72,7 @@ function AdminApplicationsList({totalNewApplications}) {
             })
             setTimeout(()=>{
                 resolve1()
-            },500)
+            },800)
           })
 
         })
@@ -114,6 +114,7 @@ function AdminApplicationsList({totalNewApplications}) {
     <div class=" overflow-y-scroll overflow-hidden w-full flex-col content-center h-[60vh] p-3 justify-around">
    {
             applications.map((e) => {
+              console.log(applications)
                 return(<AdminApplicationListItem application={e}/>)
               })
           }

@@ -67,12 +67,12 @@ function ReviewImageCarousel({images}) {
 
       if(!isLoading && ourImages!=null){ 
         return (
-          <div  class="h-[100vh] overflow-hidden p-3 objext-cover ">
+          <div  class="flex h-3/5 p-2 object-cover ">
             <Carousel showThumbs={true} autoPlay>
             {
               ourImages.map((m)=>{
                 return(
-                  <div class="h-[80vh] object-cover">
+                  <div class="h-[60vh] object-cover">
                      <Image cloudName="michelle-badu" publicId={m.publicID}>
                       <Transformation crop="scale" angle="10"/>
                    </Image>

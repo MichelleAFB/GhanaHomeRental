@@ -56,15 +56,15 @@ function Review({application}) {
   if(!isLoading){
     console.log(application.application)
   return (
-    <div class="h-[110vh] bg-gray-300 rounded-md p-3 m-3 block ">
+    <div class="h-full bg-gray-300 rounded-md p-5 block ml-5 mr-5 mb-5">
         <p class=" font-bold text-xl">{app.application.stay_start_date}-{app.application.stay_end_date}</p>
-        <div class="flex p-3">
+        <div class="flex ">
           <i class="m-3 font-semibold">
              "{app.application.review} ""
             <br/>- <p class="text-normal font-bold">{app.application.firstname} {app.application.lastname}</p>
           </i>
         </div>
-       <div class="flex flex-col p-8">
+       <div class="flex flex-col ">
          <ReviewImageCarousel images={images}/>
        </div>
         

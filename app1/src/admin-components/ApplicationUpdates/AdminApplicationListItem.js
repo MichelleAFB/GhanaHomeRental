@@ -56,6 +56,7 @@ function AdminApplicationListItem({application}) {
   if(show){
     console.log(application.application.datePaid==null)
     console.log(application.application)
+   console.log(application.application.notify_admin +" "+application.application.currentlyOccupied)
    
   return (
     <div class="max-h-sm rounded-md z-10">

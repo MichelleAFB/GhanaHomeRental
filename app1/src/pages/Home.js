@@ -50,7 +50,7 @@ function Home({userType,user,activeApplication}) {
                 
                 
                 apps.map((a)=>{
-                  axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
+                  axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application._id).then((response1)=>{
                     console.log(response1)
                     if(response1.data.success && response1.data.currentlyOccupied){
                       dispatch(setActiveApplication(a))
@@ -71,7 +71,7 @@ function Home({userType,user,activeApplication}) {
               console.log(response)
               const apps=response.data.applications
               apps.map((a)=>{
-                axios.get("http://localhost:3012/client-applications/getActiveStatus/"+a.application.id).then((response1)=>{
+                axios.get("http://localhost:3012/client-applications/getActiveStatus/"+a.application._id).then((response1)=>{
                   console.log("user current")
                   console.log(response1)
               
@@ -111,7 +111,7 @@ function Home({userType,user,activeApplication}) {
       <div>
         {
           userType=="admin"? 
-          <div class="block mt-[250px] m-5"> 
+          <div class="block mt-[200px] m-5"> 
       
           <div class="flex flex-col m-3">
           <AdminCurrentApplicationWindow/>
@@ -131,9 +131,9 @@ function Home({userType,user,activeApplication}) {
         }
         {
           userType=="client" && user!=null ?
-          <div class="block m-3 mt-[200px] m-5">
-          <div class="flex flex-col p-5 ">
-            <div class="flex p-3 m-3">
+          <div class="block  mt-[60px] mr-5 ml-5">
+          <div class="flex flex-col p-5 w-full">
+            <div class="flex p-3 m-3 justify-center">
                 <CurrentApplicationWindow/>
              
                 <ReviewWindow/>
