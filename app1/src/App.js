@@ -21,9 +21,17 @@ import YourStay from "./pages/YourStay";
 import AdminYourStay from "./pages/AdminYourStay";
 import Reviews from "./pages/Reviews";
 import { Menu } from "@material-ui/core";
+import {useEffect,useState}from 'react'
+import {connect} from 'react-redux'
+
+function App({reload}) {
 
  
-function App() {
+
+  useEffect(()=>{
+
+  },[reload])
+  
   return (
     // BEM
     <div className='app'>
@@ -52,5 +60,16 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = (state, props) => {
+  var reload= state.adminApplications.reload;
+ 
+  
+
+  return {
+   
+   reload:reload
+  };
+};
+
+export default connect(mapStateToProps)(App)
   

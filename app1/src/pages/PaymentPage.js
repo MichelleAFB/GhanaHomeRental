@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import {CardElement} from '@stripe/react-stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 import {loadStripe} from '@stripe/stripe-js';
+
 import axios from 'axios';
 
 function PaymentPage() {
@@ -14,6 +15,7 @@ function PaymentPage() {
   const[isLoading,setIsLoading]=useState(true)
   const [application,setApplication]=useState()
   const[noDays,setNoDays]=useState()
+  console.log(process.env.REACT_APP_STRIPE_KEY)
 
   const {id}=useParams()
 console.log(id)

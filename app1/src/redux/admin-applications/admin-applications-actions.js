@@ -76,3 +76,9 @@ export function setHasActiveApplication(val){
 
 }
 
+export function reload(){
+  return{
+    type:actionTypes.RELOAD_AFTER_UPDATE
+  }
+}
+

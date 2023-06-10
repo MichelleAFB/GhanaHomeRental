@@ -1,6 +1,7 @@
 import React from 'react'
 import {useState,useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
+
 //assets
 import { Avatar } from '@material-ui/core'
 import IonIcon from '@reacticons/ionicons'
@@ -16,6 +17,7 @@ import ApplicationListItemOccupant from './ApplicationListItemOccupant'
 import {loadStripe} from '@stripe/stripe-js';
 import axios from 'axios'
 import emailjs from "@emailjs/browser";
+
 function ApplicationListItem({application}) {
   const dispatch=useDispatch()
   const navigate=useNavigate()
@@ -27,15 +29,16 @@ function ApplicationListItem({application}) {
   const[checkoutLinkRecieved, setCheckoutLinkRecieved]=useState(false)
   const[isPassedDue,setIsPassedDue]=useState(false)
   const stripePromise=loadStripe("pk_live_51MrXkxLxMJskpKlAg04tvIwsH0onrRPJH2fgU2qzrHvaWKRFjqL76UW2lwKI4SGx0Y68ICWsm9Wts6oHWjHBPi1D00JG5bQ97t") 
+  console.log(process.env.REACT_APP_STRIPE_KEY)
+  console.log(process.env)
 
   useEffect(()=>{
 
     const prom=new Promise((resolve,reject)=>{
-      console.log("app")
-      console.log("app id:"+application.application.id)
+     
       axios.get("http://localhost:3012/client-applications/getActiveStatus/"+application.application._id).then((response)=>{
         console.log(response)
-        console.log(application.application.id)
+       
         if(response.data.success){
             if(response.data.currentlyOccupied==true){
               const prom=new Promise((resolve,reject)=>{
@@ -53,7 +56,7 @@ function ApplicationListItem({application}) {
 
         axios.get("http://localhost:3012/admin-applications/checkPaymentDeadline/"+application.application._id).then((response)=>{
           console.log(response)
-          console.log(response)
+        
           setIsPassedDue(response.data.passedDue)
           if(response.data.passedDue){
             console.log("passed Due"+response.data.passedDue)
@@ -114,12 +117,10 @@ function ApplicationListItem({application}) {
   async function getCheckoutLink(q){
     console.log("CHECKOUT")
     await axios.post("http://localhost:3012/payment/checkout/"+application.application._id,{fees:[{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:q},{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:1}]}).then((response)=>{
-        console.log(response.data)
         sessionStorage.setItem("checkoutLink_"+application.application._id,response.data.url)
-        console.log(response.data)
         setCheckoutLinkRecieved(true)
         setCheckoutLink(response.data.url)
-        console.log(response.data.url)
+        
         return response.data.url
       })
   }
@@ -138,7 +139,7 @@ function ApplicationListItem({application}) {
     checkout().then((response)=>{
       console.log(response)
       if(sessionStorage.getItem("application_payment_"+application.application._id)==null){
-        console.log("calling")
+     
         
       }if(sessionStorage.getItem("application_payment_"+application.application._id)!=null && getLink==true){
         console.log("run checkout")
@@ -149,11 +150,11 @@ function ApplicationListItem({application}) {
   
       }
     })
- 
+    console.log(process.env.REACT_APP_STRIPE_KEY)
 
     console.log("link recieved:"+checkoutLinkRecieved)
     console.log("days remaining:"+daysRemainingToPay)
-console.log("notify:"+application.application.notify_applicant)
+console.log(application.application.stay_start_date+" "+application.application.stay_end_date)
   return (
     <div class="max-h-sm rounded-md ">
         <div class={application.application.notify_applicant==1?"py-5 m-4  bg-green-300 border-green-100 px-3 transition hover:bg-indigo-100 rounded-lg shadow-lg flex flex-col":"py-5 m-4  bg-gray-300 border-purple-100 px-3 transition hover:bg-indigo-100 rounded-lg shadow-lg flex flex-col"} onMouseOver={()=>{

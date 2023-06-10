@@ -6,7 +6,8 @@ const initialState={
   visibility:false,
   application:null,
   activeApplication:null,
-  hasActiveApplication:false
+  hasActiveApplication:false,
+  reload:false
 
 }
 
@@ -49,6 +50,12 @@ export  const adminApplicationsReducer=(state=initialState,action)=>{
         ...state,
         activeApplication:action.payload.application
       }
+      case actionTypes.RELOAD_AFTER_UPDATE:
+        console.log("REDUX:RELOADING")
+        return{
+          ...state,
+          reload:!state.reload
+        }
      
     
       default:

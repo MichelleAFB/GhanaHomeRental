@@ -31,7 +31,7 @@ function Home({userType,user,activeApplication}) {
   const [newApplications,setNewApplications]=useState(false)
   const dispatch=useDispatch()
  
-
+  console.log(process.env.REACT_APP_STRIPE_KEY)
 
   useEffect(()=>{
     if(user!=null){
@@ -98,6 +98,8 @@ function Home({userType,user,activeApplication}) {
 
   console.log(isLoading)
   if(!isLoading && user!=null){
+    console.log(process.env.REACT_APP_STRIPE_KEY)
+
     
     console.log("in home")
     console.log(user)
