@@ -54,7 +54,7 @@ function ReviewModal({visibility,application}) {
         formData.append('upload_preset','zj9kqmht')
         formData.append('file',files[i])
         formData.append('cloud_name','michelle-badu')
-        formData.append("api_key", "877163957659927")
+        formData.append("api_key", process.env.REACT_APP_CLOUDINARY_API_KEY)
         add(formData,i)
       })
   }
@@ -102,7 +102,7 @@ function ReviewModal({visibility,application}) {
                   if(files!=null){
                   sendImages(files).then(()=>{
                     console.log(files)
-                      axios.post("https://ghanahomerental.herokuapp.com/current-resident/review/"+application.application.id,{review:review,images:JSON.parse(sessionStorage.getItem('images'))}).then((response)=>{
+                      axios.post("http://localhost:3012/current-resident/review/"+application.application._id,{review:review,images:JSON.parse(sessionStorage.getItem('images'))}).then((response)=>{
                         console.log(response.data)
                         if(response.data.success){
                           alert("Thank you for your review!")
@@ -112,7 +112,7 @@ function ReviewModal({visibility,application}) {
                   });
                 }else{
 
-                  axios.post("https://ghanahomerental.herokuapp.com/current-resident/review/"+application.application.id,{review:review,images:JSON.parse(sessionStorage.getItem('images'))}).then((response)=>{
+                  axios.post("http://localhost:3012/current-resident/review/"+application.application._id,{review:review,images:JSON.parse(sessionStorage.getItem('images'))}).then((response)=>{
                     console.log(response.data)
                     if(response.data.success){
                       alert("Thank you for your review!")

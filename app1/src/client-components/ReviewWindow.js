@@ -13,7 +13,7 @@ function ReviewWindow() {
     const user=JSON.parse(sessionStorage.getItem("user"))
     const app=[]
     const prom=new Promise((resolve,reject)=>{
-      axios.get("https://ghanahomerental.herokuapp.com/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+      axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
         console.log(response)
         if(response.data.success && response.data.applications!=null){
           const apps=response.data.applications

@@ -160,8 +160,8 @@ function SignIn() {
     console.log(form);
     const response= await emailjs
       .sendForm(
-        "service_hhij0z7",
-        "signup_template_id",
+        process.env.REACT_APP_EMAILJS_SERVICE_KEY,
+        process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
         form.current,
         "3X6tKTw8npQeKEIq5"
       )

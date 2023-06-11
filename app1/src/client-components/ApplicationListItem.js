@@ -28,17 +28,17 @@ function ApplicationListItem({application}) {
   const[checkoutLink,setCheckoutLink]=useState()
   const[checkoutLinkRecieved, setCheckoutLinkRecieved]=useState(false)
   const[isPassedDue,setIsPassedDue]=useState(false)
-  const stripePromise=loadStripe("pk_live_51MrXkxLxMJskpKlAg04tvIwsH0onrRPJH2fgU2qzrHvaWKRFjqL76UW2lwKI4SGx0Y68ICWsm9Wts6oHWjHBPi1D00JG5bQ97t") 
-  console.log(process.env.REACT_APP_STRIPE_KEY)
-  console.log(process.env)
+  const stripePromise=loadStripe(process.env.REACT_APP_STRIPE_KEY) 
+ 
 
   useEffect(()=>{
+    console.log("\n\n"+application.application.stay_start_date)
 
     const prom=new Promise((resolve,reject)=>{
      
       axios.get("http://localhost:3012/client-applications/getActiveStatus/"+application.application._id).then((response)=>{
         console.log(response)
-       
+     
         if(response.data.success){
             if(response.data.currentlyOccupied==true){
               const prom=new Promise((resolve,reject)=>{
@@ -49,6 +49,8 @@ function ApplicationListItem({application}) {
               prom.then(()=>{
                 dispatch(setCurrentlyOccupied(true))
               })
+            }else{
+              resolve()
             }
         }
       })
@@ -59,7 +61,7 @@ function ApplicationListItem({application}) {
         
           setIsPassedDue(response.data.passedDue)
           if(response.data.passedDue){
-            console.log("passed Due"+response.data.passedDue)
+          
             axios.post("http://localhost:3012/client-applications/release-reservation-due-to-unpaid/"+application.application._id).then((response1)=>{
               console.log(response1)
               if(response1.data.success){
@@ -69,24 +71,26 @@ function ApplicationListItem({application}) {
               }
             })
           }
-          sessionStorage.setItem("checkPayment_"+application.application.id,JSON.stringify(response.data))
+          sessionStorage.setItem("checkPayment_"+application.application._id,JSON.stringify(response.data))
          
           
         })
 
-        if(sessionStorage.getItem("application_payment_"+application.application.id)==null){
-          console.log("calling")
+        if(sessionStorage.getItem("application_payment_"+application.application._id)==null){
+         
           
-        }if(sessionStorage.getItem("application_payment_"+application.application.id)!=null && getLink==true){
-          console.log("run checkout")
-          const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application.id))
-          console.log( days.no_days)
+        }if(sessionStorage.getItem("application_payment_"+application.application._id)!=null && getLink==true){
+          
+          const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
           getCheckoutLink(days.no_days)
           setGetLink(false)
     
         }
       }
-      resolve()
+      setTimeout(()=>{
+        resolve()
+      },800)
+     
       
     })
 
@@ -94,9 +98,11 @@ function ApplicationListItem({application}) {
       
      const prom1=new Promise((resolve1,reject1)=>{
       if(application.application.application_status=="RESERVED" ||application.application.application_status=="APPLIED" ){
-        console.log("useeffect")
+        const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
+       
         console.log(application.application)
-        getCheckoutLink().then(()=>{
+        getCheckoutLink(days.no_days).then(()=>{
+          
           resolve1()
         })
 
@@ -113,7 +119,7 @@ function ApplicationListItem({application}) {
     })
   },[])
   
- console.log(application.application._id) 
+
   async function getCheckoutLink(q){
     console.log("CHECKOUT")
     await axios.post("http://localhost:3012/payment/checkout/"+application.application._id,{fees:[{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:q},{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:1}]}).then((response)=>{
@@ -126,11 +132,11 @@ function ApplicationListItem({application}) {
   }
 
   async function checkout(){
-    console.log(application.application._id)
+  
     await axios.get("http://localhost:3012/client-applications/allBookingDatesForApplication/"+application.application._id).then((response1)=>{
-      console.log(response1)
+    
       sessionStorage.setItem("application_payment_"+application.application._id,JSON.stringify({no_days:response1.data.no_days}))
-      console.log(response1.data)
+     
      // return getCheckoutLink(response1.data.days)
     }) 
  }
@@ -144,16 +150,13 @@ function ApplicationListItem({application}) {
       }if(sessionStorage.getItem("application_payment_"+application.application._id)!=null && getLink==true){
         console.log("run checkout")
         const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
-        console.log( days.no_days)
-        getCheckoutLink(days.no_days)
         setGetLink(false)
   
       }
     })
-    console.log(process.env.REACT_APP_STRIPE_KEY)
+    
 
-    console.log("link recieved:"+checkoutLinkRecieved)
-    console.log("days remaining:"+daysRemainingToPay)
+   
 console.log(application.application.stay_start_date+" "+application.application.stay_end_date)
   return (
     <div class="max-h-sm rounded-md ">
