@@ -20,10 +20,10 @@ function GuestItem({occupant}) {
   console.log(occupant)
   useEffect(()=>{
     const prom=new Promise((resolve,reject)=>{
-      axios.get("https://ghanahomerental.herokuapp.com/current-resident/guests/"+occupant.application_id+"/"+occupant.id).then((response)=>{
+      axios.get("http://localhost:3012/current-resident/guests/"+occupant.application_id+"/"+occupant.id).then((response)=>{
         console.log(response)
         setGuests(response.data.guests)
-        axios.get("https://ghanahomerental.herokuapp.com/current-resident/restricted-individuals/"+occupant.application_id+"/"+occupant.id).then((response1)=>{
+        axios.get("http://localhost:3012/current-resident/restricted-individuals/"+occupant.application_id+"/"+occupant.id).then((response1)=>{
           console.log("\n\n")
           console.log(response1)
           setRestricted(response1.data.restricted_individuals)

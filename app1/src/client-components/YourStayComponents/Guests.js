@@ -17,7 +17,7 @@ function Guests({application}) {
   useEffect(()=>{
 
     const prom=new Promise((resolve,reject)=>{
-     /* axios.get("https://ghanahomerental.herokuapp.com/current-resident/guests/"+application.application.id).then((response)=>{
+     /* axios.get("http://localhost:3012/current-resident/guests/"+application.application.id).then((response)=>{
         console.log(response.data)
         setGuests(response.data.guests)
         

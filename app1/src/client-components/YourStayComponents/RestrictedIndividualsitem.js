@@ -18,7 +18,7 @@ function RestrictedIndividualsitem({occupant}) {
   console.log(occupant)
   useEffect(()=>{
     const prom=new Promise((resolve,reject)=>{
-      axios.get("https://ghanahomerental.herokuapp.com/current-resident/restricted-individuals/"+occupant.application_id+"/"+occupant.id).then((response)=>{
+      axios.get("http://localhost:3012/current-resident/restricted-individuals/"+occupant.application_id+"/"+occupant.id).then((response)=>{
         console.log(response)
         setGuests(response.data.guests)
         resolve()

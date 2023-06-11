@@ -38,7 +38,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
   useEffect(()=>{
     if(visibility){
       //getCurrent(application)
-      console.log(application.application.application.id +" "+getCurrent(application))
+      console.log(application.application.application._id +" "+getCurrent(application))
       setIsLoading(false)
     }
   },[visibility])
@@ -120,7 +120,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
 
                           const prom1=new Promise((resolve1,reject1)=>{
                             if(application.application.application.notify_admin==1){
-                            axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application.id).then((response)=>{
+                            axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
                               if(response.data.success){
 
                                 resolve1()
@@ -300,11 +300,11 @@ function ApplicationModal({visibility,application,handleNotify}) {
 
                   if(denyBooking){
                     const prom=new Promise((resolve,reject)=>{
-                      axios.post("http://localhost:3012/admin-applications/deny-booking/"+application.application.application.id).then((response1)=>{
+                      axios.post("http://localhost:3012/admin-applications/deny-booking/"+application.application.application._id).then((response1)=>{
                         console.log("here")
                         console.log(response1)
                         if(response1.data.success){
-                          axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application.id+"/DENIED",{message:"Your application has been denied"}).then((response2)=>{
+                          axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application._id+"/DENIED",{message:"Your application has been denied"}).then((response2)=>{
                             console.log(response2)
                             if(response2.data.success){
                               
@@ -312,9 +312,9 @@ function ApplicationModal({visibility,application,handleNotify}) {
                                 console.log(response=='OK')
                                 
                                 if(response=='OK'){
-                                  alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed!")
+                                  alert("SUCCESS: Reservation for application "+application.application.application._id+" is confirmed!")
                                 }else{
-                                  alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed! Email not set!")
+                                  alert("SUCCESS: Reservation for application "+application.application.application._id+" is confirmed! Email not set!")
                                 }
                               })
                               resolve()
@@ -329,7 +329,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
                     prom.then(()=>{
                       const prom1=new Promise((resolve1,reject1)=>{
                         if(application.application.application.notify_admin==1){
-                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application.id).then((response)=>{
+                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
                           if(response.data.success){
                             resolve1()
                           }
@@ -350,7 +350,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
                   }
                   if(reserveAndPromptPay){
                     const prom=new Promise((resolve,reject)=>{
-                      axios.get("http://localhost:3012/admin-applications/checkAvailability/"+application.application.application.id).then((response)=>{
+                      axios.get("http://localhost:3012/admin-applications/checkAvailability/"+application.application.application._id).then((response)=>{
                         console.log(response)
                         if(response.data.success){
                           console.log(response.data.paid==true)
@@ -362,12 +362,12 @@ function ApplicationModal({visibility,application,handleNotify}) {
                           console.log(response.data.conflicting_dates.length)
                           if(response.data.conflicting_dates.length==0 ){
                               console.log("here call")
-                            axios.post("http://localhost:3012/admin-applications/reserveAndPromptPay/"+application.application.application.id).then((response1)=>{
+                            axios.post("http://localhost:3012/admin-applications/reserveAndPromptPay/"+application.application.application._id).then((response1)=>{
                               console.log("here")
                               console.log(response1)
                               if(response1.data.success){
                                
-                                axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application.id+"/RESERVED",{message:"Your application has been reserved but not confirmed.Please submit your payment within 5 days to secure your reservation or it will be released"}).then((response2)=>{
+                                axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application._id+"/RESERVED",{message:"Your application has been reserved but not confirmed.Please submit your payment within 5 days to secure your reservation or it will be released"}).then((response2)=>{
                                   console.log(response2)
                                   if(response2.data.success){
                                     alert("SUCCESS: successfully reserved")
@@ -390,7 +390,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
 
                       const prom1=new Promise((resolve1,reject1)=>{
                         if(application.application.application.notify_admin==1){
-                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application.id).then((response)=>{
+                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
                           if(response.data.success){
                             resolve1()
                           }
@@ -416,21 +416,21 @@ function ApplicationModal({visibility,application,handleNotify}) {
                   if(approve){
 
                     const prom=new Promise((resolve,reject)=>{
-                      axios.post("http://localhost:3012/admin-applications/approve-booking/"+application.application.application.id).then((response)=>{
+                      axios.post("http://localhost:3012/admin-applications/approve-booking/"+application.application.application._id).then((response)=>{
                         console.log("approve response")
                         console.log(response)
-                        console.log(response.data.hasOwnProperty('no_booked'))
+                       
                         if(response.data.success==true){
                           if(response.data.approved==true){
-                            axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application.id+"/CONFIRMED",{message:"Your reservation for stay["+application.application.application.stay_start_date+" through "+application.application.application.stay_end_date+"] is confirmed!"}).then((response1)=>{
+                            axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application._id+"/CONFIRMED",{message:"Your reservation for stay["+application.application.application.stay_start_date+" through "+application.application.application.stay_end_date+"] is confirmed!"}).then((response1)=>{
                               console.log(response1)
                               if(response1.data.success){
                               
                                 sendEmail(approveForm).then((response)=>{
                                   if(response=="OK"){
-                                    alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed!")
+                                    alert("SUCCESS: Reservation for application "+application.application.application._id+" is confirmed!")
                                   }else{
-                                    alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed! Email not set!")
+                                    alert("SUCCESS: Reservation for application "+application.application.application._id+" is confirmed! Email not set!")
                                   }
                                 })
                                 //TODO: send email verification
@@ -672,11 +672,11 @@ function ApplicationModal({visibility,application,handleNotify}) {
                   console.log("here")
                   if(denyBooking){
                     const prom=new Promise((resolve,reject)=>{
-                      axios.post("http://localhost:3012/admin-applications/deny-booking/"+application.application.application.id).then((response1)=>{
+                      axios.post("http://localhost:3012/admin-applications/deny-booking/"+application.application.application._id).then((response1)=>{
                         console.log("here")
                         console.log(response1)
                         if(response1.data.success){
-                          axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application.id+"/DENIED",{message:"Your application has been denied"}).then((response2)=>{
+                          axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application._id+"/DENIED",{message:"Your application has been denied"}).then((response2)=>{
                             console.log(response2)
                             if(response2.data.success){
                               
@@ -684,9 +684,9 @@ function ApplicationModal({visibility,application,handleNotify}) {
                                 console.log(response=='OK')
                                 
                                 if(response=='OK'){
-                                  alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed!")
+                                  alert("SUCCESS: Reservation for application "+application.application.application._id+" is confirmed!")
                                 }else{
-                                  alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed! Email not set!")
+                                  alert("SUCCESS: Reservation for application "+application.application.application._id+" is confirmed! Email not set!")
                                 }
                               })
                               resolve()
@@ -701,7 +701,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
                     prom.then(()=>{
                       const prom1=new Promise((resolve1,reject1)=>{
                         if(application.application.application.notify_admin==1){
-                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application.id).then((response)=>{
+                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
                           if(response.data.success){
                             resolve1()
                           }
@@ -722,7 +722,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
                   }
                   if(reserveAndPromptPay){
                     const prom=new Promise((resolve,reject)=>{
-                      axios.get("http://localhost:3012/admin-applications/checkAvailability/"+application.application.application.id).then((response)=>{
+                      axios.get("http://localhost:3012/admin-applications/checkAvailability/"+application.application.application._id).then((response)=>{
                         console.log(response)
                         if(response.data.success){
                           console.log(response.data.paid==true)
@@ -734,12 +734,12 @@ function ApplicationModal({visibility,application,handleNotify}) {
                           console.log(response.data.conflicting_dates.length)
                           if(response.data.conflicting_dates.length==0 ){
                               console.log("here call")
-                            axios.post("http://localhost:3012/admin-applications/reserveAndPromptPay/"+application.application.application.id).then((response1)=>{
+                            axios.post("http://localhost:3012/admin-applications/reserveAndPromptPay/"+application.application.application._id).then((response1)=>{
                               console.log("here")
                               console.log(response1)
                               if(response1.data.success){
                                
-                                axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application.id+"/RESERVED",{message:"Your application has been reserved but not confirmed.Please submit your payment within 5 days to secure your reservation or it will be released"}).then((response2)=>{
+                                axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application._id+"/RESERVED",{message:"Your application has been reserved but not confirmed.Please submit your payment within 5 days to secure your reservation or it will be released"}).then((response2)=>{
                                   console.log(response2)
                                   if(response2.data.success){
                                     alert("SUCCESS: successfully reserved")
@@ -762,7 +762,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
 
                       const prom1=new Promise((resolve1,reject1)=>{
                         if(application.application.application.notify_admin==1){
-                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application.id).then((response)=>{
+                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
                           if(response.data.success){
                             resolve1()
                           }
@@ -789,22 +789,22 @@ function ApplicationModal({visibility,application,handleNotify}) {
 
                     const prom=new Promise((resolve,reject)=>{
                       console.log("here")
-                      axios.post("http://localhost:3012/admin-applications/approve-booking/"+application.application.application.id).then((response)=>{
+                      axios.post("http://localhost:3012/admin-applications/approve-booking/"+application.application.application._id).then((response)=>{
                         console.log("approve response")
                         console.log(response)
                         console.log(response.data.hasOwnProperty('no_booked'))
                         if(response.data.success==true){
                           if(response.data.approved==true){
-                            axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application.id+"/CONFIRMED",{message:"Your reservation for stay["+application.application.application.stay_start_date+" through "+application.application.application.stay_end_date+"] is confirmed!"}).then((response1)=>{
+                            axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application._id+"/CONFIRMED",{message:"Your reservation for stay["+application.application.application.stay_start_date+" through "+application.application.application.stay_end_date+"] is confirmed!"}).then((response1)=>{
                               console.log(response1)
                               if(response1.data.success){
                               
                                 sendEmail(approveForm).then((response)=>{
                                   if(response=="OK"){
-                                    alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed!")
+                                    alert("SUCCESS: Reservation for application "+application.application.application._id+" is confirmed!")
                                     setSent(true)
                                   }else{
-                                    alert("SUCCESS: Reservation for application "+application.application.application.id+" is confirmed! Email not set!")
+                                    alert("SUCCESS: Reservation for application "+application.application.application._id+" is confirmed! Email not set!")
                                   }
                                 })
                                 //TODO: send email verification

@@ -113,7 +113,7 @@ function Home({userType,user,activeApplication}) {
       <div>
         {
           userType=="admin"? 
-          <div class="block mt-[200px] m-5"> 
+          <div class="block mt-[250px] m-5"> 
       
           <div class="flex flex-col m-3">
           <AdminCurrentApplicationWindow/>
@@ -133,7 +133,7 @@ function Home({userType,user,activeApplication}) {
         }
         {
           userType=="client" && user!=null ?
-          <div class="block  mt-[60px] mr-5 ml-5">
+          <div class="block  mt-[250px] mr-5 ml-5">
           <div class="flex flex-col p-5 w-full">
             <div class="flex p-3 m-3 justify-center">
                 <CurrentApplicationWindow/>

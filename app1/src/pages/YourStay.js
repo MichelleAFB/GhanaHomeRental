@@ -29,7 +29,7 @@ function YourStay() {
 
   useEffect(()=>{
     const prom=new Promise((resolve,reject)=>{
-        axios.get("https://ghanahomerental.herokuapp.com/client-applications/application/"+id).then((response)=>{
+        axios.get("http://localhost:3012/client-applications/application/"+id).then((response)=>{
           console.log(response)
           setApplication(response.data)
           const app=response.data 

@@ -27,7 +27,7 @@ function CurrentApplicationWindow() {
         const apps=response.data.applications
         apps.map((a)=>{
           console.log(a.application)
-          axios.get("http://localhost:3012/current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
+          axios.get("http://localhost:3012/client-applications/getActiveStatus/"+a.application._id).then((response1)=>{
             console.log(response1)
             if(response1.data.success && response1.data.currentlyOccupied){
               setApplication(a)
@@ -72,7 +72,7 @@ function CurrentApplicationWindow() {
       </div>
       <p class="font-bold">{application.application.stay_start_date}-{application.application.stay_end_date}</p>
       <button class="bg-green-700 rounded-md p-3 m-3" onClick={()=>{
-        navigate('/your-stay/'+application.application.id)
+        navigate('/your-stay/'+application.application._id)
 
       }}>
        <p class="text-white">Go to console</p> 
