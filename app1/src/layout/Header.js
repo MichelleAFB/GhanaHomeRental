@@ -60,7 +60,7 @@ function Header({user,userType,userRedux}) {
     if(!isLoading && user!=null){
        console.log(userType)
     return (
-            <div className='mt-0 mr-0 ml-0 flex p-4 justify-between align-center'>
+            <div className='mt-0 mr-0 ml-0 flex p-4 justify-between align-center shadow-xl'>
             
             
            

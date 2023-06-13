@@ -53,10 +53,14 @@ function Review({application}) {
     })
   },[])
   
+
   if(!isLoading){
     console.log(application.application)
+    const user=JSON.parse(sessionStorage.getItem("user"))
+    console.log(user)
+    if(user.firstname==app.application.firstname && user.lastname==app.application.lastname && user.email==app.application.email){
   return (
-    <div class="h-full bg-gray-300 rounded-md p-5 block ml-5 mr-5 mb-5">
+    <div class="h-full bg-yellow-300 rounded-md p-5 block ml-5 mr-5 mb-5">
         <p class=" font-bold text-xl">{app.application.stay_start_date}-{app.application.stay_end_date}</p>
         <div class="flex ">
           <i class="m-3 font-semibold">
@@ -77,6 +81,25 @@ function Review({application}) {
     </div>
   )
   }else{
+    return(
+      <div class="h-full bg-gray-300 rounded-md p-5 block ml-5 mr-5 mb-5">
+        <p class=" font-bold text-xl">{app.application.stay_start_date}-{app.application.stay_end_date}</p>
+        <div class="flex ">
+          <i class="m-3 font-semibold">
+             "{app.application.review} ""
+            <br/>- <p class="text-normal font-bold">{app.application.firstname} {app.application.lastname}</p>
+          </i>
+        </div>
+          <div class="flex flex-col ">
+             <ReviewImageCarousel images={images}/>
+           </div>
+          <div> 
+        </div>
+    </div>
+    )
+
+  }
+}else{
     return(<div></div>)
   }
 }

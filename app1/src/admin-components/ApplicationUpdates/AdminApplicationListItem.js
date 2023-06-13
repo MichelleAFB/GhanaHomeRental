@@ -24,7 +24,7 @@ function AdminApplicationListItem({application}) {
   const[noAdults,setNoAdults]=useState()
   const[seeMore,setSeeMore]=useState(false)
   const[show,setShow]=useState(true)
-
+  const[checkoutDay,setCheckoutDay]=useState(false)
   //email forms
   const[formData,setFormData]=useState()
   const approveForm=useRef()
@@ -37,7 +37,14 @@ function AdminApplicationListItem({application}) {
 
     const prom=new Promise((resolve,reject)=>{
 
-      axios.get("")
+      axios.get("http://localhost:3012/admin-applications/getActiveStatus/"+application.application._id).then((response)=>{
+        if(response.data.success && response.data.currentlyOccupied){
+          console.log(response)
+          if(response.data.success){
+            console.log(response)
+          }
+        }
+      })
       
         resolve()
     })

@@ -50,11 +50,12 @@ function SignIn() {
   const[adminId,setAdminId]=useState()
  
   const[isLoading,setIsLoading]=useState(true)
-
+  const [resetting,setResetting]=useState(false)
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
   const form = useRef();
+  const resetPasswordForm=useRef()
 
   useEffect(()=>{
     const prom=new Promise((resolve,reject)=>{
@@ -76,9 +77,7 @@ function SignIn() {
     form[e.currentTarget.name]=e.currentTarget.value
     console.log(form)
       setFormData(form)
-    
-  
-    
+     
   };
 
  console.log(formData)
@@ -153,16 +152,41 @@ function SignIn() {
   };
 
 
-  const sendEmail = async(e) => {
+  async function sendEmail(e){ 
     e.preventDefault();
     console.log("testing emailjs functionality");
-    console.log(formData.email);
-    console.log(form);
-    const response= await emailjs
+    
+    
+    const response= await emailjs 
       .sendForm(
         process.env.REACT_APP_EMAILJS_SERVICE_KEY,
         process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
         form.current,
+        "3X6tKTw8npQeKEIq5"
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          return true
+        },
+        (error) => {
+          console.log(error.text);
+          return false
+        }
+      );
+      return response
+  };
+
+  async function sendEmailResetPassword(){ 
+   
+    console.log("testing emailjs functionality");
+    
+    
+    const response= await emailjs 
+      .sendForm(
+        process.env.REACT_APP_EMAILJS_SERVICE_KEY,
+        process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+        resetPasswordForm.current,
         "3X6tKTw8npQeKEIq5"
       )
       .then(
@@ -218,102 +242,207 @@ function SignIn() {
                               setEmail(e.target.value)
                             }}/>
                          </div>
-                         <div class="flex justify-around mt-2 ">
+                         {
+                          !resetting?
+                          <div class="flex justify-around mt-2 ">
                             <label class="text-white font-bold">Pass:</label>
                             <input type="text" class="bg-white p-2 rounded-sm" onChange={(e)=>{
                               setPassword(e.target.value)
                             }}/>
-                         </div>
-                        {admin? <div class="flex justify-around mt-2 ">
-                         <label class="text-white font-bold mr-2">Id:</label>
-                            <input type="text" class="bg-white p-2 rounded-sm" onChange={(e)=>{
-                              setAdmin(e.target.value)
-                            }}/>
-                            </div>:<div></div>}
-                         <div class="flex justify-around mt-2 ">
-                           
-                            <button class={admin?"bg-green-500 p-3 rounded-sm":"bg-gray-500 rounded-small p-3"} onClick={(e)=>{
-                              setAdmin(!admin)
-                            }}><p class="text-white">Admin</p>
-                            </button>
-                           
-                         </div>
-                         <button class="mt-2 bg-green-500 hover:bg-green-400 rounded-md p-3"
-                          onClick={()=>{
-                            const prom=new Promise((resolve,reject)=>{
+                         </div>:
+                         <div></div>
 
-                              if(!admin){
-                                console.log("HELLLO")
-                                var message
-                                if(email==null){
-                                    message=message+"ERROR: please enter email"
-                                }
-                                if(password==null){
-                                  message=message+"ERROR: please enter password"
-                                }
-                                if( message!=null){
-                                  alert(message)
-                                }
-                                console.log("HERE")
-                              axios.post("http://localhost:3012/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
-                                console.log(response)
-                                if(response.data.success){
-                                  console.log(response.data.client)
-                                  sessionStorage.removeItem("admin")
-                                  dispatch(setUser(response.data.client))
-                                 console.log("here")
-                                  sessionStorage.setItem("client",JSON.stringify(response.data.client))
-                                  sessionStorage.setItem('user',JSON.stringify(response.data.client))
-                                  sessionStorage.setItem("signInType","signIn")
-                                  setTimeout(()=>{
-                                    resolve()
-                                  },300)
-                                }
-                              })
-                            }else{
-                              axios.post("http://localhost:3012/sign-in/sign-in-admin",{email:email,password:password,adminId:adminId}).then((response)=>{
-                                console.log(response)
-
-                                if(response.data.success){
-                                  sessionStorage.removeItem("client")
-                                  dispatch(setUser(response.data.admin))
-                                  sessionStorage.setItem("admin",JSON.stringify({firstname:response.data.admin.firstname,lastname:response.data.admin.lastname,email:email,phone:response.data.admin.phone}))
-                                  sessionStorage.setItem("user",JSON.stringify({firstname:response.data.admin.firstname,lastname:response.data.admin.lastname,email:email,phone:response.data.admin.phone}))
-
-                                   
-                                  setTimeout(()=>{
-                                    resolve()
-                                  },300)
-                                }else{
-                                  alert("ERROR: wrong credentials")
-                                }
-
-                              })
-                            }
-                           })
-
-                            prom.then(()=>{
-                              const prom2=new Promise((resolve2,reject2)=>{
-                                if(!admin){
-                                 dispatch( setUserType("client"))
-                                 sessionStorage.setItem("userType",JSON.stringify("client"))
-                                }else{
-                                  dispatch(setUserType("admin"))
-                                  sessionStorage.setItem("userType",JSON.stringify("admin"))
-                                }
-                                resolve2()
-                              })
-
-                              prom2.then(()=>{
-                               navigate("/")
-                              })
-                              
-                             
-                              
-                            })
+                         }
+                          {
+                            resetting?
+                            <div class="flex-col w-full">
+                              <div class="flex justify-around mt-2 ">
+                                <button class={admin?"bg-green-500 p-3  rounded-sm":"bg-gray-500 rounded-small p-3"}         onClick=    {(e)=>{
+                                   setAdmin(!admin)
+                                   }}><p class="text-white">Admin</p>
+                                  </button>
+                               </div>
+                            </div>
+                            :
+                            
+                               <div class="flex justify-around mt-2 ">
+                                {admin?
+                                <div class="flex w-full justify-around ">
+                                  <label class="text-white font-bold mr-5">Id:</label>
+                                   <div class="flex flex-col  ">
+                                      <input type="text" class="bg-white p-2 rounded-sm" onChange={(e)=>{
+                                     setAdmin(e.target.value)
+                                       }}/>
+                                 <div class="flex  mt-2 ">
+                                      <button class={admin?"bg-green-500 p-3  rounded-sm":"bg-gray-500 rounded-small p-3"}    onClick=    {(e)=>{
+                                        setAdmin(!admin)
+                                        }}><p class="text-white">Admin</p>
+                                  </button>
+                               </div>
+                                   </div>
+                                  </div>
+                                  :
+                                  <div class="flex w-full justify-around ">
+                                  <label class="text-white font-bold mr-5 hidden">Id:</label>
+                                   <div class="flex flex-col  ">
+                                      <input type="text" class="hidden" onChange={(e)=>{
+                                     
+                                       }}/>
+                                      <button  class={
+                                      admin?"bg-green-500 p-3 rounded-sm":"bg-gray-500 rounded-small p-3"}  onClick={(e)=>{
+                                       setAdmin(!admin)
+                                       }}><p class="text-white">Admin</p>
+                                    </button>
+                                   </div>
+                                  </div>
+                             }
+                              </div>
+                          }
+                        
+                         <div class="flex w-full">
+                         {
+                          resetting?
+                          <button class="flex w-full p-3" onClick={()=>{
+                            console.log(resetting)
+                            setResetting(!resetting)
                           }}>
-                         <p class="text-white  text-center">Submit</p>
-                       </button>
+                            <p class="over:text-green-500 text-green-800 font-bold text-end text-sm m-2">
+                               Forgot password?
+                            </p>
+                          </button>
+                          :
+                          <button class="flex w-full p-3" onClick={()=>{
+                            console.log(resetting)
+                            setResetting(!resetting)
+                          }}>
+                            <p class="over:text-green-500 text-black font-semibold text-end text-sm m-2">
+                               Forgot password?
+                            </p>
+                          </button>
+                         }
+                          
+                        </div>
+                     
+                       {
+                        !resetting?
+                        <button class="mt-2 bg-green-500 hover:bg-green-400 rounded-md p-3"
+                        onClick={()=>{
+                          const prom=new Promise((resolve,reject)=>{
+
+                            if(!admin){
+                              console.log("HELLLO")
+                              var message
+                              if(email==null){
+                                  message=message+"ERROR: please enter email"
+                              }
+                              if(password==null){
+                                message=message+"ERROR: please enter password"
+                              }
+                              if( message!=null){
+                                alert(message)
+                              }
+                              console.log("HERE")
+                            axios.post("http://localhost:3012/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
+                              console.log(response)
+                              if(response.data.success){
+                                console.log(response.data.client)
+                                sessionStorage.removeItem("admin")
+                                dispatch(setUser(response.data.client))
+                               console.log("here")
+                                sessionStorage.setItem("client",JSON.stringify(response.data.client))
+                                sessionStorage.setItem('user',JSON.stringify(response.data.client))
+                                sessionStorage.setItem("signInType","signIn")
+                                setTimeout(()=>{
+                                  resolve()
+                                },300)
+                              }
+                            })
+                          }else{
+                            axios.post("http://localhost:3012/sign-in/sign-in-admin",{email:email,password:password,adminId:adminId}).then((response)=>{
+                              console.log(response)
+
+                              if(response.data.success){
+                                sessionStorage.removeItem("client")
+                                dispatch(setUser(response.data.admin))
+                                sessionStorage.setItem("admin",JSON.stringify({firstname:response.data.admin.firstname,lastname:response.data.admin.lastname,email:email,phone:response.data.admin.phone}))
+                                sessionStorage.setItem("user",JSON.stringify({firstname:response.data.admin.firstname,lastname:response.data.admin.lastname,email:email,phone:response.data.admin.phone}))
+
+                                 
+                                setTimeout(()=>{
+                                  resolve()
+                                },300)
+                              }else{
+                                alert("ERROR: wrong credentials")
+                              }
+
+                            })
+                          }
+                         })
+
+                          prom.then(()=>{
+                            const prom2=new Promise((resolve2,reject2)=>{
+                              if(!admin){
+                               dispatch( setUserType("client"))
+                               sessionStorage.setItem("userType",JSON.stringify("client"))
+                              }else{
+                                dispatch(setUserType("admin"))
+                                sessionStorage.setItem("userType",JSON.stringify("admin"))
+                              }
+                              resolve2()
+                            })
+
+                            prom2.then(()=>{
+                             navigate("/")
+                            })
+                            
+                           
+                            
+                          })
+                        }}>
+                       <p class="text-white  text-center">Submit</p>
+                      </button>
+                   :
+                         <button class="mt-2 bg-green-500 hover:bg-green-400 rounded-md p-3"
+                         onClick={()=>{
+                           const prom=new Promise((resolve,reject)=>{
+                            console.log(resetPasswordForm)
+                            if(admin){
+                              sendEmailResetPassword().then((response)=>{
+                                console.log(response) 
+                              })
+
+                            }else{
+                              sendEmailResetPassword().then((response)=>{
+                                console.log(response)
+                              })
+
+                            }
+                          })
+
+                           prom.then(()=>{
+                             const prom2=new Promise((resolve2,reject2)=>{
+                            
+                             })
+
+                             prom2.then(()=>{
+                            
+                             })
+                             
+                            
+                             
+                           })
+                         }}>
+                        <p class="text-white  text-center">Submit</p>
+                      </button>
+                       }
+                       <form ref={resetPasswordForm}class="hidden">
+                          <input type="email" name="email" value={email}/>
+                          {!admin?
+                          <input type="text" name="message" value={`Please use the following link to reset your password and regain access to ypur account: http://localhost:3000/reset-password/${email}`}/> 
+                          :
+                          <input type="text" name="message" value={`Please use the following link to reset your password and regain access to ypur account: http://localhost:3000/reset-password/admin/${email}`}/> 
+                          }
+                       </form>
                         
                       </div>
                     </div>

@@ -62,6 +62,7 @@ import { Carousel } from 'react-responsive-carousel';
 class CarouselImages extends Component {
     render() {
         return (
+          <div class="flex w-full justify-center">
             <Carousel autoPlay class="h-150 p-3 object-contain block m-3 z-10 " showThumbs={false}>
                 <div>
                    <img src={require('../home_photos/Entry & Egress 2.jpg')} 
@@ -88,6 +89,7 @@ class CarouselImages extends Component {
                     class="object-cover h-[450px]"  alt="bedroom5"/>
                </div>
             </Carousel>
+          </div>
         );
     }
 };

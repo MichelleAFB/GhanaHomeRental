@@ -67,21 +67,24 @@ function ReviewImageCarousel({images}) {
 
       if(!isLoading && ourImages!=null){ 
         return (
-          <div  class="flex h-3/5 p-2 object-cover ">
+         
             <Carousel showThumbs={true} autoPlay>
             {
               ourImages.map((m)=>{
+                console.log(m.publicID)
                 return(
+                  <div class="flex w-full justify-center">
                   <div class="h-[60vh] object-cover">
                      <Image cloudName="michelle-badu" publicId={m.publicID}>
                       <Transformation crop="scale" angle="10"/>
                    </Image>
                   </div>
+                 </div>
                 )
               })
             }
-            </Carousel>
-          </div>
+            </Carousel> 
+       
         )
 
      }else{

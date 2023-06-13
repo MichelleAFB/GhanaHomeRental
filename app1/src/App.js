@@ -20,6 +20,7 @@ import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import YourStay from "./pages/YourStay";
 import AdminYourStay from "./pages/AdminYourStay";
 import Reviews from "./pages/Reviews";
+import ResetPassword from "./pages/ResetPassword";
 import { Menu } from "@material-ui/core";
 import {useEffect,useState}from 'react'
 import {connect} from 'react-redux'
@@ -43,6 +44,7 @@ function App({reload}) {
         <Routes>
         
         <Route path='/reviews' element={<Reviews />}/>
+          <Route path="/reset-password/:email" element={<ResetPassword/>}/>
           <Route path='/search' element={<SearchPage />}/>
           <Route path='/' element={<Home />}/>
           <Route path='/sign-in' element={<SignIn />}/>

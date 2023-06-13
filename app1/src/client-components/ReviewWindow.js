@@ -8,15 +8,19 @@ function ReviewWindow() {
 
   const[isLoading,setIsLoading]=useState(true)
   const [applications,setApplications]=useState()
+  const [hasEmptyReviews,setHasEmptyReviews]=useState(false)
+  const[allApplications,setAllApplications]=useState()
 
   useEffect(()=>{
     const user=JSON.parse(sessionStorage.getItem("user"))
     const app=[]
+    var emptyReviews=false
     const prom=new Promise((resolve,reject)=>{
       axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
         console.log(response)
         if(response.data.success && response.data.applications!=null){
           const apps=response.data.applications
+          setAllApplications(apps)
           apps.map((a)=>{
             console.log("review:"+a.application.review)
             console.log( a.application.application_status=="CHECKEDOUT")
@@ -24,6 +28,7 @@ function ReviewWindow() {
               console.log(a)
                 app.push(a)
                 console.log(app)
+                               
             }
           })
           setTimeout(()=>{
@@ -52,7 +57,7 @@ if(!isLoading){
       <p class="text-2xl text-center font-bold text-white">Tell Us About Your Stay</p>
     <div class=" overflow-y-scroll overflow-hidden w-full flex-col content-center h-[40vh] p-3 justify-around">
       {
-        applications.map((a)=>{ 
+        allApplications.map((a)=>{ 
           return(<ReviewItem application={a}/>)
         })
       }

@@ -50,7 +50,7 @@ function Home({userType,user,activeApplication}) {
                 
                 
                 apps.map((a)=>{
-                  axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application._id).then((response1)=>{
+                  axios.get("http://localhost:3012/admin-applications/getActiveStatus/"+a.application._id).then((response1)=>{
                     console.log(response1)
                     if(response1.data.success && response1.data.currentlyOccupied){
                       dispatch(setActiveApplication(a))
