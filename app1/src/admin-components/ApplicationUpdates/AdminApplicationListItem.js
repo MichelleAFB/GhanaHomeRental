@@ -37,7 +37,7 @@ function AdminApplicationListItem({application}) {
 
     const prom=new Promise((resolve,reject)=>{
 
-      axios.get("http://localhost:3012/admin-applications/getActiveStatus/"+application.application._id).then((response)=>{
+      axios.get("https://ghanahomestayserver.onrender.com/admin-applications/getActiveStatus/"+application.application._id).then((response)=>{
         if(response.data.success && response.data.currentlyOccupied){
           console.log(response)
           if(response.data.success){

@@ -21,18 +21,30 @@ import YourStay from "./pages/YourStay";
 import AdminYourStay from "./pages/AdminYourStay";
 import Reviews from "./pages/Reviews";
 import ResetPassword from "./pages/ResetPassword";
+import ResetPasswordAdmin from "./pages/ResetPasswordAdmin";
 import { Menu } from "@material-ui/core";
 import {useEffect,useState}from 'react'
 import {connect} from 'react-redux'
+import axios from "axios";
 
 function App({reload}) {
 
- 
+ const[serverUp,setServerUp]=useState(false)
 
   useEffect(()=>{
+    const prom=new Promise((resolve,reject)=>{
+      axios.get("https://ghanahomestayserver.onrender.com/").then((response)=>{
+        resolve()
+      })
+    })
+
+    prom.then(()=>{
+      setServerUp(true)
+    })
 
   },[reload])
   
+  if(serverUp){
   return (
     // BEM
     <div className='app'>
@@ -45,6 +57,7 @@ function App({reload}) {
         
         <Route path='/reviews' element={<Reviews />}/>
           <Route path="/reset-password/:email" element={<ResetPassword/>}/>
+          <Route path="/reset-password/admin/:email" element={<ResetPasswordAdmin/>}/> 
           <Route path='/search' element={<SearchPage />}/>
           <Route path='/' element={<Home />}/>
           <Route path='/sign-in' element={<SignIn />}/>
@@ -60,6 +73,37 @@ function App({reload}) {
       </Router>
     </div>
   );
+  }else{
+    return (
+      // BEM
+      <div className='app'>
+        <ApplicationModal/>
+        <Router>
+          <Header />
+          
+  
+          <Routes>
+          
+          <Route path='/reviews' element={<Reviews />}/>
+            <Route path="/reset-password/:email" element={<ResetPassword/>}/>
+            <Route path="/reset-password/admin/:email" element={<ResetPasswordAdmin/>}/> 
+            <Route path='/search' element={<SearchPage />}/>
+            <Route path='/' element={<Home />}/>
+            <Route path='/sign-in' element={<SignIn />}/>
+            <Route path='/application/:email/:firstname/:lastname/:phone/:startDate/:endDate/:noAdults/:noChildren' element={<Application/>}/>
+            <Route path='/pre-application/:startDate/:endDate/:noAdults/:noChildren' element={<PreApplication/>}/>
+            <Route path="/payment/:id" element={<PaymentPage/>}/>
+            <Route path="/payment/success/:id" element={<PaymentSuccessPage/>}/>
+            <Route path="/your-stay/:id" element={<YourStay/>}/>
+            <Route path="/admin-your-stay/:id" element={<AdminYourStay/>}/>
+          </Routes>
+  
+          <Footer />
+        </Router>
+      </div>
+    );
+    
+  }
 }
 
 const mapStateToProps = (state, props) => {

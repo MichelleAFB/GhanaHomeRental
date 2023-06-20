@@ -10,6 +10,7 @@ import IonIcon from '@reacticons/ionicons'
 import { setTotalNewApplications,decrementTotalNewApplications } from '../redux/admin-applications/admin-applications-actions'
 import {connect,useDispatch} from 'react-redux'
 import { setCurrentlyOccupied,setCurrentlyOccupiedApplication } from '../redux/user/user-actions'
+import { setReviewModalApplication,setReviewModalVisibility } from '../redux/user/user-actions'
 //components
 import ApplicationListItemOccupant from './ApplicationListItemOccupant'
 
@@ -30,15 +31,21 @@ function ApplicationListItem({application}) {
   const[isPassedDue,setIsPassedDue]=useState(false)
   const stripePromise=loadStripe(process.env.REACT_APP_STRIPE_KEY) 
  
+  
 
   useEffect(()=>{
-    console.log("\n\n"+application.application.stay_start_date)
+    
+    if(application.application._id=='64877e4c94305bee55021525'){ 
+      console.log("\n\n"+application.application.stay_start_date)
+    }
 
     const prom=new Promise((resolve,reject)=>{
+      
      
-      axios.get("http://localhost:3012/client-applications/getActiveStatus/"+application.application._id).then((response)=>{
-        console.log(response)
-     
+      axios.get("https://ghanahomestayserver.onrender.com/client-applications/getActiveStatus/"+application.application._id).then((response)=>{
+        
+        if(application.application._id=='64877e4c94305bee55021525'){ 
+          console.log(response.data)        }
         if(response.data.success){
             if(response.data.currentlyOccupied==true){
               const prom=new Promise((resolve,reject)=>{
@@ -54,42 +61,63 @@ function ApplicationListItem({application}) {
             }
         }
       })
-      if(application.application.application_status=="RESERVED"||application.application.application_status=="APPLIED" ){
+      console.log(application.application)
+      if(application.application.application_status=="RESERVED" ){
 
-        axios.get("http://localhost:3012/admin-applications/checkPaymentDeadline/"+application.application._id).then((response)=>{
-          console.log(response)
+        axios.get("https://ghanahomestayserver.onrender.com/admin-applications/checkPaymentDeadline/"+application.application._id).then((response)=>{
+         
+      
         
           setIsPassedDue(response.data.passedDue)
           if(response.data.passedDue){
           
-            axios.post("http://localhost:3012/client-applications/release-reservation-due-to-unpaid/"+application.application._id).then((response1)=>{
-              console.log(response1)
+            axios.post("https://ghanahomestayserver.onrender.com/client-applications/release-reservation-due-to-unpaid/"+application.application._id).then((response1)=>{
+             
               if(response1.data.success){
-                axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application._id+"/DROPPED",{message:"Your reservation has been dropped due to non-payment"}).then((response2)=>{
-                  console.log(response2.data)
+                axios.post("https://ghanahomestayserver.onrender.com/admin-applications/setStatus/"+application.application._id+"/DROPPED",{message:"Your reservation has been dropped due to non-payment"}).then((response2)=>{
+                
                 })
               }
             })
+          }if(response.data.paid){  //not reserved
+              setIsLoading(false)
           }
-          sessionStorage.setItem("checkPayment_"+application.application._id,JSON.stringify(response.data))
+          else{
+            axios.post("https://ghanahomestayserver.onrender.com/client-applications/release-reservation-due-to-unpaid/"+application.application._id).then((response1)=>{
+             
          
           
+            
+            if(response1.data.success){
+              axios.post("https://ghanahomestayserver.onrender.com/admin-applications/setStatus/"+application.application._id+"/DROPPED",{message:"Your reservation has been dropped due to non-payment"}).then((response2)=>{
+               
+              console.log(response2)
+              })
+            }
+          })
+          }
+          sessionStorage.setItem("checkPayment_"+application.application._id,JSON.stringify(response.data)) 
         })
 
         if(sessionStorage.getItem("application_payment_"+application.application._id)==null){
+          console.log(application.application.stay_start_date+" can get days ")
          
           
         }if(sessionStorage.getItem("application_payment_"+application.application._id)!=null && getLink==true){
           
           const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
+          console.log(days.no_days + " "+application.application._id)
           getCheckoutLink(days.no_days)
           setGetLink(false)
     
         }
+      }else{
+        resolve()
       }
+      
       setTimeout(()=>{
         resolve()
-      },800)
+      },1000)
      
       
     })
@@ -97,11 +125,12 @@ function ApplicationListItem({application}) {
     prom.then(()=>{
       
      const prom1=new Promise((resolve1,reject1)=>{
-      if(application.application.application_status=="RESERVED" ||application.application.application_status=="APPLIED" ){
+      if(application.application.application_status=="RESERVED"  ){
         const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
        
-        console.log(application.application)
+       
         getCheckoutLink(days.no_days).then(()=>{
+          console.log(days)
           
           resolve1()
         })
@@ -119,11 +148,16 @@ function ApplicationListItem({application}) {
     })
   },[])
   
-
+ 
   async function getCheckoutLink(q){
-    console.log("CHECKOUT")
-    await axios.post("http://localhost:3012/payment/checkout/"+application.application._id,{fees:[{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:q},{id:"price_1N3rujLxMJskpKlAGz3UJClt",quantity:1}]}).then((response)=>{
+   
+    await axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+application.application._id,{fees:[{id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:q},{id:process.env.REACT_APP_SAMPLE_CLEANING,quantity:1}]}).then((response)=>{
         sessionStorage.setItem("checkoutLink_"+application.application._id,response.data.url)
+        if(application.application._id=='64877e4c94305bee55021525'){ 
+          console.log(application.application.stay_start_date+" "+application.application.stay_end_date)
+          console.log(application.application.stay_start_date)
+          
+        }
         setCheckoutLinkRecieved(true)
         setCheckoutLink(response.data.url)
         
@@ -132,8 +166,15 @@ function ApplicationListItem({application}) {
   }
 
   async function checkout(){
-  
-    await axios.get("http://localhost:3012/client-applications/allBookingDatesForApplication/"+application.application._id).then((response1)=>{
+    console.log("CHECKOUTTT")
+    if(application.application._id=='64877e4c94305bee55021525'){ 
+      console.log(application.application.stay_start_date+" "+application.application.stay_end_date)
+      console.log(application.application.stay_start_date)
+      
+    }
+    await axios.get("https://ghanahomestayserver.onrender.com/client-applications/allBookingDatesForApplication/"+application.application._id).then((response1)=>{
+    console.log(application.application)
+    console.log(response1.data.booked_dates)
     
       sessionStorage.setItem("application_payment_"+application.application._id,JSON.stringify({no_days:response1.data.no_days}))
      
@@ -142,6 +183,8 @@ function ApplicationListItem({application}) {
  }
  const[getLink,setGetLink]=useState(true)
   if(!isLoading){
+   // const link=JSON.parse(sessionStorage.getItem(""))
+    if(checkoutLink==null){
     checkout().then((response)=>{
       console.log(response)
       if(sessionStorage.getItem("application_payment_"+application.application._id)==null){
@@ -151,19 +194,24 @@ function ApplicationListItem({application}) {
         console.log("run checkout")
         const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
         setGetLink(false)
+        getCheckoutLink(days.no_days).then(()=>{
+          const link=JSON.parse(sessionStorage.getItem("checkoutLink_"+application.application._id))
+          console.log(link)
+        })
   
       }
     })
+  }
     
 
    
-console.log(application.application.stay_start_date+" "+application.application.stay_end_date)
+
   return (
     <div class="max-h-sm rounded-md ">
         <div class={application.application.notify_applicant==1?"py-5 m-4  bg-green-300 border-green-100 px-3 transition hover:bg-indigo-100 rounded-lg shadow-lg flex flex-col":"py-5 m-4  bg-gray-300 border-purple-100 px-3 transition hover:bg-indigo-100 rounded-lg shadow-lg flex flex-col"} onMouseOver={()=>{
           if(turnOffNotify){
-            axios.post("http://localhost:3012/client-applications/turnOffNotifyApplicant/"+application.application._id).then((response)=>{
-              console.log(response)
+            axios.post("https://ghanahomestayserver.onrender.com/client-applications/turnOffNotifyApplicant/"+application.application._id).then((response)=>{
+             sessionStorage.removeItem("images")
               setTurnOffNotify(false)
             })
           }
@@ -217,9 +265,15 @@ console.log(application.application.stay_start_date+" "+application.application.
                 </p>
               </div>:<div></div>
             }
-              {application.application.application_status=="DENIED"? <button class="rounded-lg  p-3 m-2" ><p class="text-red-600 text-center font-bold "><span class="font-bold text-black">Status:</span>Denied
+              {
+              application.application.application_status=="DENIED"? <button class="rounded-lg  p-3 m-2" ><p class="text-red-600 text-center font-bold "><span class="font-bold text-black">Status:</span>Denied
               <IonIcon name="close-outline" size="medium"/></p></button>
             :<div></div>}
+               {
+               application.application.application_status=="CHECKEDOUT"? <button class="rounded-lg  p-3 m-2" ><p class="text-purple-600 text-center font-bold "><span class="font-bold text-black">Status:</span>{application.application.application_status}
+              <IonIcon name="airplane-outline" size="medium" class="ml-2"/></p></button>
+            :<div></div>
+            }
              {application.application.application_status=="RESERVED"? <button class="rounded-lg  p-3 m-2" ><p class="text-reserved-600 text-center font-bold text-blue-600"><span class="font-bold text-black">Status:</span>{application.application.application_status}
              <IonIcon name="ellipsis-horizontal-outline" size="medium" class="mt-1"/>
              </p>
@@ -233,8 +287,29 @@ console.log(application.application.stay_start_date+" "+application.application.
 
              </div>
              </button>
-            :<div></div>}
-            {application.application.application_status=="DROPPED"&& application.application.notify_applicant==1? 
+            :<div></div>
+            }
+            {
+              application.application.application_status=="CHECKEDOUT" && (application.application.review=="" || application.application.review=='')?
+              <div class="flex w-full justify-center">
+                <button class="bg-purple-500 p-3 rounded-sm flex " onClick={()=>{
+                  const prom=new Promise((resolve,reject)=>{
+                    dispatch(setReviewModalApplication(application))
+                    resolve()
+                  })
+
+                  prom.then(()=>{
+                    dispatch(setReviewModalVisibility(true))
+                  })
+                }}>
+                  <p class="text-white">Review</p>
+                </button>
+              </div>:
+              <div>
+               </div> 
+            }
+            {
+            application.application.application_status=="DROPPED"&& application.application.notify_applicant==1? 
                 <div class="flex rounded-lg bg-green-600 p-3 m-2">    
                   {
                           !getLink ?

@@ -17,7 +17,7 @@ function Guests({application}) {
   useEffect(()=>{
 
     const prom=new Promise((resolve,reject)=>{
-     /* axios.get("http://localhost:3012/current-resident/guests/"+application.application.id).then((response)=>{
+     /* axios.get("https://ghanahomestayserver.onrender.com/current-resident/guests/"+application.application.id).then((response)=>{
         console.log(response.data)
         setGuests(response.data.guests)
         
@@ -49,7 +49,7 @@ function Guests({application}) {
          application.occupants.map((o)=>{
           console.log(o.firstname)
           return(
-            <GuestItem occupant={o}/>
+            <GuestItem occupant={o} />
           )
         })
        }

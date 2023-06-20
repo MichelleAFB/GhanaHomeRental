@@ -37,7 +37,7 @@ function Reviews() {
     prom.then(()=>{
       console.log(arr)
       const prom1=new Promise((resolve1,reject1)=>{
-        axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
+        axios.get("https://ghanahomestayserver.onrender.com/admin-applications/applications").then((response)=>{
           console.log(response)
           if(response.data.success){
             //setApplications(response.data.applications)

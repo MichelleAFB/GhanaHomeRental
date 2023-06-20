@@ -53,6 +53,7 @@ function SignIn() {
   const [resetting,setResetting]=useState(false)
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const[emailSent,setEmailSent]=useState(false)
 
   const form = useRef();
   const resetPasswordForm=useRef()
@@ -101,7 +102,7 @@ function SignIn() {
     } else {
       console.log(email);
       axios
-        .post("http://localhost:3012/sign-up/create-user", {
+        .post("https://ghanahomestayserver.onrender.com/sign-up/create-user", {
           firstname: firstname,
           lastname: lastname,
           email: email,
@@ -204,7 +205,7 @@ function SignIn() {
 
   
 
-  if(!isLoading){
+  if(!isLoading && !emailSent){
   return (
     <div class='h-screen w-full fixed ml-0 mr-0 mt-0 mb-0 flex justify-center items-center bg-black bg-opacity-50'>
         <main id='content' role='main' class='w-full max-w-md mx-auto '>
@@ -342,9 +343,13 @@ function SignIn() {
                                 alert(message)
                               }
                               console.log("HERE")
-                            axios.post("http://localhost:3012/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
+                            axios.post("https://ghanahomestayserver.onrender.com/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
                               console.log(response)
+                              if(!response.data.success){
+                                alert(response.data.message)
+                              }
                               if(response.data.success){
+                                
                                 console.log(response.data.client)
                                 sessionStorage.removeItem("admin")
                                 dispatch(setUser(response.data.client))
@@ -358,8 +363,11 @@ function SignIn() {
                               }
                             })
                           }else{
-                            axios.post("http://localhost:3012/sign-in/sign-in-admin",{email:email,password:password,adminId:adminId}).then((response)=>{
+                            axios.post("https://ghanahomestayserver.onrender.com/sign-in/sign-in-admin",{email:email,password:password,adminId:adminId}).then((response)=>{
                               console.log(response)
+                              if(!response.data.success){
+                                alert(response.data.message)
+                              }
 
                               if(response.data.success){
                                 sessionStorage.removeItem("client")
@@ -409,27 +417,18 @@ function SignIn() {
                             if(admin){
                               sendEmailResetPassword().then((response)=>{
                                 console.log(response) 
+                                resolve()
                               })
-
                             }else{
                               sendEmailResetPassword().then((response)=>{
                                 console.log(response)
+                                resolve()
                               })
 
                             }
                           })
-
-                           prom.then(()=>{
-                             const prom2=new Promise((resolve2,reject2)=>{
-                            
-                             })
-
-                             prom2.then(()=>{
-                            
-                             })
-                             
-                            
-                             
+                          prom.then(()=>{
+                           setEmailSent(!emailSent)  
                            })
                          }}>
                         <p class="text-white  text-center">Submit</p>
@@ -585,7 +584,23 @@ function SignIn() {
     </div>
   )
       }else{
-                  return(<div></div>)
+              return(
+                 <div class='h-screen w-full fixed ml-0 mr-0 mt-0 mb-0 flex justify-center items-center bg-black   bg-opacity-50'>
+                    <main id='content' role='main' class='w-full max-w-md mx-auto '>
+                      <div class="mt-20">
+                        <div class='  flex  rounded-xl shadow-lg h-1/2 w-3/4'>
+                          <div class="flex flex-col w-full">
+                            <div class="flex flex-col  m-3">
+                                 <p class="text-white-600 text-xl font-semibold text-white">
+                                   Please check your email to reset your password.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </main>
+                     </div>
+                  )
                 }
 }
 

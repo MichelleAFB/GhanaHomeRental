@@ -19,8 +19,8 @@ function ApplicationsList({user,userType}) {
     const prom= new Promise((resolve,reject)=>{
       
 
-      axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
-        console.log(response)
+      axios.get("https://ghanahomestayserver.onrender.com/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+        console.log(response.data)
       
         
         if(response.data.success){
@@ -51,7 +51,7 @@ console.log(user)
   if(!isLoading && userType!=null){
 
   return (
-    <div class="flex flex-col w-full p-4 bg-gray-400 m-10 rounded-md ">
+    <div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md w-3/4">
     <div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl"> Your Applications</p>
     </div>
     

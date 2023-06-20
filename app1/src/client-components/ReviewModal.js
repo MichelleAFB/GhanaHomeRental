@@ -22,6 +22,7 @@ function ReviewModal({visibility,application}) {
   
   useEffect(()=>{
     if(visibility && application!=null){
+      sessionStorage.removeItem("images")
       setIsLoading(false)
     }
 
@@ -34,7 +35,8 @@ function ReviewModal({visibility,application}) {
        console.log(response1)
        if(sessionStorage.getItem("images")==null){
         const images=[]
-        images.push({img_url:response1.data.secure_url})
+
+        images.push({img_url:response1.data.secure_url,publicID:response1.data.public_id})
         sessionStorage.setItem("images",JSON.stringify(images))
        }else{
         const im=JSON.parse(sessionStorage.getItem("images"))
@@ -57,16 +59,19 @@ function ReviewModal({visibility,application}) {
         formData.append("api_key", process.env.REACT_APP_CLOUDINARY_API_KEY)
         add(formData,i)
       })
+      return
   }
 
   if(visibility){
+    console.log(application.application.review) 
    console.log(application.application.review)
   return (
   
     <div class='h-screen w-full fixed ml-0 mr-0 mt-0 mb-0 flex justify-center items-center '>
      
-      <main id='content' role='main' class='w-full z-20 max-w-md mx-auto '>
-        <div class='flex flex-col rounded-xl shadow-lg bg-purple-300 dark:border-gray-700 mb-5'>
+      <main  role='main' class='w-full z-20 max-w-lg mx-auto '>
+        <div class="flex w-3/4 justify-center">
+        <div class='flex flex-col rounded-xl shadow-lg bg-purple-300 dark:border-gray-700 mb-2'>
           <div class="flex justify-end p-3">
           <button  onClick={()=>{
               dispatch(setReviewModalVisibility(false))
@@ -78,7 +83,7 @@ function ReviewModal({visibility,application}) {
           </div>
             
         
-          <div class='p-4 sm:p-7 flex flex-col'>
+          <div class='p-2 flex flex-col'>
             <p class="text-center font-bold">Stay</p>
               <p class="text-center">{application.application.stay_start_date}-{application.application.stay_end_date}</p>
          <div class="flex flex-col m-3 p-2">
@@ -87,28 +92,31 @@ function ReviewModal({visibility,application}) {
             You checkout at:{application.application.checkoutTime}
           </p>
           <label class="m-2 text-xl font-semibold">Leave A Review:</label>
-          <textarea rows="10" cols="40" placeholder={application.application.review}  class="rounded-md m-2" onClick={(e)=>{
+          <textarea rows="10" cols="40" placeholder={application.application.review}  class="rounded-md m-2 p-3" onClick={(e)=>{
             setReview(e.target.value)
           }}>
 
           </textarea>
-          <input type="file" class="m-2" multiple="multiple" accept="image/jpeg, image/png, image/jpg" onChange={(e)=>{
+          <input type="file" class="m-1 " multiple="multiple" accept="image/jpeg, image/png, image/jpg" onChange={(e)=>{
             setFiles(e.target.files)
             console.log(files)
           }}/>
               </div>
-              <button class="flex flex-col bg-green-300 rounded-md p-3 m-3" onClick={()=>{
+              <button class="flex flex-col bg-green-300 rounded-md p-3 " onClick={()=>{
                 const prom=new Promise((resolve,reject)=>{
                   if(files!=null){
                   sendImages(files).then(()=>{
                     console.log(files)
-                      axios.post("http://localhost:3012/current-resident/review/"+application.application._id,{review:review,images:JSON.parse(sessionStorage.getItem('images'))}).then((response)=>{
+                    console.log(JSON.parse(sessionStorage.getItem("images")))
+                    const images=JSON.parse(sessionStorage.getItem('images'))
+                     axios.post("http://localhost:3012/current-resident/review/"+application.application._id,{review:review,images:images}).then((response)=>{
                         console.log(response.data)
                         if(response.data.success){
                           alert("Thank you for your review!")
                           sessionStorage.removeItem("images")
                         }
                       })
+                      
                   });
                 }else{
 
@@ -123,10 +131,15 @@ function ReviewModal({visibility,application}) {
                 }
 
                 })
+
+                prom.then(()=>{
+                  sessionStorage.removeItem("images")
+                })
               }}>
                   <p class="text-center font-bold">Submit</p>
               </button>
           </div>
+        </div>
         </div>
       </main>
     </div>

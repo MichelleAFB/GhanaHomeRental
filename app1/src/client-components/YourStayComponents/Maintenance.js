@@ -15,7 +15,7 @@ function Maintenance({application}) {
 
     const prom=new Promise((resolve,reject)=>{
       console.log(application.application._id)
-        axios.get("http://localhost:3012/current-resident/maintenance-issues/"+application.application._id).then((response)=>{
+        axios.get("https://ghanahomestayserver.onrender.com/current-resident/maintenance-issues/"+application.application._id).then((response)=>{
           console.log(response)
           if(response.data.success){
             
@@ -61,6 +61,11 @@ function Maintenance({application}) {
             console.log("hi")
              return(<MaintenanceListItem issue={issue}/>)
            })}
+      <button class=" flex w-full bg-yellow-700 p-3 rounded-md m-2" onClick={()=>{
+        setNewIssue(!newIssue)
+      }}>
+        <p class="text-white text-center font-bold">New Request</p>
+      </button>
             </div>
         }
         
@@ -113,7 +118,7 @@ function Maintenance({application}) {
           }else{
             var cDate=new Date()
             var currDate=cDate.toString().substring(0,15)
-            axios.post("http://localhost:3012/current-resident/new-maintenance/"+application.application._id,{issue:{mechanism:mechanism,message:message,dateRecieved:currDate}}).then((response)=>{
+            axios.post("https://ghanahomestayserver.onrender.com/current-resident/new-maintenance/"+application.application._id,{issue:{mechanism:mechanism,message:message,dateRecieved:currDate}}).then((response)=>{
               console.log(response)
               if(response.data.success){
                 alert("Your maintenace issue has been recieved! We will contact you shortly.")

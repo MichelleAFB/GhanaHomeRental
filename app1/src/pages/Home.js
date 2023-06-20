@@ -29,28 +29,30 @@ function Home({userType,user,activeApplication}) {
 
   const[isLoading,setIsLoading]=useState(true)
   const [newApplications,setNewApplications]=useState(false)
+  const[newReviews,setNewReviews]=useState()
   const dispatch=useDispatch()
  
   console.log(process.env.REACT_APP_STRIPE_KEY)
 
   useEffect(()=>{
+    const needsReview=[]
     if(user!=null){
       const prom=new Promise((resolve,reject)=>{
-          axios.get("http://localhost:3012/admin-applications/new-applications").then((response)=>{
+          axios.get("https://ghanahomestayserver.onrender.com/admin-applications/new-applications").then((response)=>{
             console.log(response)
             if(response.data.no_applications>0){
               setNewApplications(true)
               
             }
             resolve()
-            axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
+            axios.get("https://ghanahomestayserver.onrender.com/admin-applications/applications").then((response)=>{
               console.log(response)
               if(response.data.success){
                 const apps=response.data.applications
                 
                 
                 apps.map((a)=>{
-                  axios.get("http://localhost:3012/admin-applications/getActiveStatus/"+a.application._id).then((response1)=>{
+                  axios.get("https://ghanahomestayserver.onrender.com/admin-applications/getActiveStatus/"+a.application._id).then((response1)=>{
                     console.log(response1)
                     if(response1.data.success && response1.data.currentlyOccupied){
                       dispatch(setActiveApplication(a))
@@ -66,16 +68,20 @@ function Home({userType,user,activeApplication}) {
             })
           })
           if(userType=="client"){
-            axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+            axios.get("https://ghanahomestayserver.onrender.com/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
               console.log("user apps")
               console.log(response)
               const apps=response.data.applications
               apps.map((a)=>{
-                axios.get("http://localhost:3012/client-applications/getActiveStatus/"+a.application._id).then((response1)=>{
+                axios.get("https://ghanahomestayserver.onrender.com/admin-applications/getActiveStatus/"+a.application._id).then((response1)=>{
                   console.log("user current")
                   console.log(response1)
               
                 })
+                if(a.application_status=="CHECKEDOUT" &&(a.application.review=="" || a.application.review=='' || a.application.review.length==0)){
+                  
+                  needsReview.push(a)
+                }
               })
   
             })
@@ -90,7 +96,18 @@ function Home({userType,user,activeApplication}) {
   
       prom.then(()=>{
         console.log("MADE IT TO THEN")
-        setIsLoading(false)
+        const prom2=new Promise((resolve2,reject2)=>{
+          setNewReviews(needsReview)
+          
+          setTimeout(()=>{
+            resolve2()
+          },500)
+        })
+
+        prom2.then(()=>{
+          setIsLoading(false)
+        })
+       
       })
     }
   
@@ -98,11 +115,8 @@ function Home({userType,user,activeApplication}) {
 
   console.log(isLoading)
   if(!isLoading && user!=null){
-    console.log(process.env.REACT_APP_STRIPE_KEY)
-
-    
-    console.log("in home")
-    console.log(user)
+   console.log(newReviews) 
+   console.log("|n\n")
   return (
     <div className='home'>
        <ReviewModal/>
@@ -128,21 +142,19 @@ function Home({userType,user,activeApplication}) {
             </div>
           </div>
           :
-          <div>
-          </div>
+          <div></div>
         }
         {
           userType=="client" && user!=null ?
-          <div class="block  mt-[250px] mr-5 ml-5">
-          <div class="flex flex-col p-5 w-full">
-            <div class="flex p-3 m-3 justify-center">
+          <div class="block  mt-[250px] m-5">
+            <div class="flex flex-col m-3 ">
+          
                 <CurrentApplicationWindow/>
-             
-                <ReviewWindow/>
-            
+           <div class="block">
+            <div class="flex">
+             <ApplicationsList/>
+              </div>
             </div>
-           
-            <ApplicationsList/>
             </div>
           </div>:
           <div>
@@ -194,21 +206,21 @@ export default connect(mapStateToProps)(Home);
 /*
    if(user!=null){
     const prom=new Promise((resolve,reject)=>{
-        axios.get("http://localhost:3012/admin-applications/new-applications").then((response)=>{
+        axios.get("https://ghanahomestayserver.onrender.com/admin-applications/new-applications").then((response)=>{
           console.log(response)
           if(response.data.no_applications>0){
             setNewApplications(true)
             
           }
           resolve()
-          axios.get("http://localhost:3012/admin-applications/applications").then((response)=>{
+          axios.get("https://ghanahomestayserver.onrender.com/admin-applications/applications").then((response)=>{
             console.log(response)
             if(response.data.success){
               const apps=response.data.applications
               
               
               apps.map((a)=>{
-                axios.get("http://localhost:3012/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
+                axios.get("https://ghanahomestayserver.onrender.com/admin-current-resident/getActiveStatus/"+a.application.id).then((response1)=>{
                   console.log(response1)
                   if(response1.data.success && response1.data.currentlyOccupied){
                     dispatch(setActiveApplication(a))
@@ -224,12 +236,12 @@ export default connect(mapStateToProps)(Home);
           })
         })
         if(userType=="client"){
-          axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+          axios.get("https://ghanahomestayserver.onrender.com/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
             console.log("user apps")
             console.log(response)
             const apps=response.data.applications
             apps.map((a)=>{
-              axios.get("http://localhost:3012/client-applications/getActiveStatus/"+a.application.id).then((response1)=>{
+              axios.get("https://ghanahomestayserver.onrender.com/admin-applications/getActiveStatus/"+a.application.id).then((response1)=>{
                 console.log("user current")
                 console.log(response1)
             

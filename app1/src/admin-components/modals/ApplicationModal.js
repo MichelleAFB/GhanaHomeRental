@@ -120,7 +120,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
 
                           const prom1=new Promise((resolve1,reject1)=>{
                             if(application.application.application.notify_admin==1){
-                            axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
+                            axios.post("https://ghanahomestayserver.onrender.com/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
                               if(response.data.success){
 
                                 resolve1()
@@ -257,9 +257,8 @@ function ApplicationModal({visibility,application,handleNotify}) {
               application.application.application.application_status!="PAYED" ||
               application.application.application.application_status=="APPROVED"? 
               <button onClick={()=>{
-               
-                setReserveAndPromptPay(!reserveAndPromptPay)
-
+              
+                setReserveAndPromptPay(true)
                 setApprove(false)
                 setDenyBooking(false)
                 console.log("reserved:"+reserveAndPromptPay)
@@ -272,7 +271,8 @@ function ApplicationModal({visibility,application,handleNotify}) {
               
               {application.application.application.application_status!="DENIED"?
               <button class={denyBooking ?"bg-red-600 p-3 rounded-md m-3":"bg-gray-400 p-3 m-3 rounded-md" } onClick={()=>{
-                setDenyBooking(!denyBooking)
+                console.log("approve"+approve)
+                setDenyBooking(true)
                 setAlertCustomerApproval(false)
                 setReserveAndPromptPay(false)
                 setApprove(false)
@@ -284,27 +284,30 @@ function ApplicationModal({visibility,application,handleNotify}) {
 
               {application.application.application.application_status=="PAYED" || 
               application.application.application.datePaid!=null ?  <button class={approve ?"bg-green-600 p-3 rounded-md m-3":"bg-gray-400 p-3 m-3 rounded-md" } onClick={()=>{
-                setApprove(!approve)
+                console.log(approve+"approve")
+                setApprove(true)
                 setDenyBooking(false)
                 setAlertCustomerApproval(false)
                 setReserveAndPromptPay(false)
               }}>
                 <p class="text-white">Approve</p>
               </button>:<div></div>}
+         
               
              
             </div>
             <div class="flex">
               <button class="bg-purple-700 rounded-md p-3 w-full">
                 <p class="text-white" onClick={()=>{
+                  console.log("approve:"+approve+" deny:"+denyBooking)
 
                   if(denyBooking){
                     const prom=new Promise((resolve,reject)=>{
-                      axios.post("http://localhost:3012/admin-applications/deny-booking/"+application.application.application._id).then((response1)=>{
+                      axios.post("https://ghanahomestayserver.onrender.com/admin-applications/deny-booking/"+application.application.application._id).then((response1)=>{
                         console.log("here")
                         console.log(response1)
                         if(response1.data.success){
-                          axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application._id+"/DENIED",{message:"Your application has been denied"}).then((response2)=>{
+                          axios.post("https://ghanahomestayserver.onrender.com/admin-applications/setStatus/"+application.application.application._id+"/DENIED",{message:"Your application for ["+application.application.application.stay_start_date+" through "+application.application.application.stay_end_date+"] has been denied"}).then((response2)=>{
                             console.log(response2)
                             if(response2.data.success){
                               
@@ -312,9 +315,9 @@ function ApplicationModal({visibility,application,handleNotify}) {
                                 console.log(response=='OK')
                                 
                                 if(response=='OK'){
-                                  alert("SUCCESS: Reservation for application "+application.application.application._id+" is confirmed!")
+                                  alert("SUCCESS: Reservation for application "+application.application.application._id+" is denied!")
                                 }else{
-                                  alert("SUCCESS: Reservation for application "+application.application.application._id+" is confirmed! Email not set!")
+                                  alert("SUCCESS: Reservation for application "+application.application.application._id+" is denied! Email not set!")
                                 }
                               })
                               resolve()
@@ -329,7 +332,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
                     prom.then(()=>{
                       const prom1=new Promise((resolve1,reject1)=>{
                         if(application.application.application.notify_admin==1){
-                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
+                        axios.post("https://ghanahomestayserver.onrender.com/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
                           if(response.data.success){
                             resolve1()
                           }
@@ -350,7 +353,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
                   }
                   if(reserveAndPromptPay){
                     const prom=new Promise((resolve,reject)=>{
-                      axios.get("http://localhost:3012/admin-applications/checkAvailability/"+application.application.application._id).then((response)=>{
+                      axios.get("https://ghanahomestayserver.onrender.com/admin-applications/checkAvailability/"+application.application.application._id).then((response)=>{
                         console.log(response)
                         if(response.data.success){
                           console.log(response.data.paid==true)
@@ -362,12 +365,12 @@ function ApplicationModal({visibility,application,handleNotify}) {
                           console.log(response.data.conflicting_dates.length)
                           if(response.data.conflicting_dates.length==0 ){
                               console.log("here call")
-                            axios.post("http://localhost:3012/admin-applications/reserveAndPromptPay/"+application.application.application._id).then((response1)=>{
+                            axios.post("https://ghanahomestayserver.onrender.com/admin-applications/reserveAndPromptPay/"+application.application.application._id).then((response1)=>{
                               console.log("here")
                               console.log(response1)
                               if(response1.data.success){
                                
-                                axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application._id+"/RESERVED",{message:"Your application has been reserved but not confirmed.Please submit your payment within 5 days to secure your reservation or it will be released"}).then((response2)=>{
+                                axios.post("https://ghanahomestayserver.onrender.com/admin-applications/setStatus/"+application.application.application._id+"/RESERVED",{message:"Your application has been reserved but not confirmed.Please submit your payment within 5 days to secure your reservation or it will be released"}).then((response2)=>{
                                   console.log(response2)
                                   if(response2.data.success){
                                     alert("SUCCESS: successfully reserved")
@@ -390,7 +393,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
 
                       const prom1=new Promise((resolve1,reject1)=>{
                         if(application.application.application.notify_admin==1){
-                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
+                        axios.post("https://ghanahomestayserver.onrender.com/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
                           if(response.data.success){
                             resolve1()
                           }
@@ -416,13 +419,13 @@ function ApplicationModal({visibility,application,handleNotify}) {
                   if(approve){
 
                     const prom=new Promise((resolve,reject)=>{
-                      axios.post("http://localhost:3012/admin-applications/approve-booking/"+application.application.application._id).then((response)=>{
+                      axios.post("https://ghanahomestayserver.onrender.com/admin-applications/approve-booking/"+application.application.application._id).then((response)=>{
                         console.log("approve response")
                         console.log(response)
                        
                         if(response.data.success==true){
                           if(response.data.approved==true){
-                            axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application._id+"/CONFIRMED",{message:"Your reservation for stay["+application.application.application.stay_start_date+" through "+application.application.application.stay_end_date+"] is confirmed!"}).then((response1)=>{
+                            axios.post("https://ghanahomestayserver.onrender.com/admin-applications/setStatus/"+application.application.application._id+"/CONFIRMED",{message:"Your reservation for stay["+application.application.application.stay_start_date+" through "+application.application.application.stay_end_date+"] is confirmed!"}).then((response1)=>{
                               console.log(response1)
                               if(response1.data.success){
                               
@@ -531,8 +534,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
         </form>:<p></p>}
         {
                 application.application.occupants.map((o)=>{
-                  console.log(o)
-                  console.log("hi")
+                 
                   return(
                   <div>
                      <p>{o.firstname}</p>
@@ -551,6 +553,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
     <div class='h-screen w-full fixed ml-0 mr-0 mt-0 mb-0 flex justify-center items-center bg-black bg-opacity-50'>
      
       <main id='content' role='main' class='w-full max-w-md mx-auto '>
+
         <div class='opacity-[.75]  rounded-xl shadow-lg bg-white dark:border-gray-700 mb-5'>
           <div class='p-4 sm:p-7 flex flex-col'>
             <div class="flex flex-col justify-end">
@@ -560,7 +563,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
 
                           const prom1=new Promise((resolve1,reject1)=>{
                             if(application.application.application.notify_admin==1){
-                            axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
+                            axios.post("https://ghanahomestayserver.onrender.com/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
                               console.log(response)
                               if(response.data.success){
                                 resolve1()
@@ -636,6 +639,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
                   <div class="flex flex-col">
        <div class="flex">
           <button class={denyBooking ?"bg-red-600 p-3 rounded-md m-3":"bg-gray-400 p-3 m-3 rounded-md" } onClick={()=>{
+            console.log("herroooo")
                 setDenyBooking(!denyBooking)
                 setAlertCustomerApproval(false)
                 setReserveAndPromptPay(false)
@@ -644,6 +648,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
                 <p class="text-white">Deny</p>
               </button>
               <button class={approve ?"bg-green-600 p-3 rounded-md m-3":"bg-gray-400 p-3 m-3 rounded-md" } onClick={()=>{
+                console.log("approve:"+approve)
                 setDenyBooking(false)
                 setAlertCustomerApproval(false)
                 setReserveAndPromptPay(false)
@@ -669,14 +674,14 @@ function ApplicationModal({visibility,application,handleNotify}) {
              </div>
              <button class="bg-purple-700 rounded-md p-3 flex w-full">
                 <p class="text-white" onClick={()=>{
-                  console.log("here")
+                  console.log("approve"+approve)
                   if(denyBooking){
                     const prom=new Promise((resolve,reject)=>{
-                      axios.post("http://localhost:3012/admin-applications/deny-booking/"+application.application.application._id).then((response1)=>{
+                      axios.post("https://ghanahomestayserver.onrender.com/admin-applications/deny-booking/"+application.application.application._id).then((response1)=>{
                         console.log("here")
                         console.log(response1)
                         if(response1.data.success){
-                          axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application._id+"/DENIED",{message:"Your application has been denied"}).then((response2)=>{
+                          axios.post("https://ghanahomestayserver.onrender.com/admin-applications/setStatus/"+application.application.application._id+"/DENIED",{message:"Your application has been denied"}).then((response2)=>{
                             console.log(response2)
                             if(response2.data.success){
                               
@@ -701,7 +706,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
                     prom.then(()=>{
                       const prom1=new Promise((resolve1,reject1)=>{
                         if(application.application.application.notify_admin==1){
-                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
+                        axios.post("https://ghanahomestayserver.onrender.com/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
                           if(response.data.success){
                             resolve1()
                           }
@@ -722,7 +727,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
                   }
                   if(reserveAndPromptPay){
                     const prom=new Promise((resolve,reject)=>{
-                      axios.get("http://localhost:3012/admin-applications/checkAvailability/"+application.application.application._id).then((response)=>{
+                      axios.get("https://ghanahomestayserver.onrender.com/admin-applications/checkAvailability/"+application.application.application._id).then((response)=>{
                         console.log(response)
                         if(response.data.success){
                           console.log(response.data.paid==true)
@@ -734,12 +739,12 @@ function ApplicationModal({visibility,application,handleNotify}) {
                           console.log(response.data.conflicting_dates.length)
                           if(response.data.conflicting_dates.length==0 ){
                               console.log("here call")
-                            axios.post("http://localhost:3012/admin-applications/reserveAndPromptPay/"+application.application.application._id).then((response1)=>{
+                            axios.post("https://ghanahomestayserver.onrender.com/admin-applications/reserveAndPromptPay/"+application.application.application._id).then((response1)=>{
                               console.log("here")
                               console.log(response1)
                               if(response1.data.success){
                                
-                                axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application._id+"/RESERVED",{message:"Your application has been reserved but not confirmed.Please submit your payment within 5 days to secure your reservation or it will be released"}).then((response2)=>{
+                                axios.post("https://ghanahomestayserver.onrender.com/admin-applications/setStatus/"+application.application.application._id+"/RESERVED",{message:"Your application has been reserved but not confirmed.Please submit your payment within 5 days to secure your reservation or it will be released"}).then((response2)=>{
                                   console.log(response2)
                                   if(response2.data.success){
                                     alert("SUCCESS: successfully reserved")
@@ -762,7 +767,7 @@ function ApplicationModal({visibility,application,handleNotify}) {
 
                       const prom1=new Promise((resolve1,reject1)=>{
                         if(application.application.application.notify_admin==1){
-                        axios.post("http://localhost:3012/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
+                        axios.post("https://ghanahomestayserver.onrender.com/admin-applications/turnOffAdminNotify/"+application.application.application._id).then((response)=>{
                           if(response.data.success){
                             resolve1()
                           }
@@ -784,18 +789,19 @@ function ApplicationModal({visibility,application,handleNotify}) {
 
 
                   }
-                  console.log("here")
+                  console.log("hero")
                   if(approve){
+                    console.log("here")
 
                     const prom=new Promise((resolve,reject)=>{
                       console.log("here")
-                      axios.post("http://localhost:3012/admin-applications/approve-booking/"+application.application.application._id).then((response)=>{
+                      axios.post("https://ghanahomestayserver.onrender.com/admin-applications/approve-booking/"+application.application.application._id).then((response)=>{
                         console.log("approve response")
                         console.log(response)
                         console.log(response.data.hasOwnProperty('no_booked'))
                         if(response.data.success==true){
                           if(response.data.approved==true){
-                            axios.post("http://localhost:3012/admin-applications/setStatus/"+application.application.application._id+"/CONFIRMED",{message:"Your reservation for stay["+application.application.application.stay_start_date+" through "+application.application.application.stay_end_date+"] is confirmed!"}).then((response1)=>{
+                            axios.post("https://ghanahomestayserver.onrender.com/admin-applications/setStatus/"+application.application.application._id+"/CONFIRMED",{message:"Your reservation for stay["+application.application.application.stay_start_date+" through "+application.application.application.stay_end_date+"] is confirmed!"}).then((response1)=>{
                               console.log(response1)
                               if(response1.data.success){
                               

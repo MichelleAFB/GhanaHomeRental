@@ -8,6 +8,8 @@ import {fill} from "@cloudinary/url-gen/actions/resize";
 import {CloudinaryImage} from '@cloudinary/url-gen';
 import {AdvancedImage} from '@cloudinary/react';
 import {Image, Video, Transformation} from 'cloudinary-react';
+import ReviewItem from '../ReviewItem';
+import ReviewModal from '../ReviewModal';
 function Home({application}) {
 
  const[over,setOver]=useState(false)
@@ -45,7 +47,7 @@ function Home({application}) {
         console.log("\n"+cDate.toString().substring(0,15))
         console.log("\n"+ endDate.toString().substring(0,15))
 
-        if(cDate.toString()==startDate.toString() && application.application.checkedIn!=1){
+        if(((cDate.toString()==startDate.toString() && application.application.checkedIn!=1) || cDate>=startDate && cDate<=endDate) && (application.application.application_status!="CHECKEDIN")){
           setPromptCheckIn(true)
         }
       if(cDate.toString().substring(0,15)==warnDate.toString().substring(0,15) ){
@@ -73,7 +75,7 @@ function Home({application}) {
      await axios.post("https://api.cloudinary.com/v1_1/michelle-badu/image/upload/",formData).then((response1)=>{
       if(response1.data.secure_url!=null){
        console.log(response1)
-       images.push({img_url:response1.data.secure_url,application_id:application.application.id})
+       images.push({img_url:response1.data.secure_url,application_id:application.application._id})
 
        sessionStorage.setItem("review_images",JSON.stringify(images))
        console.log(response1)
@@ -133,30 +135,30 @@ function Home({application}) {
    }
     //TODO:Add checkin functionality
 if(!isLoading){
+  var currDate=new Date()
+  currDate=currDate.toString().substring(0,16)
+  console.log(application.application)
   console.log(files)
   return (
     <div class="flex-col w-full min-h-screen">
-      <div class="flex-col w-full p-3 bg-yellow-400 rounded-md m-2">
+      <ReviewModal/>
+      <div class="flex-col w-full p-3  rounded-md m-2">
         
-          <p class="text-center text-bold  font-bold text-4xl mt-4">Stay</p>
-          <p class="text-center font-semibold mt-2">{application.application.stay_start_date}-{application.application.stay_end_date}</p>
-          <div class="bg-green-400 flex rounded-md p-3">
+          <p class="text-center text-bold  font-bold text-4xl mt-4 text-white">Stay</p>
+          <p class="text-center font-semibold mt-2 text-white">{application.application.stay_start_date}-{application.application.stay_end_date}</p>
+          { application.application.stay_start_date==currDate?
+            <div class="bg-green-400 flex rounded-md p-3">
             Add arrival instructions
-          </div>
+          </div>:
+          <div></div>
+
+          }
+      
         {
-          promptCheckIn?
-          <div class="bg-gray-300 rounded-md p-3 flex flex-col  w-full m-3">
-            < p class="text-center font-bold mb-3">
-                  Please let checking in be the first thing you do when you arrive to the villa
-                </p>
-              <button class="bg-blue-500 hover:bg-blue-300 rounded-md flex w-full p-3 rouned-md">
-                
-                <p class="text-white text-center font-bold">
-                  CHECK IN
-                </p>
-              </button>
-            </div>:
-            <div></div>
+          application.application.application_status=="CHECKEDOUT" && application.application.review==''?
+          <ReviewItem application={application}/>
+          :
+          <div></div>
         }
        
         {
@@ -190,7 +192,7 @@ if(!isLoading){
           console.log(newArr)
              console.log(images)
              const newImages=JSON.parse(sessionStorage.getItem("review_images"))
-            axios.post("http://localhost:3012/current-resident/review/"+application.application.id,{review:review,images:newImages}).then((response)=>{
+            axios.post("https://ghanahomestayserver.onrender.com/current-resident/review/"+application.application._id,{review:review,images:newImages}).then((response)=>{
           console.log(response)
           if(response.data.success){
             const arr=[]
@@ -214,10 +216,10 @@ if(!isLoading){
             <p class="text-center m-2">Please check out by 11:00AM and confirm your checkout.</p>
             <button class="bg-gray-300 rounded-md  flex flex-col w-full p-3 m-2" onClick={()=>{
               const currDate=new Date()
-              axios.post("http://localhost:3012/current-resident/checkout/"+application.application.id,{checkoutTime:currDate}).then((response)=>{
+              axios.post("https://ghanahomestayserver.onrender.com/ccurrent-resident/checkout/"+application.application._id,{checkoutTime:currDate}).then((response)=>{
                 console.log(response)
                 if(response.data.success){
-                  axios.post("http://localhost:3012/client-applications/setStatus/"+application.application.id+"/CHECKEDOUT",{message:"Residents in this reservation have checked out at "+ currDate}).then((response1)=>{
+                  axios.post("https://ghanahomestayserver.onrender.com/client-applications/setStatus/"+application.application._id+"/CHECKEDOUT",{message:"Residents in this reservation have checked out at "+ currDate}).then((response1)=>{
                     console.log(response1)
                     if(response.data.success){
                       alert("SUCCESS:You have successfully check out! We hope to host you soon!")
@@ -248,6 +250,44 @@ if(!isLoading){
         <div></div>
         }
       </div>
+      {
+          promptCheckIn?
+          <div class="bg-gray-300 rounded-md p-3 flex flex-col  w-full m-3">
+            < p class="text-center font-bold mb-3">
+                  Please let checking in be the first thing you do when you arrive to the villa
+                </p>
+              <button class="bg-blue-500 hover:bg-blue-300 justify-center flex w-full p-3 rounded-md" onClick={()=>{
+                const prom=new Promise((resolve,reject)=>{
+                  var curr=new Date()
+                  var time=curr.toTimeString()
+                  curr=currDate.toString().substring(0,15)
+                  axios.post("http://localhost:3012/client-applications/setStatus/"+application.application._id+"/CHECKEDIN",{message:"Occupants checked in at "+time +" on "+curr}).then((response)=>{
+                    console.log(response)
+                    if(response.data.success){
+                      if(response.data.application.application_status=="CHECKEDIN"){
+                        setPromptCheckIn(false)
+                      }
+                    }
+                  })
+                })
+
+              }}>
+                
+                <p class="text-white text-center font-bold">
+                  CHECK IN
+                </p>
+              </button>
+            </div>:
+            <div></div>
+        }
+      {
+        application.application.application_status=="CHECKEDIN"?
+        <div class="flex w-full justify-center p-4 ">
+            <ReviewItem application={application}/>
+         </div>
+         :
+         <div></div>
+      }
     </div>
   )
 }else{

@@ -21,14 +21,17 @@ function GuestItem({occupant}) {
   useEffect(()=>{
     const prom=new Promise((resolve,reject)=>{
       console.log(occupant)
-      axios.get("http://localhost:3012/current-resident/guests/"+occupant.application_id+"/"+occupant._id).then((response)=>{
+      axios.get("https://ghanahomestayserver.onrender.com/current-resident/guests/"+occupant.application_id+"/"+occupant._id).then((response)=>{
         console.log(response)
         setGuests(response.data.guests)
-        axios.get("http://localhost:3012/current-resident/restricted-individuals/"+occupant.application_id+"/"+occupant._id).then((response1)=>{
-          console.log("\n\n")
-          console.log(response1)
-          setRestricted(response1.data.restricted_individuals)
-          resolve()
+        axios.get("https://ghanahomestayserver.onrender.com/current-resident/restricted-individuals/"+occupant.application_id+"/"+occupant._id).then((response1)=>{
+          console.log("\n\nRESTRICTED")
+          console.log(response1.data)
+          setRestricted(response1.data.restricted)
+          setTimeout(()=>{
+            resolve()
+
+          },800)
         })
       })
     })
@@ -42,6 +45,7 @@ function GuestItem({occupant}) {
   if(!isLoading){
     console.log(show)
    // console.log(guests.length)
+   console.log(restricted)
   return (
     <div class="flex flex-col">
        <div class="w-full flex bg-gray-600 m-2 rounded-md p-3">

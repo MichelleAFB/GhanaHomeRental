@@ -7,9 +7,10 @@ import { useParams,useNavigate} from 'react-router-dom'
 import { useState } from 'react'
 //outside
 import axios from 'axios'
-function ResetPassword() {
+function ResetPasswordAdmin() {
 
   const{email}=useParams()
+  
   console.log(email)
 
  const navigate=useNavigate()
@@ -36,7 +37,7 @@ function ResetPassword() {
              }}/>
               <button class="bg-gray-500 rounded-md w-1/3 p-1 flex justify-center mt-2" onClick={()=>{
                 const prom=new Promise((resolve,reject)=>{
-                  axios.post("https://ghanahomestayserver.onrender.com/sign-in/reset-password/"+email,{password:password,confirmPassword:passwordConfirm}).then((response)=>{
+                  axios.post("https://ghanahomestayserver.onrender.com/sign-in/reset-password/admin/"+email,{password:password,confirmPassword:passwordConfirm}).then((response)=>{
                     console.log(response.data)
                     if(response.data.success){
                       var user=response.data.user
@@ -45,7 +46,7 @@ function ResetPassword() {
                       sessionStorage.setItem("user",JSON.stringify(user))
                       sessionStorage.setItem("signInType","signIn")
                       dispatch(setUser(user))
-                      dispatch( setUserType("client"))
+                      dispatch( setUserType("admin"))
                       resolve()
                       setTimeout(()=>{
                         resolve()
@@ -72,4 +73,4 @@ function ResetPassword() {
   )
 }
 
-export default ResetPassword
+export default ResetPasswordAdmin

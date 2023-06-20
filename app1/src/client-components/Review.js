@@ -52,19 +52,21 @@ function Review({application}) {
      
     })
   },[])
-  
+ // console.log(app.application.application_status+" "+app.application.stay_start_date)
 
-  if(!isLoading){
-    console.log(application.application)
-    const user=JSON.parse(sessionStorage.getItem("user"))
-    console.log(user)
-    if(user.firstname==app.application.firstname && user.lastname==app.application.lastname && user.email==app.application.email){
+  if(!isLoading && app.application.review!="" ){ 
+      console.log(app.application.application_status+" "+app.application.stay_start_date + app.application.review)
+
+  
+    const user=JSON.parse(sessionStorage.getItem("user")) 
+   
+    if(user.firstname==app.application.firstname && user.lastname==app.application.lastname && user.email==app.application.email && (app.application.application_status=="CHECKEDOUT" || app.application.application_status=='CHECKEDOUT')){
   return (
     <div class="h-full bg-yellow-300 rounded-md p-5 block ml-5 mr-5 mb-5">
         <p class=" font-bold text-xl">{app.application.stay_start_date}-{app.application.stay_end_date}</p>
         <div class="flex ">
           <i class="m-3 font-semibold">
-             "{app.application.review} ""
+             "{app.application.review} "
             <br/>- <p class="text-normal font-bold">{app.application.firstname} {app.application.lastname}</p>
           </i>
         </div>
@@ -80,27 +82,34 @@ function Review({application}) {
         </div>
     </div>
   )
-  }else{
-    return(
-      <div class="h-full bg-gray-300 rounded-md p-5 block ml-5 mr-5 mb-5">
-        <p class=" font-bold text-xl">{app.application.stay_start_date}-{app.application.stay_end_date}</p>
-        <div class="flex ">
-          <i class="m-3 font-semibold">
-             "{app.application.review} ""
-            <br/>- <p class="text-normal font-bold">{app.application.firstname} {app.application.lastname}</p>
-          </i>
-        </div>
-          <div class="flex flex-col ">
-             <ReviewImageCarousel images={images}/>
-           </div>
-          <div> 
-        </div>
-    </div>
-    )
-
   }
-}else{
+  else{
     return(<div></div>)
+  }
+}else if((app.application.review=="" || app.application.review==null || app.application.review=='') && (app.application.application_status=="CHECKEDOUT" || app.application.application_status=='CHECKEDOUT')){
+  console.log("review null")
+
+  return(
+    <div class="h-full bg-gray-300 rounded-md p-5 block ml-5 mr-5 mb-5">
+      <p class=" font-bold text-xl">{app.application.stay_start_date}-{app.application.stay_end_date}</p>
+      <div class="flex ">
+        <i class="m-3 font-semibold">
+          
+          <br/>-<p class="text-normal font-bold">{app.application.firstname} {app.application.lastname}</p>
+        </i>
+      </div>
+        <div class="flex flex-col ">
+           <ReviewImageCarousel images={images}/>
+         </div>
+        <div> 
+      </div>
+  </div>
+  )
+
+}
+
+else{
+    return(<div>{app.application.application_status} {app.application.stay_start_date}</div>)
   }
 }
 

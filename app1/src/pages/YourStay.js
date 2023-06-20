@@ -29,7 +29,7 @@ function YourStay() {
 
   useEffect(()=>{
     const prom=new Promise((resolve,reject)=>{
-        axios.get("http://localhost:3012/client-applications/application/"+id).then((response)=>{
+        axios.get("https://ghanahomestayserver.onrender.com/client-applications/application/"+id).then((response)=>{
           console.log(response)
           setApplication(response.data)
           const app=response.data 
@@ -86,13 +86,7 @@ function YourStay() {
   return (
     <div class="flex">
       <div class="flex flex-col w-1/5 bg-gray-300 p-2 ml-0 mt-0 mb-0">
-      <button class="m-2" onClick={()=>{
-          navigate("/")
-        }}>
-          <p class="text-gray-600 font-bold hover:text-purple-500">
-            Go back home
-          </p>
-        </button>
+      
         <button class="m-2" onClick={()=>{
           setHome(true)
           setMaintenanceTab(false)

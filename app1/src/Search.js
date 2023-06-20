@@ -15,8 +15,8 @@ function Search({userType,user}) {
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [noChildren,setNoChildren]=useState(2)
-    const [noAdults,setNoAdults]=useState(0)
+    const [noChildren,setNoChildren]=useState(0)
+    const [noAdults,setNoAdults]=useState(2)
     const selectionRange = {
         startDate: startDate,
         endDate: endDate,
@@ -54,7 +54,7 @@ function Search({userType,user}) {
                         </h2>
                         <div class="flex justify-end ml-3">
                         <PeopleIcon />
-                        <input min={0} max={5} default={0} placeholder="2" type="number"  class="justify-end rounded-md w-[25vw] p-2" onChange={(e)=>{
+                        <input min={0} max={5} default={0} placeholder="0" type="number"  class="justify-end rounded-md w-[25vw] p-2" onChange={(e)=>{
                         setNoChildren(e.target.value)
                         console.log("noChildren:"+ e.target.value)
                         }} />

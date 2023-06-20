@@ -10,7 +10,7 @@ import {useEffect,useState} from 'react'
 
 //redux
 import { connect,useDispatch, useSelector } from 'react-redux';
-import {setUser,setUserType} from '../redux/user/user-actions'
+import {setReviewModalApplication, setReviewModalVisibility, setUser,setUserType} from '../redux/user/user-actions'
 
 function Header({user,userType,userRedux}) {
     console.log(user)
@@ -66,7 +66,20 @@ function Header({user,userType,userRedux}) {
            
             <div className='flex align-middle'>
             <div class="flex m-3">
-            <Link to="/" ><p class="hover:text-purple-400 text-xl text-center text-gray-600 font-bold">Home</p></Link>
+              
+            <button onClick={()=>{
+                const prom=new Promise((resolve,reject)=>{
+                    sessionStorage.removeItem("images")
+                    dispatch(setReviewModalApplication(null))
+                    dispatch(setReviewModalVisibility(false))
+                    resolve()
+                })
+
+                prom.then(()=>{
+                    navigate("/")
+
+                })
+            }}><p class="hover:text-purple-400 text-xl text-center text-gray-600 font-bold">Home</p></button>
             </div>
             <div class="flex m-3">
                 <Link to="/reviews" ><p class="hover:text-purple-400 text-xl text-center text-gray-600 font-bold">Reviews</p></Link>
@@ -82,9 +95,11 @@ function Header({user,userType,userRedux}) {
                 <Avatar />
                 {
                     userType=="admin"? 
-                    <div class="flex m-2">
+                    <div class="flex m-2 align-middle">
+                        <button>
                         <p>{user.firstname} {user.lastname} (Admin)</p>
-                         <button class="ml-2" onClick={()=>{
+                        </button>
+                         <button class="ml-5" onClick={()=>{
                             const prom=new Promise((resolve,reject)=>{
                                 dispatch(setUserType(null))
                                 dispatch(setUser(null));
@@ -96,15 +111,18 @@ function Header({user,userType,userRedux}) {
                             prom.then(()=>{
                                     navigate("/sign-in")
                             })
-                         }}>Sign Out</button>
+                         }}><p>Sign Out</p></button>
                     </div>
                     :<div></div>
                 }
                   {
                     userType=="client"? 
-                    <div class="flex m-2">
-                    <p>{user.firstname} {user.lastname} </p>
-                     <button class="ml-2" onClick={()=>{
+                    <div class="flex m-2 align-middle">
+                        <button>
+                         <p>{user.firstname} {user.lastname} </p>
+
+                        </button>
+                     <button class="ml-5" onClick={()=>{
                         const prom=new Promise((resolve,reject)=>{
                             dispatch(setUserType(null))
                             dispatch(setUser(null));
