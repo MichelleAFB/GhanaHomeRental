@@ -5,25 +5,46 @@ import Search from '../Search';
 
 import {connect} from 'react-redux'
 import { useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
+
+import{house} from '../home_photos/Entry & Egress 2.jpg'
+import{bedroom2} from '../home_photos/Bedroom 2.jpg'
+import CarouselImages from '../client-components/CarouselImages';
 
 function Banner({user,userType}) {
     const navigate = useNavigate();
     const [showSearch, setShowSearch] = useState(false);
+    const[isLoading,setIsLoading]=useState(true)
 
+    useEffect(()=>{
+        
+        const prom=new Promise((resolve,reject)=>{
+            resolve()
+        })
+
+        prom.then(()=>{
+            setIsLoading(false)
+        })
+
+    },[])
     
+    if(!isLoading){
     return (
         <div className='banner'>
-            <div className='banner__search'>
+            <div className='banner__search'> 
                 {showSearch && <Search />}
-
+              
                 <Button onClick={() => setShowSearch(!showSearch)} className='banner__searchButton' variant='outlined'>
                     {showSearch ? "Hide" : "Search Dates"}
                 </Button>
-            </div>
-          
-            
+               
+                        <CarouselImages class="block z-10"/> 
+            </div> 
         </div>
     ) 
+    }else{
+        return(<div></div>)
+    }
 }
 
 const mapStateToProps = (state, props) => {
@@ -43,4 +64,4 @@ const mapStateToProps = (state, props) => {
       userType: userType,
     };
   };
-export default connect(Banner)(Banner)
+export default connect(mapStateToProps)(Banner)

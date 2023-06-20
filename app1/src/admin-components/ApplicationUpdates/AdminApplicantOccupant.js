@@ -3,17 +3,20 @@ import { useState } from 'react'
 
 //assets
 import { Avatar } from '@material-ui/core'
-
+import IonIcon from '@reacticons/ionicons'
 function AdminApplicantOccupant({occupant}) {
 
   const[showInfo,setShowInfo]=useState(false)
 
   
   return (
-    <div class="flex m-2">
-      <Avatar onClick={()=>{
+    <div class="flex m-2 z-10"> 
+    <div class="ionicon-wrapper">
+    <IonIcon name="person" class="z-10 h-[10px] w-[10px]"onClick={()=>{
         setShowInfo(!showInfo)
       }}/>
+    </div>
+    
       {
         !showInfo  ? <div class="m-2"><p>{occupant.firstname} {occupant.lastname}</p></div>:<p></p>
       }

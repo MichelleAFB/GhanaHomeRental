@@ -19,3 +19,41 @@ export function setUserType(type){
 
   }
 }
+
+export function setCurrentlyOccupied(value){
+  return{
+    type:actionTypes.SET_CURRENTLY_OCCUPIED,
+    payload:{
+      isCurrentlyOccupied:value
+    }
+
+  }
+}
+
+export function setCurrentlyOccupiedApplication(application){
+  return{
+    type:actionTypes.SET_CURRENTLY_OCCUPIED_APPLICATION,
+    payload:{
+      application:application
+    }
+
+  }
+}
+
+export function setReviewModalVisibility(val){
+  return{
+    type:actionTypes.SET_REVIEW_MODAL_VISIBILITY,
+    payload:{
+      reviewModalVisibility:val
+    }
+  }
+}
+
+export function setReviewModalApplication(application){
+  return{
+    type:actionTypes.SET_REVIEW_MODAL_APPLICATION,
+    payload:{
+      reviewModalApplication:application
+    }
+  }
+}

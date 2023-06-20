@@ -101,7 +101,7 @@ console.log("no adults:"+noAdults)
     } else {
       console.log(email);
       axios
-        .post("http://localhost:3012/sign-up/create-user", {
+        .post("https://ghanahomerental.herokuapp.com/sign-up/create-user", {
           firstname: firstname,
           lastname: lastname,
           email: email,
@@ -226,7 +226,7 @@ console.log("no adults:"+noAdults)
                           onClick={()=>{
                             if(!admin){
                             const prom=new Promise((resolve,reject)=>{
-                              axios.post("http://localhost:3012/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
+                              axios.post("https://ghanahomerental.herokuapp.com/sign-in/sign-in-user",{email:email,password:password}).then((response)=>{
                                 console.log(response)
                                 if(response.data.success){
                                   dispatch(setUser(response.data.client))
@@ -270,7 +270,7 @@ console.log("no adults:"+noAdults)
 
                                 var ad
                                 const prom1=new Promise((resolve1,reject1)=>{
-                                  axios.post("http://localhost:3012/sign-in/sign-in-admin").then((response)=>{
+                                  axios.post("https://ghanahomerental.herokuapp.com/sign-in/sign-in-admin").then((response)=>{
                                     console.log(response)
                                     if(response.data.success){
                                       ad=response.data.admin

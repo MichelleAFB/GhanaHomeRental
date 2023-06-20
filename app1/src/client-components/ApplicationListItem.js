@@ -1,6 +1,7 @@
 import React from 'react'
 import {useState,useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
+
 //assets
 import { Avatar } from '@material-ui/core'
 import IonIcon from '@reacticons/ionicons'
@@ -8,12 +9,16 @@ import IonIcon from '@reacticons/ionicons'
 //redux
 import { setTotalNewApplications,decrementTotalNewApplications } from '../redux/admin-applications/admin-applications-actions'
 import {connect,useDispatch} from 'react-redux'
+import { setCurrentlyOccupied,setCurrentlyOccupiedApplication } from '../redux/user/user-actions'
+import { setReviewModalApplication,setReviewModalVisibility } from '../redux/user/user-actions'
 //components
 import ApplicationListItemOccupant from './ApplicationListItemOccupant'
 
 //outside
 import {loadStripe} from '@stripe/stripe-js';
 import axios from 'axios'
+import emailjs from "@emailjs/browser";
+
 function ApplicationListItem({application}) {
   const dispatch=useDispatch()
   const navigate=useNavigate()
@@ -23,41 +28,110 @@ function ApplicationListItem({application}) {
   const[isLoading,setIsLoading]=useState(true)
   const[checkoutLink,setCheckoutLink]=useState()
   const[checkoutLinkRecieved, setCheckoutLinkRecieved]=useState(false)
-  const stripePromise=loadStripe("pk_live_51MrXkxLxMJskpKlAg04tvIwsH0onrRPJH2fgU2qzrHvaWKRFjqL76UW2lwKI4SGx0Y68ICWsm9Wts6oHWjHBPi1D00JG5bQ97t") 
+  const[isPassedDue,setIsPassedDue]=useState(false)
+  const stripePromise=loadStripe(process.env.REACT_APP_STRIPE_KEY) 
+ 
+  
 
   useEffect(()=>{
+    
+    if(application.application._id=='64877e4c94305bee55021525'){ 
+      console.log("\n\n"+application.application.stay_start_date)
+    }
 
     const prom=new Promise((resolve,reject)=>{
-      if(application.application.application_status=="RESERVED"||application.application.application_status=="APPLIED" ){
+      
+     
+      axios.get("https://ghanahomestayserver.onrender.com/client-applications/getActiveStatus/"+application.application._id).then((response)=>{
+        
+        if(application.application._id=='64877e4c94305bee55021525'){ 
+          console.log(response.data)        }
+        if(response.data.success){
+            if(response.data.currentlyOccupied==true){
+              const prom=new Promise((resolve,reject)=>{
+                dispatch(setCurrentlyOccupiedApplication(application))
+                resolve()
+              })
 
-        axios.get("http://localhost:3012/admin-applications/checkPaymentDeadline/"+application.application.id).then((response)=>{
-          console.log(response)
+              prom.then(()=>{
+                dispatch(setCurrentlyOccupied(true))
+              })
+            }else{
+              resolve()
+            }
+        }
+      })
+      console.log(application.application)
+      if(application.application.application_status=="RESERVED" ){
+
+        axios.get("https://ghanahomestayserver.onrender.com/admin-applications/checkPaymentDeadline/"+application.application._id).then((response)=>{
+         
+      
+        
+          setIsPassedDue(response.data.passedDue)
+          if(response.data.passedDue){
+          
+            axios.post("https://ghanahomestayserver.onrender.com/client-applications/release-reservation-due-to-unpaid/"+application.application._id).then((response1)=>{
+             
+              if(response1.data.success){
+                axios.post("https://ghanahomestayserver.onrender.com/admin-applications/setStatus/"+application.application._id+"/DROPPED",{message:"Your reservation has been dropped due to non-payment"}).then((response2)=>{
+                
+                })
+              }
+            })
+          }if(response.data.paid){  //not reserved
+              setIsLoading(false)
+          }
+          else{
+            axios.post("https://ghanahomestayserver.onrender.com/client-applications/release-reservation-due-to-unpaid/"+application.application._id).then((response1)=>{
+             
          
           
+            
+            if(response1.data.success){
+              axios.post("https://ghanahomestayserver.onrender.com/admin-applications/setStatus/"+application.application._id+"/DROPPED",{message:"Your reservation has been dropped due to non-payment"}).then((response2)=>{
+               
+              console.log(response2)
+              })
+            }
+          })
+          }
+          sessionStorage.setItem("checkPayment_"+application.application._id,JSON.stringify(response.data)) 
         })
 
-        if(sessionStorage.getItem("application_payment_"+application.application.id)==null){
-          console.log("calling")
+        if(sessionStorage.getItem("application_payment_"+application.application._id)==null){
+          console.log(application.application.stay_start_date+" can get days ")
+         
           
-        }if(sessionStorage.getItem("application_payment_"+application.application.id)!=null && getLink==true){
-          console.log("run checkout")
-          const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application.id))
-          console.log( days.no_days)
+        }if(sessionStorage.getItem("application_payment_"+application.application._id)!=null && getLink==true){
+          
+          const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
+          console.log(days.no_days + " "+application.application._id)
           getCheckoutLink(days.no_days)
           setGetLink(false)
     
         }
+      }else{
+        resolve()
       }
-      resolve()
+      
+      setTimeout(()=>{
+        resolve()
+      },1000)
+     
       
     })
 
     prom.then(()=>{
       
      const prom1=new Promise((resolve1,reject1)=>{
-      if(application.application.application_status=="RESERVED" ||application.application.application_status=="APPLIED" ){
-        console.log("useeffect")
-        getCheckoutLink().then(()=>{
+      if(application.application.application_status=="RESERVED"  ){
+        const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
+       
+       
+        getCheckoutLink(days.no_days).then(()=>{
+          console.log(days)
+          
           resolve1()
         })
 
@@ -72,55 +146,72 @@ function ApplicationListItem({application}) {
      })
       
     })
-
   },[])
   
-console.log(application) 
+ 
   async function getCheckoutLink(q){
-    console.log("CHECKOUT")
-    await axios.post("http://localhost:3012/payment/checkout/"+application.application.id,{fees:[{id:"price_1MrY1oLxMJskpKlAbFZlt9et",quantity:q},{id:"price_1MrY3uLxMJskpKlAfpN870oN",quantity:1}]}).then((response)=>{
-        console.log(response.data)
-        sessionStorage.setItem("checkoutLink_"+application.application.id,response.data.url)
-        console.log(response.data)
+   
+    await axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+application.application._id,{fees:[{id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:q},{id:process.env.REACT_APP_SAMPLE_CLEANING,quantity:1}]}).then((response)=>{
+        sessionStorage.setItem("checkoutLink_"+application.application._id,response.data.url)
+        if(application.application._id=='64877e4c94305bee55021525'){ 
+          console.log(application.application.stay_start_date+" "+application.application.stay_end_date)
+          console.log(application.application.stay_start_date)
+          
+        }
         setCheckoutLinkRecieved(true)
         setCheckoutLink(response.data.url)
+        
         return response.data.url
       })
   }
 
   async function checkout(){
+    console.log("CHECKOUTTT")
+    if(application.application._id=='64877e4c94305bee55021525'){ 
+      console.log(application.application.stay_start_date+" "+application.application.stay_end_date)
+      console.log(application.application.stay_start_date)
+      
+    }
+    await axios.get("https://ghanahomestayserver.onrender.com/client-applications/allBookingDatesForApplication/"+application.application._id).then((response1)=>{
+    console.log(application.application)
+    console.log(response1.data.booked_dates)
     
-    await axios.get("http://localhost:3012/client-applications/allBookingDatesForApplication/"+application.application.id).then((response1)=>{
-      console.log(response1)
-      sessionStorage.setItem("application_payment_"+application.application.id,JSON.stringify({no_days:response1.data.no_days}))
-      console.log(response1.data)
+      sessionStorage.setItem("application_payment_"+application.application._id,JSON.stringify({no_days:response1.data.no_days}))
+     
      // return getCheckoutLink(response1.data.days)
     }) 
  }
  const[getLink,setGetLink]=useState(true)
   if(!isLoading){
-    checkout()
-    if(sessionStorage.getItem("application_payment_"+application.application.id)==null){
-      console.log("calling")
-      
-    }if(sessionStorage.getItem("application_payment_"+application.application.id)!=null && getLink==true){
-      console.log("run checkout")
-      const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application.id))
-      console.log( days.no_days)
-      getCheckoutLink(days.no_days)
-      setGetLink(false)
+   // const link=JSON.parse(sessionStorage.getItem(""))
+    if(checkoutLink==null){
+    checkout().then((response)=>{
+      console.log(response)
+      if(sessionStorage.getItem("application_payment_"+application.application._id)==null){
+     
+        
+      }if(sessionStorage.getItem("application_payment_"+application.application._id)!=null && getLink==true){
+        console.log("run checkout")
+        const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
+        setGetLink(false)
+        getCheckoutLink(days.no_days).then(()=>{
+          const link=JSON.parse(sessionStorage.getItem("checkoutLink_"+application.application._id))
+          console.log(link)
+        })
+  
+      }
+    })
+  }
+    
 
-    }
+   
 
-    console.log("link recieved:"+checkoutLinkRecieved)
-    console.log("days remaining:"+daysRemainingToPay)
-console.log("notify:"+application.application.notify_applicant)
   return (
     <div class="max-h-sm rounded-md ">
         <div class={application.application.notify_applicant==1?"py-5 m-4  bg-green-300 border-green-100 px-3 transition hover:bg-indigo-100 rounded-lg shadow-lg flex flex-col":"py-5 m-4  bg-gray-300 border-purple-100 px-3 transition hover:bg-indigo-100 rounded-lg shadow-lg flex flex-col"} onMouseOver={()=>{
           if(turnOffNotify){
-            axios.post("http://localhost:3012/client-applications/turnOffNotifyApplicant/"+application.application.id).then((response)=>{
-              console.log(response)
+            axios.post("https://ghanahomestayserver.onrender.com/client-applications/turnOffNotifyApplicant/"+application.application._id).then((response)=>{
+             sessionStorage.removeItem("images")
               setTurnOffNotify(false)
             })
           }
@@ -135,10 +226,22 @@ console.log("notify:"+application.application.notify_applicant)
           
             </div>
             {
+              application.application.application_status=="DROPPED"?
+              <div class="flex m-2">
+                <p class="font-bold">
+                  Status:<span class="text-orange-600"> {application.application.application_status} 
+                  <IonIcon name="arrow-down-outline" size="medium"/>
+                  </span>
+                </p>
+              </div>:<div></div>
+            }
+            {
               application.application.application_status=="PAYED"?
               <div class="flex m-2">
                 <p class="font-bold">
-                  Status:<span class="text-green-600"> {application.application.application_status} </span>
+                  Status:<span class="text-green-600"> {application.application.application_status}
+                  <IonIcon name="checkmark-outline" size="medium"/>
+                   </span>
                 </p>
               </div>:<div></div>
             }
@@ -146,13 +249,34 @@ console.log("notify:"+application.application.notify_applicant)
               application.application.application_status=="APPLIED"?
               <div class="flex m-2">
                 <p class="font-bold">
-                  Status:<span class="text-gray-700"> {application.application.application_status} </span>
+                  Status:<span class="text-gray-700"> {application.application.application_status}
+                  <IonIcon name="eye-outline" size="medium"/>
+                   </span>
                 </p>
               </div>:<div></div>
             }
-              {application.application.application_status=="DENIED"? <button class="rounded-lg  p-3 m-2" ><p class="text-red-600 text-center font-bold "><span class="font-bold text-black">Status:</span>Denied</p></button>
+                  {
+              application.application.application_status=="CONFIRMED"?
+              <div class="flex m-2">
+                <p class="font-bold">
+                  Status:<span class="text-green-700"> {application.application.application_status} 
+                  <IonIcon name="checkmark-outline" size="medium"/>
+                  </span>
+                </p>
+              </div>:<div></div>
+            }
+              {
+              application.application.application_status=="DENIED"? <button class="rounded-lg  p-3 m-2" ><p class="text-red-600 text-center font-bold "><span class="font-bold text-black">Status:</span>Denied
+              <IonIcon name="close-outline" size="medium"/></p></button>
             :<div></div>}
-             {application.application.application_status=="RESERVED"? <button class="rounded-lg  p-3 m-2" ><p class="text-reserved-600 text-center font-bold text-blue-600"><span class="font-bold text-black">Status:</span>{application.application.application_status}</p>
+               {
+               application.application.application_status=="CHECKEDOUT"? <button class="rounded-lg  p-3 m-2" ><p class="text-purple-600 text-center font-bold "><span class="font-bold text-black">Status:</span>{application.application.application_status}
+              <IonIcon name="airplane-outline" size="medium" class="ml-2"/></p></button>
+            :<div></div>
+            }
+             {application.application.application_status=="RESERVED"? <button class="rounded-lg  p-3 m-2" ><p class="text-reserved-600 text-center font-bold text-blue-600"><span class="font-bold text-black">Status:</span>{application.application.application_status}
+             <IonIcon name="ellipsis-horizontal-outline" size="medium" class="mt-1"/>
+             </p>
              <div class="flex flex-col p-3">
               {
                 application.application.notify_applicant==1?
@@ -163,6 +287,55 @@ console.log("notify:"+application.application.notify_applicant)
 
              </div>
              </button>
+            :<div></div>
+            }
+            {
+              application.application.application_status=="CHECKEDOUT" && (application.application.review=="" || application.application.review=='')?
+              <div class="flex w-full justify-center">
+                <button class="bg-purple-500 p-3 rounded-sm flex " onClick={()=>{
+                  const prom=new Promise((resolve,reject)=>{
+                    dispatch(setReviewModalApplication(application))
+                    resolve()
+                  })
+
+                  prom.then(()=>{
+                    dispatch(setReviewModalVisibility(true))
+                  })
+                }}>
+                  <p class="text-white">Review</p>
+                </button>
+              </div>:
+              <div>
+               </div> 
+            }
+            {
+            application.application.application_status=="DROPPED"&& application.application.notify_applicant==1? 
+                <div class="flex rounded-lg bg-green-600 p-3 m-2">    
+                  {
+                          !getLink ?
+                          <div class="flex flex-col">
+              
+                            <p class="text-center">
+                              {application.application.notify_applicant_message}
+                            </p>
+                           
+                            </div>:<a></a>
+                }
+                </div>
+            :<div></div>}
+                 {application.application.application_status=="DENIED"&& application.application.notify_applicant==1? 
+                <div class="flex rounded-lg p-3 m-2">    
+                  {
+                          !getLink ?
+                          <div class="flex flex-col">
+              
+                            <p class="text-center bg-yellow-300">
+                              {application.application.notify_applicant_message}
+                            </p>
+                           
+                            </div>:<a></a>
+                }
+                </div>
             :<div></div>}
             <button class="font-bold border-b-2 border-gray-600 m-3" onClick={()=>{
               setSeeMore(!seeMore)
@@ -172,7 +345,21 @@ console.log("notify:"+application.application.notify_applicant)
             {
               seeMore?
               <div class="flex flex-col border-2 border-dashed rounded-md w-full m-2 border-gray-700 p-3">
-                <p class="font-bold text-center">date recieved:<span class="font-normal ml-1">{application.application.dateReceived}</span></p>
+               
+                  <p class="text-center font-bold text-xl m-2">{application.application.notify_applicant_message}</p>
+                
+                <p class="font-bold text-center">Recieved:<span class="font-normal ml-1">{application.application.dateReceived}</span></p>
+
+                {
+                  application.application.application_status=="DENIED"?
+                  <div class="flex-col">
+                  <p class="text-center font-bold">Denied:<span class="font-normal">{application.application.dateDenied}</span></p>
+                  <p class="text-center font-bold">Past Due:<span class="font-normal">{application.application.datePaymentDue}</span></p>
+                  </div>
+                  :
+                  <div></div>
+                }
+              
                 {
                   application.application.application_status=="RESERVED"?
                   <div class="flex flex-col">
@@ -189,7 +376,7 @@ console.log("notify:"+application.application.notify_applicant)
                           !getLink ?
                           <div class="flex p-3">
                           <button class="p-3 bg-purple-600 rounded-md w-full" >
-                            <a class="text-white" href={sessionStorage.getItem('checkoutLink_'+application.application.id)}>Proceed to payment</a>
+                            <a class="text-white" href={sessionStorage.getItem('checkoutLink_'+application.application._id)}>Proceed to payment</a>
                             </button>
                             </div>:<a></a>
                         }
@@ -198,21 +385,37 @@ console.log("notify:"+application.application.notify_applicant)
                   </div>:
                   <p></p>
                 }
-        {application.application.application_status=="APPLIED"? 
-    <div class="flex rounded-lg bg-green-600 p-3 m-2">    
-         {
+          {application.application.application_status=="DROPPED"? 
+                <div class="flex rounded-lg p-3 m-2 justify-center">    
+                  {
                           !getLink ?
-                          <div class="flex flex-col">
+                          <div class=" justify-center">
               
-                            <a class="flex" href={sessionStorage.getItem('checkoutLink_'+application.application.id)}><p class="text-white text-center font-bold">Proceed to payment</p></a>
+                            <p class="text-center bg-yellow-100">
+                              {application.application.notify_applicant_message} on {application.application.datePaymentDue}
+                            </p>
                            
                             </div>:<a></a>
                 }
-
-    </div>
+                </div>
+            :<div></div>}
+        {application.application.application_status=="APPLIED" || application.application.application_status=="DROPPED"   ? 
+          <div class="flex rounded-lg bg-green-600 p-3 m-2 justify-center">    
+            {
+                          !getLink ?
+                          <div class="">
+              
+                            <a class="flex" href={sessionStorage.getItem('checkoutLink_'+application.application._id)}><p class="text-white text-center font-bold">Proceed to payment</p></a>
+                           
+                            </div>:<a></a>
+                }
+             </div>
             :<div></div>}
                 </div>:<div></div>
             }
+          
+        
+              
            
   
           

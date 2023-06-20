@@ -5,6 +5,9 @@ const initialState={
   totalNewApplications:null,
   visibility:false,
   application:null,
+  activeApplication:null,
+  hasActiveApplication:false,
+  reload:false
 
 }
 
@@ -35,6 +38,24 @@ export  const adminApplicationsReducer=(state=initialState,action)=>{
         ...state,
         application:action.payload
       }
+      case actionTypes.SET_HAS_ACTIVE_APPLICATION:
+        console.log("REDUX:SETTING ACTIVE Application"+action.payload.val)
+        return{
+          ...state,
+          hasActiveApplication:action.payload.val
+        }
+      case actionTypes.SET_ACTIVE_APPLICATION:
+      console.log("REDUX:SETTING ACTIVE Application")
+      return{
+        ...state,
+        activeApplication:action.payload.application
+      }
+      case actionTypes.RELOAD_AFTER_UPDATE:
+        console.log("REDUX:RELOADING")
+        return{
+          ...state,
+          reload:!state.reload
+        }
      
     
       default:

@@ -5,26 +5,29 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import {CardElement} from '@stripe/react-stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 import {loadStripe} from '@stripe/stripe-js';
+
 import axios from 'axios';
 
 function PaymentPage() {
-  console.log(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY)
-  const stripePromise=loadStripe("pk_live_51MrXkxLxMJskpKlAg04tvIwsH0onrRPJH2fgU2qzrHvaWKRFjqL76UW2lwKI4SGx0Y68ICWsm9Wts6oHWjHBPi1D00JG5bQ97t") 
+  
+  const stripePromise=loadStripe(process.env.REACT_APP_STRIPE_KEY) 
 
   const[isLoading,setIsLoading]=useState(true)
   const [application,setApplication]=useState()
   const[noDays,setNoDays]=useState()
+  
 
   const {id}=useParams()
 console.log(id)
   useEffect(()=>{
+    console.log(process.env.REACT_APP_SAMPLE_CLEANING)
     var days
     const prom=new Promise((resolve,reject)=>{
-      axios.get("http://localhost:3012/client-applications/application/"+id).then((response)=>{
+      axios.get("https://ghanahomestayserver.onrender.com/client-applications/application/"+id).then((response)=>{
         console.log(response)
         setApplication(response.data)
 
-        axios.get("http://localhost:3012/client-applications/getNoDays/"+id).then((response1)=>{
+        axios.get("https://ghanahomestayserver.onrender.com/client-applications/getNoDays/"+id).then((response1)=>{
           console.log(response1.data)
           setNoDays(response1.data.days)
           days=response1.data.days
@@ -38,7 +41,7 @@ console.log(id)
     prom.then(()=>{
 
       const prom2=new Promise((resolve,reject)=>{
-        axios.post("http://localhost:3012/payment/checkout/"+id,{fees:[{id:"price_1MrY1oLxMJskpKlAbFZlt9et",quantity:days},{id:"price_1MrY3uLxMJskpKlAfpN870oN",quantity:1}]}).then((response)=>{
+        axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+id,{fees:[{id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:days},{id:process.env.REACT_APP_SAMPLE_CLEANING,quantity:1}]}).then((response)=>{
       console.log(response)
       setCheckOutLink(response.data.url)
     })
@@ -49,7 +52,7 @@ console.log(id)
      
     })
   },[])
-
+ 
   const getDays=async(application)=>{
     console.log("start:"+application.application.stay_start_date)
     console.log("end:"+application.application.stay_end_date)
@@ -210,7 +213,7 @@ console.log(id)
     const q=sessionStorage.getItem("noDays")
  
     
-    await axios.post("http://localhost:3012/payment/checkout/"+id,{fees:[{id:"price_1MrY1oLxMJskpKlAbFZlt9et",quantity:q},{id:"price_1MrY3uLxMJskpKlAfpN870oN",quantity:1}]}).then((response)=>{
+    await axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+id,{fees:[{id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:q},{id:process.env.REACT_APP_SAMPLE_CLEANING,quantity:1}]}).then((response)=>{
       console.log(response)
       setCheckOutLink(response.data.url)
     })

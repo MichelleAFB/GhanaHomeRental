@@ -19,10 +19,10 @@ function ApplicationsList({user,userType}) {
     const prom= new Promise((resolve,reject)=>{
       
 
-      axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
-        console.log(response)
-        console.log(response)
-        console.log("hi")
+      axios.get("https://ghanahomestayserver.onrender.com/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
+        console.log(response.data)
+      
+        
         if(response.data.success){
          
           setApplications(response.data.applications)
@@ -37,39 +37,32 @@ function ApplicationsList({user,userType}) {
     prom.then(()=>{
       setIsLoading(false)
     })
+  }else{
+   const checkUser= sessionStorage.getItem("client")
+   console.log(checkUser)
   }
   },[newApplications])
-
-  const myInterval = setInterval(()=>{
-    axios.get("http://localhost:3012/client-applications/get-all-applications/"+user.firstname+"/"+user.lastname+"/"+user.email).then((response)=>{
-      console.log(response.data.no_applications)  
-      console.log(applications) 
-      console.log(applications.length==response.data.no_applications)
-      console.log(newApplications)
-      if(applications.length!=response.data.no_applications){
-        console.log("Change Applications")
-        setNewApplications(!newApplications) 
-        
-      }
-    })
-    console.log("\n\nCHECKING\n\n")
-
-  }, 100000); 
-
 
  
         
 console.log(userType+" "+ isLoading)
+console.log(user)
+
   if(!isLoading && userType!=null){
+
   return (
-    <div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md">
+    <div class="flex flex-col w-full p-4 bg-gray-400 m-5 rounded-md w-3/4">
     <div class="m-3 flex w-full justify-center"><p class="text-center text-white text-2xl"> Your Applications</p>
     </div>
     
       <div class=" overflow-y-scroll overflow-hidden w-full flex-col content-center h-[100vh] p-3 justify-around">
         {
           applications.map((a)=>{
-            return(<ApplicationListItem application={a}/>)
+            console.log(a.application)
+            console.log(a.application.stay_start_date)
+            console.log(a.occupants)
+            console.log("\n\n")
+            return(<ApplicationListItem key={a.application} application={a}/>)
           })
         }
         
