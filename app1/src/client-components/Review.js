@@ -26,7 +26,7 @@ function Review({application}) {
 
  
     const prom=new Promise((resolve,reject)=>{
-      setApplication(application.application)
+      setApplication(application.application.application)
       setImages(application.images)
      setTimeout(()=>{
       resolve()
@@ -52,22 +52,23 @@ function Review({application}) {
      
     })
   },[])
- // console.log(app.application.application_status+" "+app.application.stay_start_date)
-
-  if(!isLoading && app.application.review!="" ){ 
-      console.log(app.application.application_status+" "+app.application.stay_start_date + app.application.review)
+ // console.log(app.application_status+" "+app.stay_start_date)
+console.log(app)
+  if(!isLoading && app.review!="" ){ 
+    console.log(app)
+      console.log(app.application_status+" "+app.stay_start_date + app.review)
 
   
-    const user=JSON.parse(sessionStorage.getItem("user")) 
+    const user=JSON.parse(sessionStorage.getItem("user"))  
    
-    if(user.firstname==app.application.firstname && user.lastname==app.application.lastname && user.email==app.application.email && (app.application.application_status=="CHECKEDOUT" || app.application.application_status=='CHECKEDOUT')){
+    if(user.firstname==app.firstname && user.lastname==app.lastname && user.email==app.email && (app.application_status=="CHECKEDOUT" || app.application_status=='CHECKEDOUT')){
   return (
     <div class="h-full bg-yellow-300 rounded-md p-5 block ml-5 mr-5 mb-5">
-        <p class=" font-bold text-xl">{app.application.stay_start_date}-{app.application.stay_end_date}</p>
+        <p class=" font-bold text-xl">{app.stay_start_date}-{app.stay_end_date}</p>
         <div class="flex ">
           <i class="m-3 font-semibold">
-             "{app.application.review} "
-            <br/>- <p class="text-normal font-bold">{app.application.firstname} {app.application.lastname}</p>
+             "{app.review} "
+            <br/>- <p class="text-normal font-bold">{app.firstname} {app.lastname}</p>
           </i>
         </div>
        <div class="flex flex-col ">
@@ -84,18 +85,37 @@ function Review({application}) {
   )
   }
   else{
-    return(<div></div>)
+    return(
+      <div class="h-full bg-gray-300 rounded-md p-5 block ml-5 mr-5 mb-5">
+      <p class=" font-bold text-xl">{app.stay_start_date}-{app.stay_end_date}</p>
+      <div class="flex ">
+        <i class="m-3 font-semibold">
+           "{app.review} "
+          <br/>- <p class="text-normal font-bold">{app.firstname} {app.lastname}</p>
+        </i>
+      </div>
+     <div class="flex flex-col ">
+       <ReviewImageCarousel images={images}/>
+     </div>
+      
+        
+          
+  
+       <div>
+      </div>
+  </div>
+    )
   }
-}else if((app.application.review=="" || app.application.review==null || app.application.review=='') && (app.application.application_status=="CHECKEDOUT" || app.application.application_status=='CHECKEDOUT')){
+}else if((app.review=="" || app.review==null || app.review=='') && (app.application_status=="CHECKEDOUT" || app.application_status=='CHECKEDOUT')){
   console.log("review null")
 
   return(
     <div class="h-full bg-gray-300 rounded-md p-5 block ml-5 mr-5 mb-5">
-      <p class=" font-bold text-xl">{app.application.stay_start_date}-{app.application.stay_end_date}</p>
+      <p class=" font-bold text-xl">{app.stay_start_date}-{app.stay_end_date}</p>
       <div class="flex ">
         <i class="m-3 font-semibold">
           
-          <br/>-<p class="text-normal font-bold">{app.application.firstname} {app.application.lastname}</p>
+          <br/>-<p class="text-normal font-bold">{app.firstname} {app.lastname}</p>
         </i>
       </div>
         <div class="flex flex-col ">
@@ -109,7 +129,7 @@ function Review({application}) {
 }
 
 else{
-    return(<div>{app.application.application_status} {app.application.stay_start_date}</div>)
+    return(<div>{app.application_status} {app.stay_start_date}</div>)
   }
 }
 

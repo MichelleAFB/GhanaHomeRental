@@ -21,16 +21,13 @@ function GuestTable({occupant,guests}) {
                     {firstname:"",lastname:"",phone:"",email:""}]
                     setGuestsList(newguests)
         }else
-        { if(guests[1]==null){
-            newguests=[guests[0],
-                     {firstname:"",lastname:"",phone:"",email:""},
-                     {firstname:"",lastname:"",phone:"",email:""}]
-         }
-         if(guests[2]==null){
-          newguests=[guests[0],
-                   guests[1],
-                   {firstname:"",lastname:"",phone:"",email:""}]
-       }
+        { 
+          const g0= (guests[0]==null)?  {firstname:"",lastname:"",phone:"",email:""} : guests[0]
+          const g1= (guests[1]==null)?  {firstname:"",lastname:"",phone:"",email:""} : guests[1]
+          const g2= (guests[2]==null)?  {firstname:"",lastname:"",phone:"",email:""} : guests[2]
+         
+          newguests={g0,g1,g2}
+      
        setGuestsList(newguests)
       }
       }
@@ -75,9 +72,12 @@ function GuestTable({occupant,guests}) {
             setGuestsList(guestsList)
         }}id="phone_0"class="w-full"/></td>
           <td><input type='email'default={guests[0].email}  placeholder={guests[0].email}  name='email' onChange={(e)=>{
-            var g=guests
-            guestsList[0].email=e.target.value
-            setGuestsList(guestsList)
+            var g=guestsList
+            console.log(g)
+            console.log("help")
+            console.log(guestsList)
+            g[0].email=e.target.value
+            setGuestsList(g)
             console.log(guestsList)
         }}id="email_0" class="w-full"/></td>
         </tr>:
@@ -98,8 +98,9 @@ function GuestTable({occupant,guests}) {
             setGuestsList(guestsList)
         }}class="w-full"/></td>
           <td><input type='email' id="email_0" onChange={(e)=>{
-            var g=guests
+            
             guestsList[0].email=e.target.value
+            console.log(guestsList)
             setGuestsList(guestsList)
         }} class="w-full"/></td>
         </tr>}
@@ -205,7 +206,7 @@ function GuestTable({occupant,guests}) {
     </table>
     <button class="bg-green-400 rounded-md w-full  flex-col justify-items-center p-3 m-2" onClick={()=>{
         const prom=new Promise((resolve,reject)=>{
-          axios.post("https://ghanahomestayserver.onrender.com/current-resident/edit-guests/"+occupant.application_id+"/"+occupant._id,{guests:guestsList}).then((response)=>{
+          axios.post("http://localhost:3012/current-resident/edit-guests/"+occupant.application_id+"/"+occupant._id,{guests:guestsList}).then((response)=>{
             console.log(response)
             if(response.data.success){
               alert("SUCCESS: "+response.data.no_guests+" have been added to "+occupant.firstname+ " "+occupant.lastname+"'s guest list")

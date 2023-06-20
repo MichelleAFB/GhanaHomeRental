@@ -75,7 +75,7 @@ function ReviewImageCarousel({images}) {
                 return(
                   <div class="flex w-full justify-center">
                   <div class="h-[60vh] object-cover">
-                     <Image cloudName="michelle-badu" publicId={m.publicID}>
+                     <Image cloudName="michelle-badu" publicId={m.publicID}  width="200" height="300">
                       <Transformation crop="scale" angle="10"/>
                    </Image>
                   </div>
