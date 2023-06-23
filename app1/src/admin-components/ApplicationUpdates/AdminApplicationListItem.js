@@ -87,6 +87,14 @@ function AdminApplicationListItem({application}) {
           </div>:<div></div>
         }
         {
+      application.application.application_status=="DENIED"?
+      <div class="flex m-2">
+        <p class="font-bold">
+          Status:<span class="text-red-700"> {application.application.application_status}<IonIcon name="close-outline" size="medium"/></span>
+        </p>
+      </div>:<div></div>
+    }
+        {
           application.application.application_status=="APPLIED"?
           <div class="flex m-2">
             <p class="font-bold">
