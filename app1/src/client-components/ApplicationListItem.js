@@ -274,6 +274,11 @@ function ApplicationListItem({application}) {
               <IonIcon name="airplane-outline" size="medium" class="ml-2"/></p></button>
             :<div></div>
             }
+                   {
+               application.application.application_status=="CHECKEDIN"? <button class="rounded-lg  p-3 m-2" ><p class="text-purple-600 text-center font-bold "><span class="font-bold text-black">Status:</span>{application.application.application_status}
+              <IonIcon name="cafe-outline" size="medium" class="ml-2"/></p></button>
+            :<div></div>
+            }
              {application.application.application_status=="RESERVED"? <button class="rounded-lg  p-3 m-2" ><p class="text-reserved-600 text-center font-bold text-blue-600"><span class="font-bold text-black">Status:</span>{application.application.application_status}
              <IonIcon name="ellipsis-horizontal-outline" size="medium" class="mt-1"/>
              </p>
