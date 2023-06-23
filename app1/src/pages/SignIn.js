@@ -272,7 +272,7 @@ function SignIn() {
                                   <label class="text-white font-bold mr-5">Id:</label>
                                    <div class="flex flex-col  ">
                                       <input type="text" class="bg-white p-2 rounded-sm" onChange={(e)=>{
-                                     setAdmin(e.target.value)
+                                     setAdminId(e.target.value)
                                        }}/>
                                  <div class="flex  mt-2 ">
                                       <button class={admin?"bg-green-500 p-3  rounded-sm":"bg-gray-500 rounded-small p-3"}    onClick=    {(e)=>{
