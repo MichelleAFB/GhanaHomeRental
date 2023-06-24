@@ -84,12 +84,12 @@ function App({reload}) {
   
           <Routes>
           
-          <Route path='/reviews' element={<Reviews />}/>
+          <Route path='/reviews' element={<Reviews/>}/>
             <Route path="/reset-password/:email" element={<ResetPassword/>}/>
             <Route path="/reset-password/admin/:email" element={<ResetPasswordAdmin/>}/> 
-            <Route path='/search' element={<SearchPage />}/>
+            <Route path='/search' element={<SearchPage/>}/>
             <Route path='/' element={<Home />}/>
-            <Route path='/sign-in' element={<SignIn />}/>
+            <Route path='/sign-in' element={<SignIn/>}/>
             <Route path='/application/:email/:firstname/:lastname/:phone/:startDate/:endDate/:noAdults/:noChildren' element={<Application/>}/>
             <Route path='/pre-application/:startDate/:endDate/:noAdults/:noChildren' element={<PreApplication/>}/>
             <Route path="/payment/:id" element={<PaymentPage/>}/>

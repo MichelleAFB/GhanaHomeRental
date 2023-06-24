@@ -4,7 +4,7 @@ import React from 'react'
 import { setUserType,setUser } from '../redux/user/user-actions' 
 import {useDispatch} from 'react-redux'
 import { useParams,useNavigate} from 'react-router-dom'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 //outside
 import axios from 'axios'
 function ResetPassword() {
@@ -17,6 +17,11 @@ function ResetPassword() {
 
   const[password,setPassword]=useState()
   const[passwordConfirm,setPasswordConfirm]=useState()
+
+  useEffect(()=>{
+
+  },[])
+  
   return (
         <div class="flex h-screen p-5 justify-center bg-gray-100 w-screen j">
      

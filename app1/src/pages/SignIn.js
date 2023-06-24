@@ -437,9 +437,9 @@ function SignIn() {
                        <form ref={resetPasswordForm}class="hidden">
                           <input type="email" name="email" value={email}/>
                           {!admin?
-                          <input type="text" name="message" value={`Please use the following link to reset your password and regain access to ypur account: https://ghanahomerental.onrender.com/reset-password/${email}`}/> 
+                          <input type="text" name="message" value={`Please use the following link to reset your password and regain access to your account: https://ghanahomerental.onrender.com/reset-password/${email}`}/> 
                           :
-                          <input type="text" name="message" value={`Please use the following link to reset your password and regain access to ypur account: https://ghanahomerental.onrender.com/reset-password/admin/${email}`}/> 
+                          <input type="text" name="message" value={`Please use the following link to reset your password and regain access to your account: https://ghanahomerental.onrender.com/reset-password/admin/${email}`}/> 
                           }
                        </form>
                         
