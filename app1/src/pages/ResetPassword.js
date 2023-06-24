@@ -21,10 +21,9 @@ function ResetPassword() {
   useEffect(()=>{
 
   },[])
-  
+
   return (
         <div class="flex h-screen p-5 justify-center bg-gray-100 w-screen j">
-     
          <div class="flex h-1/3  bg-gray-300 rounded-md p-5 w-4/5">
            <div class="flex-col flex-grow w-1/5">
              <label><p class="mr-3 mt-2 font-bold">Email: </p></label>

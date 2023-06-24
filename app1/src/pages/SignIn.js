@@ -228,6 +228,9 @@ function SignIn() {
                   }}>Sign In</p>
                </div> 
                }
+               <a href="https://ghanahomerental.onrender.com/reset-password/mirchoellebadu@gmail.com">
+                link
+               </a>
                </div>
                 
               <div class=' p-3'>
