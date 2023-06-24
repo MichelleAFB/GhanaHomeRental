@@ -29,6 +29,8 @@ function ApplicationListItem({application}) {
   const[checkoutLink,setCheckoutLink]=useState()
   const[checkoutLinkRecieved, setCheckoutLinkRecieved]=useState(false)
   const[isPassedDue,setIsPassedDue]=useState(false)
+  const [promptCheckout,setPromptCheckout]=useState(false)
+
   const stripePromise=loadStripe(process.env.REACT_APP_STRIPE_KEY) 
  
   

@@ -129,6 +129,7 @@ function Header({user,userType,userRedux}) {
                             sessionStorage.removeItem("user")
                             sessionStorage.removeItem("userType")
                             sessionStorage.removeItem("signInType")
+                            user=null
                             resolve()
                         })
 
