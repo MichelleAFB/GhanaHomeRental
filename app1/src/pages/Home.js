@@ -25,6 +25,7 @@ import AdminCurrentApplicationWindow from "../admin-components/AdminCurrentAppli
 import ReviewWindow from "../client-components/ReviewWindow";
 import ReviewModal from "../client-components/ReviewModal";
 import { Menu } from "@material-ui/core";
+import FacialRecognition from "../client-components/YourStayComponents/FacialRecognition";
 function Home({userType,user,activeApplication}) {
 
   const[isLoading,setIsLoading]=useState(true)
@@ -148,7 +149,6 @@ function Home({userType,user,activeApplication}) {
           userType=="client" && user!=null ?
           <div class="block  mt-[250px] m-5">
             <div class="flex flex-col m-3 ">
-          
                 <CurrentApplicationWindow/>
            <div class="block">
             <div class="flex">

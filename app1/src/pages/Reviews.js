@@ -24,7 +24,7 @@ function Reviews() {
     var arr
     const arr2=[]
     const prom=new Promise((resolve,reject)=>{
-      axios.get("http://localhost:3012/client-applications/get-all-reviews").then((response)=>{
+      axios.get("https://ghanahomestayserver.onrender.com/client-applications/get-all-reviews").then((response)=>{
       console.log(response)
       if(response.data.success){
           setReviews(response.data.reviews)

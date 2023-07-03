@@ -579,7 +579,6 @@ function ApplicationModal({visibility,application,handleNotify}) {
                           dispatch(setVisibility(false))
                           setIsLoading(true)
                         })
-    
                         
                 }}>
                     <IonIcon name="close-outline" size="large"/>
@@ -672,14 +671,10 @@ function ApplicationModal({visibility,application,handleNotify}) {
              <div></div>
               }
              </div>
-            
                   </div>:
                   <div>
-
                   </div>
                 }
-              
-                
               </div>
             </div>
             </div>
