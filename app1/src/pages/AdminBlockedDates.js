@@ -11,7 +11,7 @@ import {loadStripe} from '@stripe/stripe-js';
 import ErrorBoundary from '../utils/ErrorBoundary';
 import Dates from '../Dates';
 
-function BlockedDates({user,userType}) {
+function AdminBlockedDates({user,userType}) {
     const navigate = useNavigate();
     const [showSearch, setShowSearch] = useState(false);
     const[isLoading,setIsLoading]=useState(true)
@@ -19,11 +19,11 @@ function BlockedDates({user,userType}) {
    
 
     return (
-        <div className='banner'>
-            <ErrorBoundary>
+        <div class='flex w-full justify-center '>
+          
                 <Dates/>
 
-            </ErrorBoundary>
+         
         </div>
     ) 
    
@@ -46,4 +46,4 @@ const mapStateToProps = (state, props) => {
       userType: userType,
     };
   };
-export default connect(mapStateToProps)(BlockedDates)
+export default connect(mapStateToProps)(AdminBlockedDates)

@@ -1,0 +1,10 @@
+@import 'react-datepicker/dist/react-datepicker';
+
+
+.react-datepicker__day--highlighted-custom-1{
+  background-color: yellow;
+}
+
+.rdrStartEdge{
+  background: rgb(100, 145, 50);
+}
