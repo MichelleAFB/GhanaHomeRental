@@ -10,6 +10,7 @@ import 'react-gallery-carousel/dist/index.css';
 
 //components
 import Review from '../client-components/Review'
+import Dates from '../Dates';
 
 function Reviews() {
 

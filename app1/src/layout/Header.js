@@ -84,6 +84,14 @@ function Header({user,userType,userRedux}) {
             <div class="flex m-3">
                 <Link to="/reviews" ><p class="hover:text-purple-400 text-xl text-center text-gray-600 font-bold">Reviews</p></Link>
             </div>
+            <div class="flex m-3">
+               <button onClick={()=>{
+                navigate("/blocked-dates")
+               }}>
+               <p class="hover:text-purple-400 text-xl text-center text-gray-600 font-bold">Blocked Dates</p>
+               </button>
+            </div>
+            
           
                 
             </div>
@@ -134,7 +142,7 @@ function Header({user,userType,userRedux}) {
                         })
 
                         prom.then(()=>{
-                                //navigate("/")
+                                navigate("/")
                         })
                      }}>Sign Out</button>
                 </div>

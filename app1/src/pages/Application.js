@@ -8,7 +8,9 @@ import axios from 'axios'
 import $ from 'jquery'
 import { sendForm } from '@emailjs/browser/es'
 import IonIcon from '@reacticons/ionicons'
+import {loadStripe} from '@stripe/stripe-js'; 
 function Application() {
+  const stripePromise=loadStripe(process.env.REACT_APP_STRIPE_KEY) 
 
   const {email} =useParams()
   const {phone}=useParams()
@@ -21,6 +23,7 @@ function Application() {
 
   const[emailDate,setEmailData]=useState()
   const emailForm=useRef()
+  const [checkoutLink,setCheckoutLink]=useState()
 
  const[finalFirstName,setFinalFirstName]=useState(firstname)
  const[finalLastName,setFinalLastName]=useState(lastname)
@@ -72,7 +75,8 @@ function Application() {
         }
       );
   };
-
+   
+ 
  
  
   return (
@@ -1902,6 +1906,7 @@ function Application() {
       </div>
 
          </div>
+        <div class="flex w-full">
          <button onClick={(e)=>{
           e.preventDefault()
           console.log(formRef)
@@ -2291,6 +2296,7 @@ function Application() {
               console.log(response.data)
               if(response.data.success){
                 applications=response.data.applications
+                console.log(response.data)
                const emailSent= sendEmail(emailForm)
                emailSent.then((data)=>{
                
@@ -2308,14 +2314,433 @@ function Application() {
 
            prom2.then(()=>{
             sessionStorage.setItem("my_applications",JSON.stringify(applications))
-             navigate("/")
+            navigate("/")
            })
           })
 
-         }} class="w-full p-2 rounded-sm bg-green-400 hover:bg-green-300 flex justify-around">
-              <p class="text-center text-white font-bold">Submit</p> 
+         }} class="m-2 w-1/2 p-2 rounded-sm bg-green-400 hover:bg-green-300 flex justify-around">
+              <p class="text-center text-white font-bold">Submit </p> 
          </button>
-          </form>
+         <button onClick={(e)=>{
+          e.preventDefault()
+          console.log(formRef)
+          console.log(useNoAdults)
+          console.log(useNewNoAdults)
+          const prom=new Promise((resolve,reject)=>{
+
+            if(useNoAdults){
+              if(noAdults==1){
+                const occupants=[]
+                var occupant={
+                  firstname:"",
+                  lastname:"",
+                  age:"",
+                  association:""
+                }
+                occupant.association="applicant"
+                const prom1=new Promise((resolve1,reject1)=>{
+                  console.log("here")
+                  const inputs=$('#adults_'+(noAdults-1))[0].children
+                  var arr = [...inputs];
+                  arr.map((m)=>{
+                    console.log(m.value)
+                    if(m.name=="your first"){
+                        occupant.firstname=m.value
+                    }
+                    if(m.name=="your last"){
+                      occupant.lastname=m.value
+                    }
+                    if(m.name=="your age"){
+                      occupant.age=m.value
+                    }
+                    if(m.name=="your email"){
+                      occupant.email=m.value
+                    }
+                   
+                   
+                  })
+                  occupants.push(occupant)
+                 resolve1()
+           
+                 })
+
+                 prom1.then(()=>{
+                  console.log(occupant)
+                  console.log(occupants)
+                  setAdultOccupants(occupants)
+                 })
+
+              }
+              if(noAdults>1){
+
+                const occupants=[]
+               
+
+                var count=noAdults
+                
+                const prom1=new Promise((resolve1,reject1)=>{
+                  while(count>0){
+                  console.log("here")
+                  var occupant={
+                    firstname:"",
+                    lastname:"",
+                    age:"",
+                    association:""
+                  }
+                  const inputs=$('#adults_'+(count-1))[0].children
+                  
+                  var arr = [...inputs];
+                  console.log(arr)
+                  if((count-1)==0){
+                    occupant.association="applicant"
+                  }
+                  arr.map((m)=>{
+                    console.log(m.value)
+                    if((count-1)==0){
+                      console.log(occupant)
+                    if(m.name=="your first"){
+                        occupant.firstname=m.value
+                    }
+                    if(m.name=="your last"){
+                      occupant.lastname=m.value
+                    }
+                    if(m.name=="your age"){
+                      occupant.age=m.value
+                    }
+                    if(m.name=="your email"){
+                      occupant.email=m.value
+                    }
+                      
+                    
+                  }else{
+                   console.log("occupant")
+                    if(m.name=="first"){
+                      occupant.firstname=m.value
+                  }
+                  if(m.name=="last"){
+                    occupant.lastname=m.value
+                  }
+                  if(m.name=="age"){
+                    occupant.age=m.value
+                  }
+                  if(m.id=="states"){
+                    occupant.association=m.value 
+
+                  }
+                  if(m.name=="email"){
+                    occupant.email=m.value
+                  }
+                  console.log(occupant)
+                }
+                   
+                  })
+                  occupants.push(occupant)
+                  count=count-1 
+                  console.log("count:"+count)
+                }
+                 resolve1()
+                 })
+
+                 prom1.then(()=>{
+                  console.log(occupants)
+                  setAdultOccupants(occupants)
+                 })
+                
+              }
+
+            }
+            if(useNewNoAdults){
+              if(newNoAdults==1){
+
+                const occupants=[]
+                var occupant={
+                  firstname:"",
+                  lastname:"",
+                  age:"",
+                  association:""
+                }
+                occupant.association="applicant"
+                const prom1=new Promise((resolve1,reject1)=>{
+                  console.log("here")
+                  const inputs=$('#adults_'+(newNoAdults-1))[0].children
+                  var arr = [...inputs];
+                  arr.map((m)=>{
+                    console.log(m.value)
+                    if(m.name=="your first"){
+                        occupant.firstname=m.value
+                    }
+                    if(m.name=="your last"){
+                      occupant.lastname=m.value
+                    }
+                    if(m.name=="your age"){
+                      occupant.age=m.value
+                    }
+                    if(m.name=="your email"){
+                      occupant.email=m.value
+                    }
+                   
+                   
+                  })
+                  occupants.push(occupant)
+                 resolve1()
+           
+                 })
+
+                 prom1.then(()=>{
+                  console.log(occupant)
+                  console.log(occupants)
+                  setAdultOccupants(occupants)
+                 })
+              }
+              if(newNoAdults>1){
+                const occupants=[]
+               
+                setFinalAdults(newNoAdults)
+                var count=newNoAdults
+                
+                const prom1=new Promise((resolve1,reject1)=>{
+                  while(count>0){
+                  console.log("here")
+                  var occupant={
+                    firstname:"",
+                    lastname:"",
+                    age:"",
+                    association:""
+                  }
+                  const inputs=$('#adults_'+(count-1))[0].children
+                  
+                  var arr = [...inputs];
+                  console.log(arr)
+                  if((count-1)==0){
+                    occupant.association="applicant"
+                  }
+                  arr.map((m)=>{
+                    console.log(m.value)
+                    if((count-1)==0){
+                      console.log(occupant)
+                    if(m.name=="your first"){
+                        occupant.firstname=m.value
+                    }
+                    if(m.name=="your last"){
+                      occupant.lastname=m.value
+                    }
+                    if(m.name=="your age"){
+                      occupant.age=m.value
+                    }
+                    if(m.name=="your email"){
+                      occupant.email=m.value
+                    }
+                    
+                      
+                    
+                  }else{
+                   console.log("occupant")
+                    if(m.name=="first"){
+                      occupant.firstname=m.value
+                  }
+                  if(m.name=="last"){
+                    occupant.lastname=m.value
+                  }
+                  if(m.name=="age"){
+                    occupant.age=m.value
+                  }
+                  if(m.id=="states"){
+                    occupant.association=m.value 
+
+                  }
+                  if(m.name=="email"){
+                    occupant.email=m.value
+                  }
+                  console.log(occupant)
+                }
+                   
+                  })
+                  occupants.push(occupant)
+                  count=count-1 
+                  console.log("count:"+count)
+                }
+                 resolve1()
+           
+                 })
+
+                 prom1.then(()=>{
+                 
+                  console.log(occupants)
+                  setAdultOccupants(occupants)
+                 })
+                
+              }
+              
+            }
+            /****************************CHILDREN */
+            if(useNoChildren){
+              const occupants=[]
+               
+
+              var count=noChildren
+              
+              const prom1=new Promise((resolve1,reject1)=>{
+                while(count>0){
+                console.log("here")
+                var occupant={
+                  firstname:"",
+                  lastname:"",
+                  age:"",
+                  association:""
+                }
+                const inputs=$('#children_'+(count-1))[0].children
+                
+                var arr = [...inputs];
+                console.log(arr)
+                if((count-1)==0){
+                  occupant.association="applicant"
+                }
+                arr.map((m)=>{
+                  console.log(m.value)
+               
+                 console.log("occupant")
+                  if(m.name=="first"){
+                    occupant.firstname=m.value
+                }
+                if(m.name=="last"){
+                  occupant.lastname=m.value
+                }
+                if(m.name=="age"){
+                  occupant.age=m.value
+                }
+                if(m.id=="states"){
+                  occupant.association=m.value 
+
+                }
+                console.log(occupant)
+
+                 
+                })
+                occupants.push(occupant)
+                count=count-1 
+                console.log("count:"+count)
+              }
+               resolve1()
+         
+               })
+
+               prom1.then(()=>{
+               
+                console.log(occupants)
+                setChildrenOccupants(occupants)
+               })
+
+            }
+            if(useNewNoChildren){
+              setFinalChildren(newNoChildren)
+              if(newNoChildren>0){ 
+
+                const occupants=[]
+               
+
+              var count=newNoChildren
+              
+              const prom1=new Promise((resolve1,reject1)=>{
+                while(count>0){
+                console.log("here")
+                var occupant={
+                  firstname:"",
+                  lastname:"",
+                  age:"",
+                  association:""
+                }
+                const inputs=$('#children_'+(count-1))[0].children
+                
+                var arr = [...inputs];
+                console.log(arr)
+               
+                arr.map((m)=>{
+                  console.log(m.value)
+               
+                 console.log("occupant")
+                  if(m.name=="first"){
+                    occupant.firstname=m.value
+                }
+                if(m.name=="last"){
+                  occupant.lastname=m.value
+                }
+                if(m.name=="age"){
+                  occupant.age=m.value
+                }
+                if(m.id=="states"){
+                  occupant.association=m.value 
+
+                }
+                console.log(occupant)
+                 
+                })
+                occupants.push(occupant)
+                count=count-1 
+                console.log("count:"+count)
+              }
+               resolve1()
+         
+               })
+
+               prom1.then(()=>{
+               
+                console.log(occupants)
+                setChildrenOccupants(occupants)
+               })
+
+              }
+
+            }
+            resolve()
+             
+          })
+
+          prom.then(()=>{
+           if(useNewFirstName){
+            setFinalFirstName(newFirstName)
+           }
+           if(useNewLastName){
+              setFinalLastName(newLastName)
+
+           }
+           var applications
+           const prom2=new Promise((resolve2,reject2)=>{
+
+            axios.post("https://ghanahomestayserver.onrender.com/client-applications/create-application",{firstname:finalFirstName,middleName:middleName,lastname:finalLastName,children:childrenOccupant,adults:adultOccupants,startDate:startDate,endDate:endDate}).then((response)=>{
+              console.log(response.data)
+              if(response.data.success){
+                console.log(response.data)
+                sessionStorage.setItem("application",JSON.stringify(response.data.application))
+                applications=response.data.applications
+               const emailSent= sendEmail(emailForm)
+               emailSent.then((data)=>{
+               
+                
+                  alert("SUCCESS: your application was recieved. Check your email for the next steps")
+                
+               })
+                resolve2()
+              }else{
+                alert("ERROR: application not sent")
+                reject2()
+              }
+            })
+           })
+
+           prom2.then(()=>{
+            
+            navigate("/pay-and-submit")
+           })
+          })
+
+         }} class=" m-2 w-1/2 p-2 rounded-sm bg-green-400 hover:bg-green-300 flex justify-around">
+              <p class="text-center text-white font-bold">Submit and Pay </p> 
+         </button>
+       
+
+       
+          </div>
+        </form>
       </div>
       </div>
   )

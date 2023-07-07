@@ -26,6 +26,8 @@ import { Menu } from "@material-ui/core";
 import {useEffect,useState}from 'react'
 import {connect} from 'react-redux'
 import axios from "axios";
+import AdminBlockedDates from "./pages/AdminBlockedDates";
+import PayAndSubmit from "./pages/PayAndSubmit";
 
 function App({reload}) {
 
@@ -85,6 +87,7 @@ function App({reload}) {
           <Routes>
           
           <Route path='/reviews' element={<Reviews/>}/>
+          <Route path="/pay-and-submit" element={<PayAndSubmit/>}/>
             <Route path="/reset-password/:email" element={<ResetPassword/>}/>
             <Route path="/reset-password/admin/:email" element={<ResetPasswordAdmin/>}/> 
             <Route path='/search' element={<SearchPage/>}/>
@@ -92,6 +95,7 @@ function App({reload}) {
             <Route path='/sign-in' element={<SignIn/>}/>
             <Route path='/application/:email/:firstname/:lastname/:phone/:startDate/:endDate/:noAdults/:noChildren' element={<Application/>}/>
             <Route path='/pre-application/:startDate/:endDate/:noAdults/:noChildren' element={<PreApplication/>}/>
+            <Route path="/blocked-dates" element={<AdminBlockedDates/>}/>
             <Route path="/payment/:id" element={<PaymentPage/>}/>
             <Route path="/payment/success/:id" element={<PaymentSuccessPage/>}/>
             <Route path="/your-stay/:id" element={<YourStay/>}/>
