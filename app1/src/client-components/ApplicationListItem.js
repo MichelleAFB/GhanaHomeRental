@@ -46,8 +46,7 @@ function ApplicationListItem({application}) {
      
       axios.get("https://ghanahomestayserver.onrender.com/client-applications/getActiveStatus/"+application.application._id).then((response)=>{
         
-        if(application.application._id=='64877e4c94305bee55021525'){ 
-          console.log(response.data)        }
+       
         if(response.data.success){
             if(response.data.currentlyOccupied==true){
               const prom=new Promise((resolve,reject)=>{
@@ -113,7 +112,16 @@ function ApplicationListItem({application}) {
           setGetLink(false)
     
         }
-      }else{
+      }if(application.application.application_status=="APPLIED"){
+        checkout()
+        setTimeout(()=>{
+          const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
+          getCheckoutLink(days.no_days).then((url)=>{
+            setCheckoutLink(url)
+          })
+        })
+      }
+      else{
         resolve()
       }
       
@@ -186,7 +194,7 @@ function ApplicationListItem({application}) {
  }
  const[getLink,setGetLink]=useState(true)
   if(!isLoading){
-   // const link=JSON.parse(sessionStorage.getItem(""))
+   const link=JSON.parse(sessionStorage.getItem("checkoutLink_"+application.application._id))
     if(checkoutLink==null){
     checkout().then((response)=>{
       console.log(response)

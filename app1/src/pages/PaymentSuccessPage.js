@@ -7,6 +7,7 @@ function PaymentSuccessPage() {
   const {id}=useParams()
   const[isLoading,setIsLoading]=useState(true)
   const navigate=useNavigate()
+  const[complete,setComplete]=useState(false)
   useEffect(()=>{
     const prom=new Promise((resolve,reject)=>{
       axios.get("https://ghanahomerental.onrender.com/admin-applications/application/"+id).then((response)=>{
@@ -20,7 +21,16 @@ function PaymentSuccessPage() {
             axios.post("https://ghanahomestayserver.onrender.com/admin-applications/setStatus/"+id+"/PAYEDANDAPPROVED",{message:"Applicantion recently paid on "+currDate+" and approved!"}).then((response2)=>{
               console.log(response2)
               if(response2.data.success){
+               const prom1=new Promise((resolve1,reject1)=>{
+                setComplete(true)
+                setTimeout(()=>{
+                  resolve1()
+                },500)
+               }) 
+
+               prom1.then(()=>{
                 navigate("/")
+               })
               }
             })
           }
@@ -30,8 +40,23 @@ function PaymentSuccessPage() {
     })
 
   },[])
+  if(complete){
 
-  if(isLoading){
+  }
+  if(isLoading && !complete){
+    <div class='bg-gray-200 z-30' data-testId="modal-public">
+       
+    <div class='h-screen w-full fixed ml-0 mr-0 mt-0 mb-0 flex justify-center items-center bg-black bg-opacity-50'>
+     
+      <main id='content' role='main' class='w-full max-w-md mx-auto '>
+    <div class="flex w-full justify-center ">
+        <div class="flex-col justify-end  ">
+        <p class="text-green-500">Success!</p>
+    </div>
+  </div>
+  </main>
+  </div>
+  </div>
     return(
       <div class='bg-gray-200 z-30' data-testId="modal-public">
        
