@@ -27,14 +27,16 @@ function PayAndSubmit() {
           console.log(response1)
 
         console.log(response1)
-        setTimeout(()=>{
-          const days=JSON.parse(sessionStorage.getItem("application_payment_"+application._id))
-          console.log(days)
-          getCheckoutLink(days.no_days).then((url)=>{
-            console.log("here")
-            console.log(url)
+        if(response1.data.success){
+          getCheckoutLink(response1.data.no_days).then((url)=>{
+            sessionStorage.setItem("checkoutLink",url)
+            setCheckoutLink(url)
+            navigate(url)
+
           })
-        },500)
+        }
+        
+        
       })
     
       
@@ -42,9 +44,10 @@ function PayAndSubmit() {
        
         const days=JSON.parse(sessionStorage.getItem("application_payment_"+application._id))
         console.log(days)
-        axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+application._id,{fees:[{id:"price_1NIzbHLxMJskpKlALXQTXB3r",quantity:days.no_days},{id:"price_1NIzQLLxMJskpKlASXRbZZJc",quantity:1}]}).then((response)=>{
+       /* axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+application._id,{fees:[{id:"price_1NIzbHLxMJskpKlALXQTXB3r",quantity:days.no_days},{id:"price_1NIzQLLxMJskpKlASXRbZZJc",quantity:1}]}).then((response)=>{
           console.log(response)
       })
+      */
         
        
       }

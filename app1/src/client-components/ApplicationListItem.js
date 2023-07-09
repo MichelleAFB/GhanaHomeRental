@@ -150,7 +150,7 @@ function ApplicationListItem({application}) {
     })
   },[])
   
- 
+ /**id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:q},{id:process.env.REACT_APP_SAMPLE_CLEANING */
   async function getCheckoutLink(q){
    
     await axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+application.application._id,{fees:[{id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:q},{id:process.env.REACT_APP_SAMPLE_CLEANING,quantity:1}]}).then((response)=>{
