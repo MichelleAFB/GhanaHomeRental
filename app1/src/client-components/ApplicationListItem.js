@@ -113,11 +113,17 @@ function ApplicationListItem({application}) {
     
         }
       }if(application.application.application_status=="APPLIED"){
+        console.log("getting days")
         checkout()
         setTimeout(()=>{
           const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
+          console.log(days)
+          console.log("now getting link")
           getCheckoutLink(days.no_days).then((url)=>{
             setCheckoutLink(url)
+            setTimeout(()=>{
+              resolve()
+            },800)
           })
         })
       }
@@ -164,11 +170,7 @@ function ApplicationListItem({application}) {
     await axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+application.application._id,{fees:[{id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:q},{id:process.env.REACT_APP_SAMPLE_CLEANING,quantity:1}]}).then((response)=>{
       console.log(response)
         sessionStorage.setItem("checkoutLink_"+application.application._id,response.data.url)
-        if(application.application._id=='64877e4c94305bee55021525'){ 
-          console.log(application.application.stay_start_date+" "+application.application.stay_end_date)
-          console.log(application.application.stay_start_date)
-          
-        }
+        console.log(response.data.url)
         setCheckoutLinkRecieved(true)
         setCheckoutLink(response.data.url)
         
@@ -178,11 +180,7 @@ function ApplicationListItem({application}) {
 
   async function checkout(){
     console.log("CHECKOUTTT")
-    if(application.application._id=='64877e4c94305bee55021525'){ 
-      console.log(application.application.stay_start_date+" "+application.application.stay_end_date)
-      console.log(application.application.stay_start_date)
-      
-    }
+    
     await axios.get("https://ghanahomestayserver.onrender.com/client-applications/allBookingDatesForApplication/"+application.application._id).then((response1)=>{
     console.log(application.application)
     console.log(response1.data.booked_dates)
