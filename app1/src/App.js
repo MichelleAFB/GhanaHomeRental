@@ -28,6 +28,7 @@ import {connect} from 'react-redux'
 import axios from "axios";
 import AdminBlockedDates from "./pages/AdminBlockedDates";
 import PayAndSubmit from "./pages/PayAndSubmit";
+import ApartmentLayout from "./ApartmentLayout";
 
 function App({reload}) {
 
@@ -61,11 +62,12 @@ function App({reload}) {
           <Route path="/reset-password/:email" element={<ResetPassword/>}/>
           <Route path="/reset-password/admin/:email" element={<ResetPasswordAdmin/>}/> 
           <Route path='/search' element={<SearchPage />}/>
+          <Route path="/pay-and-submit" element={<PayAndSubmit/>}/>
           <Route path='/' element={<Home />}/>
           <Route path='/sign-in' element={<SignIn />}/>
           <Route path='/application/:email/:firstname/:lastname/:phone/:startDate/:endDate/:noAdults/:noChildren' element={<Application/>}/>
           <Route path='/pre-application/:startDate/:endDate/:noAdults/:noChildren' element={<PreApplication/>}/>
-
+          <Route path="/layout" element={<ApartmentLayout/>}/>
           <Route path="/payment/:id" element={<PaymentPage/>}/>
           <Route path="/payment/success/:id" element={<PaymentSuccessPage/>}/>
           <Route path="/your-stay/:id" element={<YourStay/>}/>

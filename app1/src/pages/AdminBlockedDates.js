@@ -19,7 +19,7 @@ function AdminBlockedDates({user,userType}) {
    
 
     return (
-        <div class='flex w-full justify-center '>
+        <div class='flex w-full justify-center min-h-screen align-center '>
           
                 <Dates/>
 

@@ -21,7 +21,7 @@ function Review({application}) {
   const[images,setImages]=useState()
   const[isLoading,setIsLoading]=useState(true)
   const cldImages=[]
-  console.log(application)
+  console.log(application.application.application)
   useEffect((cloudImages)=>{
 
  
@@ -60,16 +60,19 @@ console.log(app)
 
   
     const user=JSON.parse(sessionStorage.getItem("user"))  
-   
+   console.log(app.review)
     if(user.firstname==app.firstname && user.lastname==app.lastname && user.email==app.email && (app.application_status=="CHECKEDOUT" || app.application_status=='CHECKEDOUT')){
   return (
     <div class="h-full bg-yellow-300 rounded-md p-5 block ml-5 mr-5 mb-5">
         <p class=" font-bold text-xl">{app.stay_start_date}-{app.stay_end_date}</p>
         <div class="flex ">
-          <i class="m-3 font-semibold">
+         { app.review!=null?
+         <i class="m-3 font-semibold">
              "{app.review} "
             <br/>- <p class="text-normal font-bold">{app.firstname} {app.lastname}</p>
           </i>
+          :<p></p>
+    }
         </div>
        <div class="flex flex-col ">
          <ReviewImageCarousel images={images}/>

@@ -80,7 +80,7 @@ function Application() {
  
  
   return (
-    <div class="flex flex-col p-3 justify-center">
+    <div class="flex flex-col p-3 justify-center h-full">
       <div class="flex justify-start">
         <button class="flex m-2"onClick={()=>{
           navigate("/")

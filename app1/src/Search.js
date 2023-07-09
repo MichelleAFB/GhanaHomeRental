@@ -9,6 +9,7 @@ import { DateRangePicker } from "react-date-range";
 import { Button } from "@material-ui/core";
 import PeopleIcon from "@material-ui/icons/People";
 import { useNavigate} from "react-router-dom";
+import ApartmentLayout from './ApartmentLayout';
 
 // DATE PICKER COMPONENT
 function Search({userType,user}) {
@@ -17,6 +18,9 @@ function Search({userType,user}) {
     const [endDate, setEndDate] = useState(new Date());
     const [noChildren,setNoChildren]=useState(0)
     const [noAdults,setNoAdults]=useState(2)
+    const [b1,setB1]=useState(false)
+    const[b2,setB2]=useState(false)
+    const[b3,setB3]=useState(false)
     const selectionRange = {
         startDate: startDate,
         endDate: endDate,
@@ -27,6 +31,7 @@ function Search({userType,user}) {
         setStartDate(ranges.selection.startDate);
         setEndDate(ranges.selection.endDate);
     }
+    const[full,setFull]=useState(true)
 
     console.log(startDate)
     return (
@@ -34,6 +39,7 @@ function Search({userType,user}) {
             <DateRangePicker ranges={[selectionRange]} onChange={handleSelect} />
             <div class="w-[560px] z-20 ">
                 <div class="flex flex-col bg-gray-100 w-[560px]  ">
+              
                     
                     <div class="flex p-3 m-2 justify-between">
                         <h2>

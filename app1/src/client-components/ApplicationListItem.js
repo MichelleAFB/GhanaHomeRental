@@ -154,6 +154,7 @@ function ApplicationListItem({application}) {
   async function getCheckoutLink(q){
    
     await axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+application.application._id,{fees:[{id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:q},{id:process.env.REACT_APP_SAMPLE_CLEANING,quantity:1}]}).then((response)=>{
+      console.log(response)
         sessionStorage.setItem("checkoutLink_"+application.application._id,response.data.url)
         if(application.application._id=='64877e4c94305bee55021525'){ 
           console.log(application.application.stay_start_date+" "+application.application.stay_end_date)
