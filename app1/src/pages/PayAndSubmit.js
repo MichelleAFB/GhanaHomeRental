@@ -44,10 +44,7 @@ function PayAndSubmit() {
        
         const days=JSON.parse(sessionStorage.getItem("application_payment_"+application._id))
         console.log(days)
-       /* axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+application._id,{fees:[{id:"price_1NIzbHLxMJskpKlALXQTXB3r",quantity:days.no_days},{id:"price_1NIzQLLxMJskpKlASXRbZZJc",quantity:1}]}).then((response)=>{
-          console.log(response)
-      })
-      */
+          getCheckoutLink(days.no_days)
         
        
       }
