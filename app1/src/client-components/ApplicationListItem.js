@@ -219,6 +219,7 @@ function ApplicationListItem({application}) {
 
    var link=sessionStorage.getItem("checkoutLink_"+application.application._id)
    console.log(link)
+   setCheckoutLink(link)
 
   return (
     <div class="max-h-sm rounded-md ">
@@ -330,7 +331,7 @@ function ApplicationListItem({application}) {
             {
             application.application.application_status=="DROPPED"&& application.application.notify_applicant==1? 
                 <div class="flex rounded-lg bg-green-600 p-3 m-2">
-                  <a class="text-white" href={link}>{link}</a>    
+                  <a class="text-white" href={link}>Proceed to Payment</a>    
                   {
                           !getLink ?
                           <div class="flex flex-col">
