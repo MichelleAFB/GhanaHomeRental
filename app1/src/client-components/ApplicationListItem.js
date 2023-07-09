@@ -112,11 +112,12 @@ function ApplicationListItem({application}) {
           setGetLink(false)
     
         }
-      }if(application.application.application_status=="APPLIED"){
+      }if(application.application.application_status!="APPROVED"){
         console.log("getting days")
         checkout()
         setTimeout(()=>{
-          const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
+          console.log(application.application._id)
+          const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id.toString()))
           console.log(days)
           console.log("now getting link")
           getCheckoutLink(days.no_days).then((url)=>{
@@ -169,7 +170,8 @@ function ApplicationListItem({application}) {
    
     await axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+application.application._id,{fees:[{id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:q},{id:process.env.REACT_APP_SAMPLE_CLEANING,quantity:1}]}).then((response)=>{
       console.log(response)
-        sessionStorage.setItem("checkoutLink_"+application.application._id,response.data.url)
+      var url=response.data.url.toString()
+        sessionStorage.setItem("checkoutLink_"+application.application._id,url)
         console.log(response.data.url)
         setCheckoutLinkRecieved(true)
         setCheckoutLink(response.data.url)
@@ -192,7 +194,9 @@ function ApplicationListItem({application}) {
  }
  const[getLink,setGetLink]=useState(true)
   if(!isLoading){
+    /*
    const link=JSON.parse(sessionStorage.getItem("checkoutLink_"+application.application._id))
+   console.log(link)
     if(checkoutLink==null){
     checkout().then((response)=>{
       console.log(response)
@@ -211,9 +215,10 @@ function ApplicationListItem({application}) {
       }
     })
   }
-    
+    */
 
-   
+   var link=sessionStorage.getItem("checkoutLink_"+application.application._id)
+   console.log(link)
 
   return (
     <div class="max-h-sm rounded-md ">
@@ -324,7 +329,8 @@ function ApplicationListItem({application}) {
             }
             {
             application.application.application_status=="DROPPED"&& application.application.notify_applicant==1? 
-                <div class="flex rounded-lg bg-green-600 p-3 m-2">    
+                <div class="flex rounded-lg bg-green-600 p-3 m-2">
+                  <a class="text-white" href={link}>{link}</a>    
                   {
                           !getLink ?
                           <div class="flex flex-col">
@@ -390,7 +396,7 @@ function ApplicationListItem({application}) {
                           !getLink ?
                           <div class="flex p-3">
                           <button class="p-3 bg-purple-600 rounded-md w-full" >
-                            <a class="text-white" href={sessionStorage.getItem('checkoutLink_'+application.application._id)}>Proceed to payment</a>
+                            <a class="text-white" href={link}>Proceed to payment</a>
                             </button>
                             </div>:<a></a>
                         }
@@ -414,15 +420,10 @@ function ApplicationListItem({application}) {
                 </div>
             :<div></div>}
         {application.application.application_status=="APPLIED" || application.application.application_status=="DROPPED"   ? 
-          <div class="flex rounded-lg bg-green-600 p-3 m-2 justify-center">    
-            {
-                          !getLink ?
-                          <div class="">
-              
-                            <a class="flex" href={sessionStorage.getItem('checkoutLink_'+application.application._id)}><p class="text-white text-center font-bold">Proceed to payment</p></a>
-                           
-                            </div>:<a></a>
-                }
+          <div class="flex rounded-lg bg-green-600 p-3 m-2 justify-center">
+             <a class="flex" href={link}><p class="text-white text-center font-bold">Proceed to payment</p></a>
+            
+          
              </div>
             :<div></div>}
                 </div>:<div></div>
