@@ -65,13 +65,7 @@ function PayAndSubmit() {
   async function getCheckoutLink(q){
    console.log("GETTING LINK")
     axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+application._id,{fees:[{id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:q},{id:process.env.REACT_APP_SAMPLE_CLEANING,quantity:1}]}).then((response)=>{
-      console.log(response)
-        sessionStorage.setItem("checkoutLink_"+application._id,response.data.url)
-      
-        setCheckoutLinkRecieved(true)
-        setCheckoutLink(response.data.url)
         window.location.href=response.data.url
-        
         return response.data.url
       })
   }
