@@ -1,7 +1,9 @@
 import React from 'react'
 import "./ApartmentLayout.css"
-
+import { useState } from 'react'
 function ApartmentLayout() {
+
+  const[on,setOn]=useState(false)
   return (
     <div>
     <div class="main-content">
@@ -32,19 +34,37 @@ function ApartmentLayout() {
       <div class="toilet"></div>
       <div class="vanity"></div>
       <div class="rug"></div>
-      <div class="name">bath #1</div>
+      <div class="name">bath #1 hi</div>
     </div>
-    <div class="bedroom-2">
+    <div class="bedroom-2" onClick={()=>{
+      setOn(!on)
+    }}>
       <div class="door-ver"></div>
       <div class="window-hor"></div>
       <div class="bed-table"></div>
-      <div class="bed">
-        <div class="blanket"></div>
-        <div class="pillow"></div>
+      <input value={on}/>{on}
+      {
+        on?
+        <div class="bed-on"  onClick={()=>{
+          setOn(!on)
+        }}>
+        <div class="blanket-on"></div>
+        <button class="pillow"  onClick={()=>{
+          setOn(!on)
+        }}></button>
       </div>
+      :
+      <div class="bed-on">
+        <div class="blanket-on"></div>
+        <button class="pillow" onClick={()=>{
+          setOn(!on)
+        }}></button>
+      </div>
+      }
       <div class="table"></div>
       <div class="name">guest bedroom</div>
     </div>
+
     <div class="living-room">
       <div class="rug"></div>
       <div class="window-ver"></div>
@@ -65,6 +85,17 @@ function ApartmentLayout() {
       <div class="bed-table"></div>
       <div class="bed-table"></div>
       <div class="name">master bedroom</div>
+    </div>
+    <div class="bedroom-2">
+      <div class="door-ver"></div>
+      <div class="window-hor"></div>
+      <div class="bed-table"></div>
+      <div class="bed">
+        <div class="blanket"></div>
+        <div class="pillow"></div>
+      </div>
+      <div class="table"></div>
+      <div class="name">guest bedroom</div>
     </div>
     <div class="closet">
       <div class="wall-gap"></div>

@@ -46,7 +46,24 @@ function App({reload}) {
     })
 
   },[reload])
-  
+  console.log("seerverUp:"+serverUp)
+  while(!serverUp){
+    return(
+      <div class='bg-gray-200 z-30' data-testId="modal-public">
+     
+      <div class='h-screen w-full fixed ml-0 mr-0 mt-0 mb-0 flex justify-center items-center bg-black bg-opacity-50'>
+       
+        <main id='content' role='main' class='w-full max-w-md mx-auto '>
+      <div class="flex w-full justify-center ">
+          <div class="flex-col justify-end  ">
+          <div class="loading-spinner-large"/>
+      </div>
+    </div>
+    </main>
+    </div>
+    </div>
+    )
+  }
   if(serverUp){
   return (
     // BEM

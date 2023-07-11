@@ -114,19 +114,18 @@ function ApplicationListItem({application}) {
         }
       }if(application.application.application_status!="APPROVED"){
         console.log("getting days")
-        checkout()
-        setTimeout(()=>{
-          console.log(application.application._id)
-          const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id.toString()))
+        checkout().then((data)=>{
+          console.log(data)
+          const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
           console.log(days)
-          console.log("now getting link")
           getCheckoutLink(days.no_days).then((url)=>{
             setCheckoutLink(url)
             setTimeout(()=>{
               resolve()
-            },800)
+            },1100)
           })
         })
+   
       }
       else{
         resolve()
@@ -183,14 +182,15 @@ function ApplicationListItem({application}) {
   async function checkout(){
     console.log("CHECKOUTTT")
     
-    await axios.get("https://ghanahomestayserver.onrender.com/client-applications/allBookingDatesForApplication/"+application.application._id).then((response1)=>{
+   const booking= await axios.get("https://ghanahomestayserver.onrender.com/client-applications/allBookingDatesForApplication/"+application.application._id).then((response1)=>{
     console.log(application.application)
     console.log(response1.data.booked_dates)
-    
+    console.log(response1)
       sessionStorage.setItem("application_payment_"+application.application._id,JSON.stringify({no_days:response1.data.no_days}))
      
       return getCheckoutLink(response1.data.days)
     }) 
+    return booking
  }
  const[getLink,setGetLink]=useState(true)
   if(!isLoading){
@@ -219,7 +219,7 @@ function ApplicationListItem({application}) {
 
    var link=sessionStorage.getItem("checkoutLink_"+application.application._id)
    console.log(link)
-   setCheckoutLink(link)
+   //setCheckoutLink(link)
 
   return (
     <div class="max-h-sm rounded-md ">

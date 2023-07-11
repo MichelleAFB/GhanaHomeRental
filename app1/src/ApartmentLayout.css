@@ -626,8 +626,59 @@ $border-radius: 4px;
 				to right,
 				transparent,
 				transparent 6px,
+				red 6px,
+				red 8px
+			),
+			repeating-linear-gradient(
+				to bottom,
+				transparent,
+				transparent 6px,
 				rgba($color-border, 0.5) 6px,
 				rgba($color-border, 0.5) 8px
+			);
+		&:before {
+			content: "";
+			position: absolute;
+			right: -18px;
+			width: 0;
+			height: 100%;
+			border-right: 2px solid $color-border;
+		}
+	}
+	.pillow {
+		width: 25px;
+		@include utility-border;
+		height: 40px;
+		border-radius: 6px;
+		right: 8px;
+		top: 14px;
+		position: absolute;
+		background: $color-shade;
+	}
+}
+
+.bed-on {
+	width: 140px;
+	height: 70px;
+	position: absolute;
+	@include utility-border;
+	right: -2px;
+	top: 35px;
+	border-radius: 8px 0 0 8px;
+	background: $color-bg;
+	.blanket-on {
+		width: 55%;
+		left: 0;
+		position: absolute;
+		top: 0;
+		height: 100%;
+		border-right: 2px solid $color-border;
+		background: repeating-linear-gradient(
+				to right,
+				transparent,
+				transparent 6px,
+				pink 6px,
+				red 8px
 			),
 			repeating-linear-gradient(
 				to bottom,
