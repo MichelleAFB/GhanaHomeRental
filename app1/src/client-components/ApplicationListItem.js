@@ -145,9 +145,9 @@ function ApplicationListItem({application}) {
         const days=JSON.parse(sessionStorage.getItem("application_payment_"+application.application._id))
        
        
-        getCheckoutLink(days.no_days).then(()=>{
-          console.log(days)
-          
+        getCheckoutLink(days.no_days).then((url)=>{
+          console.log(url)
+          setCheckoutLink(url)
           resolve1()
         })
 
@@ -167,16 +167,18 @@ function ApplicationListItem({application}) {
  /**id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:q},{id:process.env.REACT_APP_SAMPLE_CLEANING */
   async function getCheckoutLink(q){
    
-    await axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+application.application._id,{fees:[{id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:q},{id:process.env.REACT_APP_SAMPLE_CLEANING,quantity:1}]}).then((response)=>{
+    const url=await axios.post("https://ghanahomestayserver.onrender.com/payment/checkout/"+application.application._id,{fees:[{id:process.env.REACT_APP_SAMPLE_NIGHTS,quantity:q},{id:process.env.REACT_APP_SAMPLE_CLEANING,quantity:1}]}).then((response)=>{
       console.log(response)
       var url=response.data.url.toString()
         sessionStorage.setItem("checkoutLink_"+application.application._id,url)
+        console.log(response)
         console.log(response.data.url)
         setCheckoutLinkRecieved(true)
         setCheckoutLink(response.data.url)
         
         return response.data.url
       })
+      return url
   }
 
   async function checkout(){
